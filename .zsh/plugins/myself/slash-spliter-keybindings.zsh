@@ -24,4 +24,5 @@ bindkey '\e[1;5C' forward-word-dir       # Ctrl + 右键：向后跳一个单词
 bindkey '\e[1;5A' beginning-of-line      # Ctrl + 上键：跳至行首
 bindkey '\e[1;5B' end-of-line            # Ctrl + 下键：跳至行尾
 bindkey '^H'      backward-kill-word-dir # Ctrl + Backspace：删除至一个单词
+bindkey '^W'      backward-kill-word-dir # Ctrl + Backspace：VSCode terminal 触发的快捷键不一样
 bindkey '\e[3;5~' forward-kill-word-dir  # Ctrl + Delete：删除至下一个单词
