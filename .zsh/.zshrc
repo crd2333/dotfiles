@@ -32,7 +32,7 @@ SPACESHIP_USER_SHOW=always
 SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_CHAR_SYMBOL="❯"
 SPACESHIP_CHAR_SUFFIX=" "
-SPACESHIP_PROMPT_ASYNC=false # 暂时的无奈之举
+SPACESHIP_PROMPT_ASYNC=false # https://github.com/spaceship-prompt/spaceship-prompt/issues/1193
 
 # make history appears only once and shared by all terminals
 setopt histignorealldups sharehistory
