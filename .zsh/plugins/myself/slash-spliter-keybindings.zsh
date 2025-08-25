@@ -19,6 +19,8 @@ zle -N backward-word-dir
 zle -N forward-word-dir
 zle -N backward-kill-word-dir
 zle -N forward-kill-word-dir
+
+# hint: use `showkey -a` to see what the sequence is
 bindkey '\e[1;5D' backward-word-dir      # Ctrl + 左键：向前跳一个单词
 bindkey '\e[1;5C' forward-word-dir       # Ctrl + 右键：向后跳一个单词
 bindkey '\e[1;5A' beginning-of-line      # Ctrl + 上键：跳至行首
