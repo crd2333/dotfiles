@@ -86,17 +86,17 @@ else
 fi
 
 # cuda
-# export CUDA_HOME=/usr/local/cuda-11.1   # change cuda version here, a soft link to cuda-11.1 by default
-# if [ $LD_LIBRARY_PATH ]; then
-#    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
-# else
-#     export LD_LIBRARY_PATH=$CUDA_HOME/lib64
-# fi
-# if [ $PATH ]; then
-#     export PATH=$CUDA_HOME/bin:$PATH
-# else
-#     export PATH=$CUDA_HOME/bin
-# fi
+export CUDA_HOME=/usr/local/cuda-12.1   # change cuda version here
+if [ $LD_LIBRARY_PATH ]; then
+   export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+else
+    export LD_LIBRARY_PATH=$CUDA_HOME/lib64
+fi
+if [ $PATH ]; then
+    export PATH=$CUDA_HOME/bin:$PATH
+else
+    export PATH=$CUDA_HOME/bin
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -118,6 +118,18 @@ alias cl='clear'
 alias ll='ls -alF'
 alias la='ls -al'
 alias l='ls -CF'
-alias system_proxy='export http_proxy=http://127.0.0.1:8080; export https_proxy=http://127.0.0.1:8080; export all_proxy=socks5://127.0.0.1:1080'
-alias unset_proxy='unset http_proxy; unset https_proxy; unset all_proxy'
+
+# system_proxy / unset_proxy as functions
+SYSTEM_PROXY_HTTP_PORT=20170
+SYSTEM_PROXY_SOCKS_PORT=20171
+system_proxy() {
+    export http_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
+    export https_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
+    export all_proxy="socks5://127.0.0.1:${SYSTEM_PROXY_SOCKS_PORT}"
+    echo "System proxy set: http/https -> 127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}, socks -> 127.0.0.1:${SYSTEM_PROXY_SOCKS_PORT}"
+}
+unset_proxy() {
+    unset http_proxy https_proxy all_proxy
+    echo "System proxy environment variables unset"
+}
 
