@@ -70,8 +70,8 @@ source $ZSH/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 fpath=($ZSH/plugins/zsh-completions/src $fpath)
 source $ZSH/plugins/zsh-extract/extract.plugin.zsh
-source $ZSH/plugins/myself/expand-multiple-dots.zsh
-source $ZSH/plugins/myself/slash-spliter-keybindings.zsh
+source $ZSH/plugins/expand-multiple-dots.zsh
+source $ZSH/plugins/slash-spliter-keybindings.zsh
 
 # 环境变量
 if [ $PATH ]; then
