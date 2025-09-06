@@ -69,7 +69,7 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 source $ZSH/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 fpath=($ZSH/plugins/zsh-completions/src $fpath)
-source $ZSH/plugins/zsh-extract/extract.plugin.zsh
+source $ZSH/plugins/extract/extract.plugin.zsh
 source $ZSH/plugins/expand-multiple-dots.zsh
 source $ZSH/plugins/slash-spliter-keybindings.zsh
 
@@ -84,6 +84,7 @@ if [ $LD_LIBRARY_PATH ]; then
 else
     export LD_LIBRARY_PATH=/usr/lib
 fi
+
 # cuda
 # export CUDA_HOME=/usr/local/cuda-11.1   # change cuda version here, a soft link to cuda-11.1 by default
 # if [ $LD_LIBRARY_PATH ]; then
