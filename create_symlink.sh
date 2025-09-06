@@ -13,7 +13,7 @@ RESET="\e[0m"
 
 # List of symlink pairs (source|target)
 read -r -d '' PAIRS <<EOF
-$DOTFILES/.zsh/.zshrc|$HOME_DIR/.zshrc
+$DOTFILES/zsh/.zshrc|$HOME_DIR/.zshrc
 $DOTFILES/.tmux.conf|$HOME_DIR/.tmux.conf
 $DOTFILES/.gitconfig|$HOME_DIR/.gitconfig
 $DOTFILES/.condarc|$HOME_DIR/.condarc
