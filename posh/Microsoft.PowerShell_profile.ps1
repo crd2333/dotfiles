@@ -34,7 +34,7 @@ Set-PSReadLineOption -Colors @{
 set-alias -Name cl -Value clear
 set-alias -Name vi -Value vim
 set-alias -Name la -Value "Get-ChildItem -Force"
-set-alias -Name conda -Value "C:\Users\user\conda.ps1" # 避免 conda init 过于缓慢，只有需要时才 init 并 activate
+set-alias -Name conda -Value "C:\Users\<user>\conda.ps1" # 避免 conda init 过于缓慢，只有需要时才 init 并 activate
 
 # 函数设置
 function work {
@@ -54,10 +54,10 @@ function countSize {
 }
 
 # 网络代理设置
-$env:HTTP_PROXY="http://127.0.0.1:7890/"
-$env:HTTPS_PROXY="http://127.0.0.1:7890/"  # 注意，极有可能这里就是http，不需要改成https
+# $env:HTTP_PROXY="http://127.0.0.1:7890/"
+# $env:HTTPS_PROXY="http://127.0.0.1:7890/"  # 注意，极有可能这里就是http，不需要改成https
 
-oh-my-posh init pwsh --config 'C:\Users\mofei\AppData\Local\Programs\oh-my-posh\themes\tokyo_modified.omp.json' | Invoke-Expression  # 设置主题，可以去https://ohmyposh.dev/docs/themes找
+oh-my-posh init pwsh --config 'C:\Users\<user>\dotfiles\posh\tokyo_modified.omp.json' | Invoke-Expression  # 设置主题，可以去https://ohmyposh.dev/docs/themes找
 
 # 设置字符编码为 UTF-8，我也不知道为什么要做两个设置，但是这样才能正常显示中文
 [Console]::OutputEncoding = [System.Text.Encoding]::Default

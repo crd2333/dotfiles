@@ -1,5 +1,5 @@
 # ZSH HOME
-export ZSH=$HOME/.zsh
+export ZSH=$HOME/dotfiles/zsh
 
 # Set up the prompt and 'ls' colors
 if [ -x /usr/bin/dircolors ]; then
