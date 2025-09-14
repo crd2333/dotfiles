@@ -1,0 +1,7 @@
+[user]
+	name = crd2333
+	email = 1142505834@qq.com
+[core]
+	commitGraph = true
+[credential]
+	helper = store
