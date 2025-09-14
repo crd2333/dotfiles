@@ -1,7 +1,38 @@
+[safe]
+	directory = *
 [user]
 	name = crd2333
 	email = 1142505834@qq.com
 [core]
-	commitGraph = true
+	editor = code --wait
+	preloadindex = true
+	fscache = true
+	fileMode = false
+[gc]
+	auto = 256
+[pull]
+	rebase = false
+[fetch]
+	prune = false
+[rebase]
+	autoStash = false
+	autosquash = false
+	updateRefs = false
+[diff]
+	guitool = vscode
+	tool = vscode
+[difftool "vscode"]
+	path = code
+	cmd = \"code\" --wait --diff \"$LOCAL\" \"$REMOTE\"
+[merge]
+	guitool = vscode
+[mergetool "vscode"]
+	path = code
+	cmd = \"code\" --wait --merge \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
 [credential]
 	helper = store
