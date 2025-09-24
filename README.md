@@ -24,6 +24,11 @@ ls -al # dotted files will be hidden in regular `ls`
 . ./create_symlink.sh
 ```
 
+如果 clone 时忘记加子模块参数，则：
+```bash
+git submodule update --init --recursive --depth 1
+```
+
 或手动按需创建软链接 (or manually create symlinks by need)：
 ```bash
 # if in Linux
