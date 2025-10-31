@@ -84,6 +84,7 @@ if [ $LD_LIBRARY_PATH ]; then
 else
     export LD_LIBRARY_PATH=/usr/lib
 fi
+export PATH=$PATH:$HOME/local/bin
 
 # cuda
 export CUDA_HOME=/usr/local/cuda-12.1   # change cuda version here
