@@ -120,6 +120,37 @@ alias ll='ls -alF'
 alias la='ls -al'
 alias l='ls -CF'
 
+# tmux aliases and functions
+alias tls='tmux ls'
+alias tk='tmux kill-session -t' # tkill <session-name>
+tnew() {  # tnew <session-name>
+    if [ -n "$1" ]; then
+        tmux new -s "$1"
+    else
+        echo "Usage: tnew <session-name>"
+    fi
+}
+tat() {  # tat <session-name>
+    if [ $# -eq 0 ]; then  # no args, list availabel sessions
+        if tmux has-session 2>/dev/null; then
+            echo "No session name provided. Available sessions:"
+            tmux list-sessions -F '#S'
+        else
+            echo "No tmux sessions found. Creating new session..."
+            tmux new
+        fi
+    else
+        tmux attach -t "$1"
+    fi
+}
+trn() {  # trn <old-session-name> <new-session-name>
+    if [ $# -eq 2 ]; then
+        tmux rename-session -t "$1" "$2"
+    else
+        echo "Usage: trn <old-session-name> <new-session-name>"
+    fi
+}
+
 # system_proxy / unset_proxy as functions
 SYSTEM_PROXY_HTTP_PORT=20171
 SYSTEM_PROXY_SOCKS_PORT=20170
