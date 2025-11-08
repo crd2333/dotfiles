@@ -120,6 +120,14 @@ alias ll='ls -alF'
 alias la='ls -al'
 alias l='ls -CF'
 
+# advcp / advmv if in PATH
+if command -v advcp >/dev/null 2>&1; then
+    alias cp='advcp -g'
+fi
+if command -v advmv >/dev/null 2>&1; then
+    alias mv='advmv -g'
+fi
+
 # tmux aliases and functions
 alias tls='tmux ls'
 alias tk='tmux kill-session -t' # tkill <session-name>
