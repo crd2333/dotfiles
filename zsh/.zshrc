@@ -98,6 +98,8 @@ if [ $PATH ]; then
 else
     export PATH=$CUDA_HOME/bin
 fi
+# export TORCH_CUDA_ARCH_LIST=8.9  # for 4090
+# export TORCH_CUDA_ARCH_LIST=8.6  # for A6000
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
