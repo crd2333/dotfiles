@@ -164,6 +164,20 @@ trn() {  # trn <old-session-name> <new-session-name>
 # system_proxy / unset_proxy as functions
 SYSTEM_PROXY_HTTP_PORT=20171
 SYSTEM_PROXY_SOCKS_PORT=20170
+v2raya_lite_launch() {
+    # v2raya launch with no sudo (litely), make sure you are in tmux!
+    if [ "$1" = "--v2ray" ]; then  # use v2ray core if specified
+        export V2RAYA_V2RAY_BIN="$HOME/local/v2ray/v2ray"
+        export V2RAYA_V2RAY_CONFDIR="$HOME/local/v2ray"
+        export V2RAYA_V2RAY_ASSETSDIR="$HOME/local/v2ray"
+        ~/local/v2raya/v2raya --lite
+        return
+    fi
+    export V2RAYA_V2RAY_BIN="$HOME/local/xray/xray"
+    export V2RAYA_V2RAY_CONFDIR="$HOME/local/xray"
+    export V2RAYA_V2RAY_ASSETSDIR="$HOME/local/xray"
+    ~/local/v2raya/v2raya --lite
+}
 system_proxy() {
     export http_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
     export https_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
