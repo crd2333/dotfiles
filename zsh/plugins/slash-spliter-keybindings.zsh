@@ -1,4 +1,5 @@
-# key-bindings
+# this script enhances word navigation and deletion in zsh by additionally treating
+# certain characters (like '/', '-', and '.') as word boundaries by replacing WORDCHARS temporarily
 
 if [[ -z ${SPLIT_CHARS+x} ]]; then
     SPLIT_CHARS=( '/' '-' '.' )
@@ -14,21 +15,59 @@ remove_split_chars() {
     printf '%s' "$wc"
 }
 
+# Helper: return 0 if char is one of SPLIT_CHARS
+is_split_char() {
+    local ch="$1"
+    [[ $SPLIT_CHARS_JOINED = *"$ch"* ]]
+}
+
+# Precompute caches: joined split-chars and modified WORDCHARS
+ORIGINAL_WORDCHARS=${WORDCHARS}
+SPLIT_CHARS_JOINED=$(printf '%s' "${SPLIT_CHARS[@]}")
+MOD_WORDCHARS=$ORIGINAL_WORDCHARS
+for c in "${SPLIT_CHARS[@]}"; do
+    MOD_WORDCHARS=${MOD_WORDCHARS//${c}/}
+done
+
 backward-word-dir () {
-    local WORDCHARS=$(remove_split_chars)
-    zle backward-word
+    (( CURSOR > 0 )) || return
+    local left=${BUFFER:$((CURSOR-1)):1}
+    if is_split_char "$left"; then
+        zle backward-word
+    else
+        local WORDCHARS=$MOD_WORDCHARS
+        zle backward-word
+    fi
 }
 forward-word-dir () {
-    local WORDCHARS=$(remove_split_chars)
-    zle forward-word
+    (( CURSOR < ${#BUFFER} )) || return
+    local right=${BUFFER:$((CURSOR)):1}
+    if is_split_char "$right"; then
+        zle forward-word
+    else
+        local WORDCHARS=$MOD_WORDCHARS
+        zle forward-word
+    fi
 }
 backward-kill-word-dir () {
-    local WORDCHARS=$(remove_split_chars)
-    zle backward-kill-word
+    (( CURSOR > 0 )) || return
+    local left=${BUFFER:$((CURSOR-1)):1}
+    if is_split_char "$left"; then
+        zle backward-kill-word
+    else
+        local WORDCHARS=$MOD_WORDCHARS
+        zle backward-kill-word
+    fi
 }
 forward-kill-word-dir () {
-    local WORDCHARS=$(remove_split_chars)
-    zle kill-word
+    (( CURSOR < ${#BUFFER} )) || return
+    local right=${BUFFER:$((CURSOR)):1}
+    if is_split_char "$right"; then
+        zle kill-word
+    else
+        local WORDCHARS=$MOD_WORDCHARS
+        zle kill-word
+    fi
 }
 
 zle -N backward-word-dir
