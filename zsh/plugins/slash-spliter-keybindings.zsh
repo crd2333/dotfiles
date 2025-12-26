@@ -23,6 +23,7 @@ forward_edge_case() {
     # special-case fix for edge cases.
     # zle forward-word: `|(word)+(non-word)+` -> `(word)+(non-word)+|`
     # no edge cases found yet, but a placeholder for future use
+    return 1
 }
 
 backward-word-split () {
