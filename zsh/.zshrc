@@ -188,4 +188,64 @@ unset_proxy() {
     unset http_proxy https_proxy all_proxy
     echo "System proxy environment variables unset"
 }
+test_proxy() {
+    # Color definitions
+    local GREEN='\033[0;32m'
+    local RED='\033[0;31m'
+    local YELLOW='\033[0;33m'
+    local NC='\033[0m' # No Color
 
+    # Check if proxy environment variables are set
+    if [[ -z "$http_proxy" ]] || [[ -z "$https_proxy" ]]; then
+        echo -e "${YELLOW}[Warning] Proxy environment variables are NOT set.${NC}"
+        return 1
+    fi
+
+    echo "Testing proxy connection..."
+    echo "Current Proxy: $http_proxy"
+
+    # Target URL for testing
+    local target="https://www.google.com"
+
+    # Test connection using curl with custom output format
+    # -s: Silent mode (don't show progress meter)
+    # -o /dev/null: Discard the response body
+    # --connect-timeout 5: Set a 5-second timeout to avoid hanging
+    # -w: Write out specific metrics
+    local result=$(curl -s -o /dev/null -w "%{http_code}:%{time_namelookup}:%{time_connect}:%{time_appconnect}:%{time_total}" --connect-timeout 5 "$target")
+
+    # Capture curl exit status
+    local curl_exit_code=$?
+
+    if [ $curl_exit_code -ne 0 ]; then
+        echo -e "${RED}[Error] Connection Failed! (curl exit code: $curl_exit_code)${NC}"
+        echo "Possible reasons: Proxy down, Firewall blocking, or DNS failure."
+        return 1
+    fi
+
+    # Parse the metrics from the result string
+    local http_code=$(echo "$result" | cut -d':' -f1)
+    local time_dns=$(echo "$result" | cut -d':' -f2)
+    local time_tcp=$(echo "$result" | cut -d':' -f3)
+    local time_ssl=$(echo "$result" | cut -d':' -f4)
+    local time_total=$(echo "$result" | cut -d':' -f5)
+
+    # Check for success status codes (200 OK, 301/302 Redirects)
+    if [[ "$http_code" == "200" ]] || [[ "$http_code" == "301" ]] || [[ "$http_code" == "302" ]]; then
+        echo -e "${GREEN}[Success] Connection to Google established!${NC}"
+        echo "-------------------------------------"
+        echo -e "HTTP Status   : ${GREEN}$http_code${NC}"
+        echo -e "DNS Lookup    : ${YELLOW}${time_dns}s${NC}"
+        echo -e "TCP Connect   : ${YELLOW}${time_tcp}s${NC}"
+        echo -e "SSL Handshake : ${YELLOW}${time_ssl}s${NC}"
+        echo -e "Total Time    : ${GREEN}${time_total}s${NC}"
+        echo "-------------------------------------"
+
+        # Optional: Verify external IP to ensure traffic is actually routed through proxy
+        echo -e "Verifying external IP via proxy..."
+        local ext_ip=$(curl -s --connect-timeout 3 http://ifconfig.me)
+        echo -e "External IP   : ${GREEN}$ext_ip${NC}"
+    else
+        echo -e "${RED}[Fail] HTTP Status Code: $http_code${NC}"
+    fi
+}
