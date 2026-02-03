@@ -73,7 +73,7 @@ source $ZSH/plugins/extract/extract.plugin.zsh
 source $ZSH/plugins/expand-multiple-dots.zsh
 source $ZSH/plugins/slash-spliter-keybindings.zsh
 
-# 环境变量
+# environment variables
 if [ $PATH ]; then
     export PATH=$PATH:/usr/bin
 else
@@ -84,10 +84,10 @@ if [ $LD_LIBRARY_PATH ]; then
 else
     export LD_LIBRARY_PATH=/usr/lib
 fi
-export PATH=$PATH:$HOME/local/bin
+export PATH=$PATH:/home/mf/local/bin
 
 # cuda
-export CUDA_HOME=/usr/local/cuda-12.1   # change cuda version here
+export CUDA_HOME=/usr/local/cuda-12.8   # change cuda version here
 if [ $LD_LIBRARY_PATH ]; then
    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 else
@@ -100,12 +100,13 @@ else
 fi
 # export TORCH_CUDA_ARCH_LIST=8.9  # for 4090
 # export TORCH_CUDA_ARCH_LIST=8.6  # for A6000
+export TORCH_CUDA_ARCH_LIST="8.9;12.0"  # for 4090 + A6000Pro
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
-    eval "${__conda_setup}"
+    eval "$__conda_setup"
 else
     if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
         . "$HOME/miniconda3/etc/profile.d/conda.sh"
@@ -116,11 +117,14 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+export PATH="$PATH:$HOME/.local/bin"
+
 # aliases
 alias cl='clear'
 alias ll='ls -alF'
 alias la='ls -al'
 alias l='ls -CF'
+alias rsync='rsync -avzh --info=progress2 --partial' # human-readable rsync with progress, compression and partial files
 
 # advcp / advmv if in PATH
 if command -v advcp >/dev/null 2>&1; then
@@ -161,7 +165,12 @@ trn() {  # trn <old-session-name> <new-session-name>
     fi
 }
 
-# system_proxy / unset_proxy as functions
+# Proxy helpers (system_proxy / unset_proxy / test_proxy)
+if [ -f "$ZSH/lib/proxy.zsh" ]; then
+    source "$ZSH/lib/proxy.zsh"
+fi
+
+# v2raya launcher is kept in .zshrc (not part of the 3 proxy helper functions)
 SYSTEM_PROXY_HTTP_PORT=20171
 SYSTEM_PROXY_SOCKS_PORT=20170
 v2raya_lite_launch() {
@@ -178,74 +187,13 @@ v2raya_lite_launch() {
     export V2RAYA_V2RAY_ASSETSDIR="$HOME/local/xray"
     ~/local/v2raya/v2raya --lite
 }
-system_proxy() {
-    export http_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
-    export https_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
-    export all_proxy="socks5://127.0.0.1:${SYSTEM_PROXY_SOCKS_PORT}"
-    echo "System proxy set: http/https -> 127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}, socks -> 127.0.0.1:${SYSTEM_PROXY_SOCKS_PORT}"
-}
-unset_proxy() {
-    unset http_proxy https_proxy all_proxy
-    echo "System proxy environment variables unset"
-}
-test_proxy() {
-    # Color definitions
-    local GREEN='\033[0;32m'
-    local RED='\033[0;31m'
-    local YELLOW='\033[0;33m'
-    local NC='\033[0m' # No Color
 
-    # Check if proxy environment variables are set
-    if [[ -z "$http_proxy" ]] || [[ -z "$https_proxy" ]]; then
-        echo -e "${YELLOW}[Warning] Proxy environment variables are NOT set.${NC}"
-        return 1
-    fi
-
-    echo "Testing proxy connection..."
-    echo "Current Proxy: $http_proxy"
-
-    # Target URL for testing
-    local target="https://www.google.com"
-
-    # Test connection using curl with custom output format
-    # -s: Silent mode (don't show progress meter)
-    # -o /dev/null: Discard the response body
-    # --connect-timeout 5: Set a 5-second timeout to avoid hanging
-    # -w: Write out specific metrics
-    local result=$(curl -s -o /dev/null -w "%{http_code}:%{time_namelookup}:%{time_connect}:%{time_appconnect}:%{time_total}" --connect-timeout 5 "$target")
-
-    # Capture curl exit status
-    local curl_exit_code=$?
-
-    if [ $curl_exit_code -ne 0 ]; then
-        echo -e "${RED}[Error] Connection Failed! (curl exit code: $curl_exit_code)${NC}"
-        echo "Possible reasons: Proxy down, Firewall blocking, or DNS failure."
-        return 1
-    fi
-
-    # Parse the metrics from the result string
-    local http_code=$(echo "$result" | cut -d':' -f1)
-    local time_dns=$(echo "$result" | cut -d':' -f2)
-    local time_tcp=$(echo "$result" | cut -d':' -f3)
-    local time_ssl=$(echo "$result" | cut -d':' -f4)
-    local time_total=$(echo "$result" | cut -d':' -f5)
-
-    # Check for success status codes (200 OK, 301/302 Redirects)
-    if [[ "$http_code" == "200" ]] || [[ "$http_code" == "301" ]] || [[ "$http_code" == "302" ]]; then
-        echo -e "${GREEN}[Success] Connection to Google established!${NC}"
-        echo "-------------------------------------"
-        echo -e "HTTP Status   : ${GREEN}$http_code${NC}"
-        echo -e "DNS Lookup    : ${YELLOW}${time_dns}s${NC}"
-        echo -e "TCP Connect   : ${YELLOW}${time_tcp}s${NC}"
-        echo -e "SSL Handshake : ${YELLOW}${time_ssl}s${NC}"
-        echo -e "Total Time    : ${GREEN}${time_total}s${NC}"
-        echo "-------------------------------------"
-
-        # Optional: Verify external IP to ensure traffic is actually routed through proxy
-        echo -e "Verifying external IP via proxy..."
-        local ext_ip=$(curl -s --connect-timeout 3 http://ifconfig.me)
-        echo -e "External IP   : ${GREEN}$ext_ip${NC}"
-    else
-        echo -e "${RED}[Fail] HTTP Status Code: $http_code${NC}"
-    fi
+# opencode
+export PATH=/home/mf/.opencode/bin:$PATH
+opencode() {
+    echo "Setting opencode with proxy..."
+    ( # run in a subshell
+        system_proxy > /dev/null 2>&1
+        command opencode "$@"  # `command` to avoid recursion
+    )
 }

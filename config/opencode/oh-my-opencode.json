@@ -1,0 +1,57 @@
+{
+  "agents": {
+    "atlas": {
+      "model": "gcli-antigravity/claude-sonnet-4-5-thinking",
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 24000
+      }
+    },
+    "sisyphus": {
+        "model": "gcli/gemini-3-pro-preview",
+        "variant": "medium"
+    },
+    "prometheus": {
+      "model": "gcli-antigravity/claude-opus-4-5-thinking",
+      "variant": "high"
+    },
+    "hephaestus": {
+      "model": "gcli/gemini-3-pro-preview",
+      "variant": "medium"
+    },
+    "explore": {
+      "model": "github-copilot/gpt-5-mini"
+    },
+    "librarian": {
+      "model": "github-copilot/grok-code-fast-1"
+    },
+    "multimodal-looker": {
+      "model": "gcli/gemini-3-flash-preview",
+      "variant": "medium"
+    },
+    "oracle": {
+      "model": "gcli/gemini-3-pro-preview",
+      "variant": "xhigh"
+    }
+  },
+  "categories": {
+    "artistry": {
+      "model": "gcli/gemini-3-pro-preview"
+    },
+    "quick": {
+      "model": "github-copilot/grok-code-fast-1"
+    },
+    "unspecified-low": {
+      "model": "gcli-antigravity/gemini-claude-sonnet-4-5-thinking"
+    },
+    "visual-engineering": {
+      "model": "gcli/gemini-3-pro-preview"
+    },
+    "writing": {
+      "model": "gcli/gemini-3-flash-preview"
+    },
+    "deep": {
+      "model": "gcli/gemini-3-pro-preview"
+    }
+  }
+}

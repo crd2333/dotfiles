@@ -1,1 +1,7 @@
 zsh/.zsh_history
+config/btop/btop.conf
+config/btop/btop.log
+config/v2raya
+config/pulse/**
+config/systemd/**
+
