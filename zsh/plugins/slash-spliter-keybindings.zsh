@@ -61,7 +61,7 @@ zle -N backward-kill-word-split
 zle -N forward-kill-word-split
 
 # hint: use `showkey -a` to see what the sequence is
-# VSCode terminal (denoted as A) may have different behavior than Windows Terminal (denoted as B). Other terminals may also differ)
+# VSCode terminal (denoted as A) may have different behavior than Windows Terminal (denoted as B). Other terminals may also differ
 bindkey '\e[1;5D' backward-word-split      # jump left for a word: (`CTRL + ←` for A/B, `ALT + ←` for A)
 bindkey '^[[1;3D' backward-word-split      # jumpt left for a word: (`ALT + ←` for B)
 bindkey '\e[1;5C' forward-word-split       # jump right for a word: (`CTRL + →` for A/B, `ALT + →` for A)
