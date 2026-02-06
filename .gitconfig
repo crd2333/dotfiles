@@ -36,5 +36,7 @@
 	smudge = git-lfs smudge -- %f
 [credential]
 	helper = store
+[credential "https://gitee.com"]
+	provider = generic
 [http]
 	postBuffer = 524288000

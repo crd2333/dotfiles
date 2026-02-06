@@ -34,7 +34,7 @@ Set-PSReadLineOption -Colors @{
 set-alias -Name cl -Value clear
 set-alias -Name vi -Value vim
 set-alias -Name la -Value "Get-ChildItem -Force"
-set-alias -Name conda -Value "C:\Users\<user>\conda.ps1" # 避免 conda init 过于缓慢，只有需要时才 init 并 activate
+set-alias -Name conda -Value (Join-Path $HOME 'dotfiles\posh\conda_posh_sep.ps1') # 避免 conda init 过于缓慢，只有需要时才 init 并 activate
 
 # 函数设置
 function work {
@@ -54,10 +54,11 @@ function countSize {
 }
 
 # 网络代理设置
-# $env:HTTP_PROXY="http://127.0.0.1:7890/"
-# $env:HTTPS_PROXY="http://127.0.0.1:7890/"  # 注意，极有可能这里就是http，不需要改成https
+$env:HTTP_PROXY="http://127.0.0.1:7890/"
+$env:HTTPS_PROXY="http://127.0.0.1:7890/"  # 注意，极有可能这里就是 http，不需要改成 https
 
-oh-my-posh init pwsh --config 'C:\Users\<user>\dotfiles\posh\tokyo_modified.omp.json' | Invoke-Expression  # 设置主题，可以去https://ohmyposh.dev/docs/themes找
+$ompTheme = Join-Path $HOME 'dotfiles\posh\tokyo_modified.omp.json'
+oh-my-posh init pwsh --config $ompTheme | Invoke-Expression  # 设置主题，可以去 https://ohmyposh.dev/docs/themes 找
 
 # 设置字符编码为 UTF-8，我也不知道为什么要做两个设置，但是这样才能正常显示中文
 [Console]::OutputEncoding = [System.Text.Encoding]::Default
@@ -67,3 +68,19 @@ chcp 65001 > $null
 #f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
 # Import-Module -Name Microsoft.WinGet.CommandNotFound
 #f45873b3-b655-43a6-b217-97c00aa0db58
+
+
+# temp
+function Set-TrellisEnv {
+    $projectPath = "e:\v37_py311_trellis_stableprojectorz"
+    $venvPath = "$projectPath\code\venv"
+
+    if (Test-Path "$venvPath\Scripts\Activate.ps1") {
+        & "$venvPath\Scripts\Activate.ps1"
+        Write-Host "Trellis Python environment activated" -ForegroundColor Green
+        Write-Host "Python version: $(python --version)" -ForegroundColor Cyan
+    } else {
+        Write-Host "Virtual environment not found at $venvPath" -ForegroundColor Red
+    }
+}
+Set-Alias -Name trellis -Value Set-TrellisEnv
