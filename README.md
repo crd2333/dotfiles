@@ -21,10 +21,13 @@ Mothed without oh-my-posh and use pure custom settings has not been explored yet
 cd ~
 git clone --recurse-submodules --shallow-submodules https://github.com/crd2333/dotfiles.git
 ls -al # dotted files will be hidden in regular `ls`
+# if in Linux
 . ./create_symlink.sh
+# if in Windows (PowerShell)
+.\create_symlink.ps1
 ```
 
-如果 clone 时忘记加子模块参数，则：
+如果 clone 时忘记加子模块参数，则 (if forgot to add submodule parameters when cloning, then)：
 ```bash
 git submodule update --init --recursive --depth 1
 ```
@@ -37,7 +40,7 @@ ln -s /home/<user>/dotfiles/.tmux.conf ~/.tmux.conf
 ln -s /home/<user>/dotfiles/.gitconfig ~/.gitconfig
 ln -s /home/<user>/dotfiles/.condarc ~/.condarc
 ln -s /home/<user>/dotfiles/config ~/.config
-# if in Windows
+# if in Windows (PowerShell)
 New-Item -ItemType SymbolicLink -Path "D:\文档\PowerShell\Microsoft.PowerShell_profile.ps1" -Target ".\Microsoft.PowerShell_profile.ps1"
 # or in cmd
 # mklink "D:\文档\PowerShell\Microsoft.PowerShell_profile.ps1" ".\Microsoft.PowerShell_profile.ps1"

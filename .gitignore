@@ -4,4 +4,8 @@ config/btop/btop.log
 config/v2raya
 config/pulse/**
 config/systemd/**
-
+config/clash/**
+config/legendary/**
+config/configstore/**
+config/ok/**
+config/simple-update-notifier/**

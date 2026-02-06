@@ -1,3 +1,19 @@
+# Home directories
+if [[ "$HOME" == */ ]]; then HOME=${HOME:0:-1}; fi
+
+# XDG Base Directory Specification
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_STATE_HOME=$HOME/.local/state
+
+# Application specific data files
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"
+export WGETRC="$XDG_CONFIG_HOME/wgetrc"
+alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+
 # ZSH HOME
 export ZSH=$HOME/dotfiles/zsh
 

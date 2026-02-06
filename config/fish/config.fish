@@ -1,4 +1,3 @@
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 if test -f $HOME/miniconda3/bin/conda
@@ -11,4 +10,3 @@ else
     end
 end
 # <<< conda initialize <<<
-
