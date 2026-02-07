@@ -18,7 +18,7 @@ $DOTFILES/bash/.profile|$HOME_DIR/.profile
 $DOTFILES/.tmux.conf|$HOME_DIR/.tmux.conf
 $DOTFILES/.gitconfig|$HOME_DIR/.gitconfig
 $DOTFILES/.condarc|$HOME_DIR/.condarc
-$DOTFILES/.npmrc|$HOME_DIR/.npmrc
+$DOTFILES/config/npm/npmrc|$HOME_DIR/.npmrc
 $DOTFILES/config|$HOME_DIR/.config
 EOF
 

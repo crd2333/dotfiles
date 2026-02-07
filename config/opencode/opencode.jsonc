@@ -1,28 +1,31 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "oh-my-opencode"
+    "oh-my-opencode",
+    "opencode-axonhub-tracing"
   ],
   "keybinds": {
     // disable terminal suspend or exit (as ctrl+d already exists)
     "terminal_suspend": "none",
     "app_exit": "ctrl+d,<leader>q",
-    "input_clear": "none", // default is ctrl+c, will conflict with copy selected action
+    "input_clear": "none",  // disable ctrl+c
     "input_delete": "delete,shift+delete", // delete ctrl+d to keep ctrl+d single as exit (useless, bug?)
+    "input_select_buffer_home": "alt+shift+left,alt+ctrl+left,shift+home", // add alt+shift/ctrl+arrow
+    "input_select_buffer_end": "shift+alt+right,alt+ctrl+right,shift+end"
   },
   "provider": {
     "gcli-antigravity": {
       "models": {
         "gemini-3-flash": {
-        "name": "Gemini 3 Flash (antigravity)",
-        "limit": { "context": 1048576, "output": 65536 },
-        "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
-        "variants": {
+          "name": "Gemini 3 Flash (antigravity)",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
+          "variants": {
             "minimal": { "thinkingLevel": "minimal" },
             "low": { "thinkingLevel": "low" },
             "medium": { "thinkingLevel": "medium" },
-            "high": { "thinkingLevel": "high" },
-        }
+            "high": { "thinkingLevel": "high" }
+          }
         },
         "gemini-3-pro-high": {
           "name": "Gemini 3 Pro (antigravity)",
@@ -30,7 +33,7 @@
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
           "variants": {
             "low": { "thinkingLevel": "low" },
-            "high": { "thinkingLevel": "high" },
+            "high": { "thinkingLevel": "high" }
           }
         },
         "claude-sonnet-4-5": {
@@ -44,7 +47,7 @@
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
           "variants": {
             "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
-            "max": { "thinkingConfig": { "thinkingBudget": 32768 } },
+            "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
           }
         },
         "claude-opus-4-5-thinking": {
@@ -53,7 +56,7 @@
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
           "variants": {
             "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
-            "max": { "thinkingConfig": { "thinkingBudget": 32768 } },
+            "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
           }
         },
         "gpt-oss-120b-medium": {
@@ -97,7 +100,7 @@
           "variants": {
             "high": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "high"}},
             "low": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "low"}},
-            "medium": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "medium"}},
+            "medium": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "medium"}}
           }
         },
         "gemini-3-pro-preview": {
@@ -106,7 +109,7 @@
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
           "variants": {
             "high": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "high"}},
-            "low": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "low"}},
+            "low": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "low"}}
           }
         },
         "gemini-2.5-flash-image": {
@@ -120,6 +123,94 @@
       "options": {
         "baseURL": "https://gcli2api4crd233.zeabur.app/v1"
       }
+    },
+    "axonhub": {
+      "models": {
+        // Chinese models
+        "glm-4.7": {
+          "name": "GLM 4.7",
+          "limit": {"context": 204800, "output": 131072},
+          "modalities": {"input": ["text"], "output": ["text"]}
+        },
+        "kimi-k2.5": {
+          "name": "Kimi K2.5",
+          "limit": {"context": 262144, "output": 262144},
+          "modalities": {"input": ["text", "image", "video"], "output": ["text"]}
+        },
+        // GPT models
+        "gpt-5.2": {
+          "name": "GPT 5.2",
+          "limit": {"context": 400000, "output": 128000},
+          "modalities": {"input": ["text", "image"], "output": ["text"]},
+          "variants": {
+            "high": {"reasoningEffort": "high", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "low": {"reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "medium": {"reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
+          }
+        },
+        "gpt-5.2-codex": {
+          "name": "GPT 5.2 Codex",
+          "limit": {"context": 400000, "output": 128000},
+          "modalities": {"input": ["text", "image"], "output": ["text"]},
+          "options": {"include": ["reasoning.encrypted_content"], "store": false},
+          "variants": {
+            "high": {"reasoningEffort": "high", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "low": {"reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "medium": {"reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
+          }
+        },
+        "gpt-5.3-codex": {
+          "name": "GPT 5.3 Codex",
+          "limit": {"context": 400000, "output": 128000},
+          "modalities": {"input": ["text", "image"], "output": ["text"]},
+          "options": {"include": ["reasoning.encrypted_content"], "store": false},
+          "variants": {
+            "high": {"reasoningEffort": "high", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "low": {"reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "medium": {"reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
+          }
+        },
+        // anthropic models
+        "claude-sonnet-4-5": {
+          "name": "Claude Sonnet 4.5",
+          "limit": {"context": 200000, "output": 64000},
+          "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
+          "variants": {
+            "high": {"thinking": {"budgetTokens": 18000, "type": "enabled"}},
+            "medium": {"thinking": {"budgetTokens": 13000, "type": "enabled"}},
+            "low": {"thinking": {"budgetTokens": 5000, "type": "enabled"}}
+          }
+        },
+        "claude-opus-4-5": {
+          "name": "Claude Opus 4.5",
+          "limit": {"context": 200000, "output": 64000},
+          "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
+          "variants": {
+            "high": {"effort": "high"},
+            "medium": {"effort": "medium"},
+            "low": {"effort": "low"}
+          }
+        },
+        "claude-opus-4-6": {
+          "name": "Claude Opus 4.6",
+          "limit": {"context": 200000, "output": 64000},
+          "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
+          "variants": {
+            "high": {"effort": "high"},
+            "medium": {"effort": "medium"},
+            "low": {"effort": "low"}
+          }
+        }
+      },
+      "name": "AxonHub",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://axonhubcrd233.zeabur.app/v1"
+      }
     }
   }
 }
+

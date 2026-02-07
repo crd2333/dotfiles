@@ -1,0 +1,4 @@
+# windows reads npm config from ~/.npmrc (this file can be linked there)
+registry=https://registry.npmmirror.com
+prefix=D:\NodeJS\npm_global
+cache=D:\NodeJS\npm_cache

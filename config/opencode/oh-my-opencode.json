@@ -12,12 +12,20 @@
         "variant": "medium"
     },
     "prometheus": {
-      "model": "gcli-antigravity/claude-opus-4-5-thinking",
+      "model": "axonhub/claude-opus-4-6",
       "variant": "high"
     },
     "hephaestus": {
-      "model": "gcli/gemini-3-pro-preview",
+      "model": "axonhub/gpt-5.3-codex",
       "variant": "medium"
+    },
+    "metis": {
+      "model": "axonhub/gpt-5.2",
+      "variant": "high"
+    },
+    "momus": {
+      "model": "axonhub/gpt-5.2",
+      "variant": "high"
     },
     "explore": {
       "model": "github-copilot/gpt-5-mini"
@@ -30,7 +38,7 @@
       "variant": "medium"
     },
     "oracle": {
-      "model": "gcli/gemini-3-pro-preview",
+      "model": "axonhub/gpt-5.2",
       "variant": "xhigh"
     }
   },
@@ -51,7 +59,7 @@
       "model": "gcli/gemini-3-flash-preview"
     },
     "deep": {
-      "model": "gcli/gemini-3-pro-preview"
+      "model": "axonhub/gpt-5.3-codex"
     }
   }
 }
