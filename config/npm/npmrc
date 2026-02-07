@@ -1,0 +1,5 @@
+# linux reads npm config from ~/.config/npm/npmrc
+registry=https://registry.npmmirror.com
+prefix=${HOME}/.npm-global
+cache=${HOME}/.npm-cache
+

@@ -134,6 +134,9 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 export PATH="$PATH:$HOME/.local/bin"
+export NPM_GLOBAL="$HOME/.npm-global"
+export PATH="$NPM_GLOBAL/bin:$PATH"
+export NODE_PATH="$NPM_GLOBAL/lib/node_modules:$NODE_PATH"
 
 # aliases
 alias cl='clear'
@@ -204,8 +207,7 @@ v2raya_lite_launch() {
     ~/local/v2raya/v2raya --lite
 }
 
-# opencode
-export PATH=$HOME/.opencode/bin:$PATH
+# opencode with proxy
 opencode() {
     echo "Setting opencode with proxy..."
     ( # run in a subshell

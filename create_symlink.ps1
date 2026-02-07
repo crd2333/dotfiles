@@ -18,7 +18,7 @@ function Write-End ($text) { Write-Host $text -ForegroundColor Green }
 $Pairs = @"
 $Dotfiles\.gitconfig|$Home\.gitconfig
 $Dotfiles\.condarc|$Home\.condarc
-$Dotfiles\.npmrc|$Home\.npmrc
+$Dotfiles\config\npm\npmrc_win|$Home\.npmrc
 $Dotfiles\.wslconfig|$Home\.wslconfig
 $Dotfiles\posh\Microsoft.PowerShell_profile.ps1|$PowerShellProfile
 $Dotfiles\config|$Home\.config
