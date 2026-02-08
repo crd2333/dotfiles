@@ -34,7 +34,7 @@ Set-PSReadLineOption -Colors @{
 set-alias -Name cl -Value clear
 set-alias -Name vi -Value vim
 set-alias -Name la -Value "Get-ChildItem -Force"
-set-alias -Name conda -Value (Join-Path $HOME 'dotfiles\posh\conda_posh_sep.ps1') # 避免 conda init 过于缓慢，只有需要时才 init 并 activate
+set-alias -Name conda -Value (Join-Path $HOME 'dotfiles\posh\conda_posh_lazy.ps1') # lazy load conda initialization
 
 # 函数设置
 function work {
