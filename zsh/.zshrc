@@ -215,3 +215,10 @@ opencode() {
         command opencode "$@"  # `command` to avoid recursion
     )
 }
+
+# bun completions
+[ -s "/home/mf/.bun/_bun" ] && source "/home/mf/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

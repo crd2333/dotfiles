@@ -1,18 +1,9 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "oh-my-opencode",
-    "opencode-axonhub-tracing"
+    "opencode-axonhub-tracing",
+    "oh-my-opencode-slim"
   ],
-  "keybinds": {
-    // disable terminal suspend or exit (as ctrl+d already exists)
-    "terminal_suspend": "none",
-    "app_exit": "ctrl+d,<leader>q",
-    "input_clear": "none",  // disable ctrl+c
-    "input_delete": "delete,shift+delete", // delete ctrl+d to keep ctrl+d single as exit (useless, bug?)
-    "input_select_buffer_home": "alt+shift+left,alt+ctrl+left,shift+home", // add alt+shift/ctrl+arrow
-    "input_select_buffer_end": "shift+alt+right,alt+ctrl+right,shift+end"
-  },
   "provider": {
     "gcli-antigravity": {
       "models": {
@@ -27,8 +18,8 @@
             "high": { "thinkingLevel": "high" }
           }
         },
-        "gemini-3-pro-high": {
-          "name": "Gemini 3 Pro (antigravity)",
+        "gemini-3.1-pro-high": {
+          "name": "Gemini 3.1 Pro (antigravity)",
           "limit": { "context": 1048576, "output": 65535 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
           "variants": {
@@ -36,22 +27,13 @@
             "high": { "thinkingLevel": "high" }
           }
         },
-        "claude-sonnet-4-5": {
-          "name": "Claude Sonnet 4.5 (antigravity)",
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6 (antigravity)",
           "limit": { "context": 200000, "output": 64000 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
         },
-        "claude-sonnet-4-5-thinking": {
-          "name": "Claude Sonnet 4.5 Thinking (antigravity)",
-          "limit": { "context": 200000, "output": 64000 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
-          "variants": {
-            "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
-            "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
-          }
-        },
-        "claude-opus-4-5-thinking": {
-          "name": "Claude Opus 4.5 Thinking (antigravity)",
+        "claude-opus-4-6-thinking": {
+          "name": "Claude Opus 4.6 Thinking (antigravity)",
           "limit": { "context": 200000, "output": 64000 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
           "variants": {
@@ -61,16 +43,6 @@
         },
         "gpt-oss-120b-medium": {
           "name": "GPT-OSS 120B Medium (antigravity)",
-          "limit": { "context": 1048576, "output": 65536 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
-        },
-        "gemini-2.5-flash": {
-          "name": "Gemini 2.5 Flash (antigravity)",
-          "limit": { "context": 1048576, "output": 65536 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
-        },
-        "gemini-2.5-flash-lite": {
-          "name": "Gemini 2.5 Flash Lite (antigravity)",
           "limit": { "context": 1048576, "output": 65536 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
         }
@@ -83,16 +55,6 @@
     },
     "gcli": {
       "models": {
-        "gemini-2.5-flash": {
-          "name": "Gemini 2.5 Flash (gcli)",
-          "limit": { "context": 1048576, "output": 65536 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
-        },
-        "gemini-2.5-pro": {
-          "name": "Gemini 2.5 Pro (gcli)",
-          "limit": { "context": 1048576, "output": 65536 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
-        },
         "gemini-3-flash-preview": {
           "name": "Gemini 3 Flash Preview (gcli)",
           "limit": { "context": 1048576, "output": 65536 },
@@ -103,8 +65,8 @@
             "medium": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "medium"}}
           }
         },
-        "gemini-3-pro-preview": {
-          "name": "Gemini 3 Pro Preview (gcli)",
+        "gemini-3.1-pro-preview": {
+          "name": "Gemini 3.1 Pro Preview (gcli)",
           "limit": { "context": 1048576, "output": 65535 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
           "variants": {
@@ -112,8 +74,8 @@
             "low": {"thinkingConfig": {"includeThoughts": true, "thinkingLevel": "low"}}
           }
         },
-        "gemini-2.5-flash-image": {
-          "name": "Gemini 2.5 Flash Image (gcli)",
+        "gemini-3.1-flash-image": {
+          "name": "Gemini 3.1 Flash Image (gcli)",
           "limit": { "context": 1048576, "output": 65536 },
           "modalities": { "input": ["text", "image", "pdf"], "output": ["text", "image"] }
         }
@@ -149,18 +111,6 @@
             "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
           }
         },
-        "gpt-5.2-codex": {
-          "name": "GPT 5.2 Codex",
-          "limit": {"context": 400000, "output": 128000},
-          "modalities": {"input": ["text", "image"], "output": ["text"]},
-          "options": {"include": ["reasoning.encrypted_content"], "store": false},
-          "variants": {
-            "high": {"reasoningEffort": "high", "reasoningSummary": "auto", "textVerbosity": "medium"},
-            "low": {"reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium"},
-            "medium": {"reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium"},
-            "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
-          }
-        },
         "gpt-5.3-codex": {
           "name": "GPT 5.3 Codex",
           "limit": {"context": 400000, "output": 128000},
@@ -174,24 +124,14 @@
           }
         },
         // anthropic models
-        "claude-sonnet-4-5": {
-          "name": "Claude Sonnet 4.5",
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6",
           "limit": {"context": 200000, "output": 64000},
           "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
           "variants": {
             "high": {"thinking": {"budgetTokens": 18000, "type": "enabled"}},
             "medium": {"thinking": {"budgetTokens": 13000, "type": "enabled"}},
             "low": {"thinking": {"budgetTokens": 5000, "type": "enabled"}}
-          }
-        },
-        "claude-opus-4-5": {
-          "name": "Claude Opus 4.5",
-          "limit": {"context": 200000, "output": 64000},
-          "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
-          "variants": {
-            "high": {"effort": "high"},
-            "medium": {"effort": "medium"},
-            "low": {"effort": "low"}
           }
         },
         "claude-opus-4-6": {
@@ -210,6 +150,14 @@
       "options": {
         "baseURL": "https://axonhubcrd233.zeabur.app/v1"
       }
+    }
+  },
+  "agent": {
+    "explore": {
+      "disable": true
+    },
+    "general": {
+      "disable": true
     }
   }
 }
