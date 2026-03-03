@@ -1,0 +1,40 @@
+{
+  "preset": "dev",
+  "presets": {
+    "dev": {
+      "orchestrator": {
+        "model": "gcli-antigravity/claude-sonnet-4-6",
+        "skills": ["*"],
+        "mcps": ["*"]
+      },
+      "oracle": {
+        "model": "gcli-antigravity/claude-opus-4-6-thinking",
+        "variant": "max",
+        "skills": [],
+        "mcps": []
+      },
+      "librarian": {
+        "model": "github-copilot/gpt-4o",
+        "skills": [],
+        "mcps": ["websearch", "context7", "grep_app"]
+      },
+      "explorer": {
+        "model": "github-copilot/gpt-5-mini",
+        "skills": [],
+        "mcps": []
+      },
+      "designer": {
+        "model": "gcli/gemini-3.1-pro-preview",
+        "variant": "high",
+        "skills": ["agent-browser"],
+        "mcps": []
+      },
+      "fixer": {
+        "model": "axonhub/gpt-5.3-codex",
+        "variant": "low",
+        "skills": [],
+        "mcps": []
+      }
+    },
+  },
+}

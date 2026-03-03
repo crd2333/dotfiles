@@ -15,3 +15,4 @@ custom_channels:
   simpleitk: https://mirrors.zju.edu.cn/anaconda/cloud
 auto_activate_base: true
 changeps1: false
+solver: libmamba
