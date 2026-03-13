@@ -61,8 +61,8 @@ $ompTheme = Join-Path $HOME 'dotfiles\posh\tokyo_modified.omp.json'
 oh-my-posh init pwsh --config $ompTheme | Invoke-Expression  # 设置主题，可以去 https://ohmyposh.dev/docs/themes 找
 
 # 设置字符编码为 UTF-8，我也不知道为什么要做两个设置，但是这样才能正常显示中文
-[Console]::OutputEncoding = [System.Text.Encoding]::Default
-chcp 65001 > $null
+# [Console]::OutputEncoding = [System.Text.Encoding]::Default
+# chcp 65001 > $null
 
 
 #f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
