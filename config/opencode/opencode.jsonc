@@ -40,11 +40,6 @@
             "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
             "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
           }
-        },
-        "gpt-oss-120b-medium": {
-          "name": "GPT-OSS 120B Medium (antigravity)",
-          "limit": { "context": 1048576, "output": 65536 },
-          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] }
         }
       },
       "name": "gcli-antigravity",
@@ -123,7 +118,28 @@
             "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
           }
         },
+        "gpt-5.4": {
+            "name": "GPT 5.4",
+            "limit": {"context": 400000, "output": 128000},
+            "modalities": {"input": ["text", "image"], "output": ["text"]},
+            "variants": {
+                "high": {"reasoningEffort": "high", "reasoningSummary": "auto", "textVerbosity": "medium"},
+                "low": {"reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium"},
+                "medium": {"reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium"},
+                "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
+            }
+        },
         // anthropic models
+        "claude-sonnet-4-5": {
+          "name": "Claude Sonnet 4.5",
+          "limit": {"context": 200000, "output": 64000},
+          "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
+          "variants": {
+            "high": {"thinking": {"budgetTokens": 18000, "type": "enabled"}},
+            "medium": {"thinking": {"budgetTokens": 13000, "type": "enabled"}},
+            "low": {"thinking": {"budgetTokens": 5000, "type": "enabled"}}
+          }
+        },
         "claude-sonnet-4-6": {
           "name": "Claude Sonnet 4.6",
           "limit": {"context": 200000, "output": 64000},
@@ -146,6 +162,57 @@
         }
       },
       "name": "AxonHub",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://axonhubcrd233.zeabur.app/v1",
+        "timeout": 600000, // default is 300000 (5 minutes)
+        "chunkTimeout": 120000 // default is 60000 (1 minute)
+      }
+    },
+    "micu": {
+      "models": {
+        "claude-opus-4-6": {
+          "name": "Claude Opus 4.6",
+          "limit": {"context": 200000, "output": 64000},
+          "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
+          "variants": {
+            "high": {"effort": "high"},
+            "medium": {"effort": "medium"},
+            "low": {"effort": "low"}
+          }
+        }
+      },
+      "name": "micu",
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "baseURL": "https://www.openclaudecode.cn/v1"
+      }
+    },
+    "axonhub-paid": {
+      "models": {
+        "claude-opus-4-6": {
+          "name": "Claude Opus 4.6",
+          "limit": {"context": 200000, "output": 64000},
+          "modalities": {"input": ["text", "image", "pdf"], "output": ["text"]},
+          "variants": {
+            "high": {"effort": "high"},
+            "medium": {"effort": "medium"},
+            "low": {"effort": "low"}
+          }
+        },
+        "gpt-5.4": {
+          "name": "GPT 5.4",
+          "limit": {"context": 400000, "output": 128000},
+          "modalities": {"input": ["text", "image"], "output": ["text"]},
+          "variants": {
+            "high": {"reasoningEffort": "high", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "low": {"reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "medium": {"reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium"},
+            "xhigh": {"reasoningEffort": "xhigh", "reasoningSummary": "auto", "textVerbosity": "medium"}
+          }
+        }
+      },
+      "name": "AxonHub Paid",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
         "baseURL": "https://axonhubcrd233.zeabur.app/v1"

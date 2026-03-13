@@ -9,3 +9,4 @@ config/legendary/**
 config/configstore/**
 config/ok/**
 config/simple-update-notifier/**
+config/google-chrome-for-testing/Crash Reports/settings.dat

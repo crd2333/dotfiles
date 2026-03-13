@@ -3,7 +3,7 @@
   "presets": {
     "dev": {
       "orchestrator": {
-        "model": "gcli-antigravity/claude-sonnet-4-6",
+        "model": "axonhub/claude-sonnet-4-6",
         "skills": ["*"],
         "mcps": ["*"]
       },
