@@ -1,0 +1,10 @@
+{
+  "agents": {
+    "trellis-plan": { "model": "axonhub/claude-opus-4-6" },
+    "dispatch": { "model": "axonhub/gpt-5.4" },
+    "research": { "model": "github-copilot/gpt-5-mini" },
+    "implement": { "model": "axonhub/gpt-5.4" },
+    "check": { "model": "axonhub/claude-opus-4-6" },
+    "debug": { "model": "axonhub/claude-opus-4-6" }
+  }
+}

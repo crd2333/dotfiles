@@ -7,9 +7,19 @@
         "skills": ["*"],
         "mcps": ["*"]
       },
+      "explorer": {
+        "model": "github-copilot/gpt-5-mini",
+        "skills": [],
+        "mcps": []
+      },
       "oracle": {
-        "model": "gcli-antigravity/claude-opus-4-6-thinking",
+        "model": "axonhub/claude-opus-4-6",
         "variant": "max",
+        "skills": [],
+        "mcps": []
+      },
+      "Council": {
+        "model": "github-copilot/gpt-5-mini",
         "skills": [],
         "mcps": []
       },
@@ -18,13 +28,8 @@
         "skills": [],
         "mcps": ["websearch", "context7", "grep_app"]
       },
-      "explorer": {
-        "model": "github-copilot/gpt-5-mini",
-        "skills": [],
-        "mcps": []
-      },
       "designer": {
-        "model": "gcli/gemini-3.1-pro-preview",
+        "model": "axonhub/gemini-3.1-pro-preview",
         "variant": "high",
         "skills": ["agent-browser"],
         "mcps": []
@@ -35,6 +40,6 @@
         "skills": [],
         "mcps": []
       }
-    },
-  },
+    }
+  }
 }
