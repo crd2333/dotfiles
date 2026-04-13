@@ -138,6 +138,12 @@ export NPM_GLOBAL="$HOME/.npm-global"
 export PATH="$NPM_GLOBAL/bin:$PATH"
 export NODE_PATH="$NPM_GLOBAL/lib/node_modules:$NODE_PATH"
 
+# source local private configuration (not committed to git) if exists
+# should contains opencode configs and mihomo provider configs
+if [ -f ~/private/.zshrc.local ]; then
+    source ~/private/.zshrc.local
+fi
+
 # aliases
 alias cl='clear'
 alias ll='ls -alF'
@@ -206,14 +212,60 @@ v2raya_lite_launch() {
     export V2RAYA_V2RAY_ASSETSDIR="$HOME/local/xray"
     ~/local/v2raya/v2raya --lite
 }
+mihomo_launch() {
+    echo "Initializing Mihomo env..."
+
+    local mihomo_dir="$HOME/local/mihomo"
+    local config_path="$mihomo_dir/config.yaml"
+    local generator="$ZSH/lib/mihomo_gen.zsh"
+
+    # Call external generator script to create config.yaml
+    if [ -f "$generator" ]; then
+        echo "Generating Mihomo configuration..."
+        source "$generator" "$config_path"
+    else
+        echo "Error: Configuration generator not found at $generator"
+        return 1
+    fi
+
+    ulimit -n 65535 2>/dev/null
+
+    echo "Launching Mihomo Core, serving in http://127.0.0.1:2017/ui ..."
+    ~/local/mihomo/mihomo -d ~/local/mihomo
+}
+
+# comvenient ps
+pinfo() {
+    local force_name=0  # Check if the first argument is the force flag '-n'
+    if [[ "$1" == "-n" ]]; then
+        force_name=1
+        shift # Move to the actual search term
+    fi
+    if [[ -z "$1" ]]; then  # Check if a search term was provided
+        echo "💡 Usage: pinfo [-n] <process_name_or_pid>"
+        echo "   Example 1 (Auto name):  pinfo nginx"
+        echo "   Example 2 (Auto PID):   pinfo 1234"
+        echo "   Example 3 (Force name): pinfo -n 1234"
+        return 1
+    fi
+    # Check if input is purely digits AND force_name flag is NOT set
+    if [[ "$1" =~ ^[0-9]+$ && $force_name -eq 0 ]]; then
+        ps -fww -p "$1"
+    else  # Handle the echo output based on how we got here
+        if [[ $force_name -eq 1 ]]; then
+            echo "🔍 Forced name search for: '$1' ..."
+        fi
+        ps -efww | head -n 1  # Print the ps header for readability
+        ps -efww | grep -i "$1" | grep -v "grep"  # Search process by name, ignore case, and exclude grep itself
+    fi
+}
 
 # opencode with proxy
 opencode() {
-    echo "Setting opencode with proxy..."
-    ( # run in a subshell
-        system_proxy > /dev/null 2>&1
-        command opencode "$@"  # `command` to avoid recursion
-    )
+    # jump echo for some subcommands
+    [[ -z "$1" || ! "$1" =~ ^(help|-h|--help|version|-v|--version|completion|models|providers|auth|agent|mcp|acp|stats|session|export|import|github|db|uninstall|debug|attach)$ ]] && echo "Setting opencode with proxy..."
+    # run in a subshell, `command` to avoid recursion
+    (system_proxy > /dev/null 2>&1; command opencode "$@")
 }
 
 # bun completions
@@ -224,3 +276,6 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 . "$HOME/.local/share/../bin/env"
+
+# limit MAX_JOBS in memory-bound servers
+export MAX_JOBS=8

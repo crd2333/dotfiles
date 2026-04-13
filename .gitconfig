@@ -8,6 +8,7 @@
 	preloadindex = true
 	fscache = true
 	fileMode = false
+	quotepath = false
 [gc]
 	auto = 256
 [pull]
