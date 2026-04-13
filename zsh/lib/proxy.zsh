@@ -2,7 +2,7 @@
 # Keep this file POSIX-ish, but it is sourced by zsh.
 
 # Bypass proxy for local addresses.
-export no_proxy="localhost,127.0.0.1,::1"
+export no_proxy="localhost,127.0.0.1,0.0.0.0,::1"
 
 # Default ports (override in .zshrc before sourcing if needed).
 : "${SYSTEM_PROXY_HTTP_PORT:=20171}"
