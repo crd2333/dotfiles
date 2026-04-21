@@ -191,13 +191,13 @@ trn() {  # trn <old-session-name> <new-session-name>
 }
 
 # Proxy helpers (system_proxy / unset_proxy / test_proxy)
+SYSTEM_PROXY_PORT=20170
+SYSTEM_PROXY_PORT_BACKUP=20171
 if [ -f "$ZSH/lib/proxy.zsh" ]; then
     source "$ZSH/lib/proxy.zsh"
 fi
 
 # v2raya launcher is kept in .zshrc (not part of the 3 proxy helper functions)
-SYSTEM_PROXY_HTTP_PORT=20171
-SYSTEM_PROXY_SOCKS_PORT=20170
 v2raya_lite_launch() {
     # v2raya launch with no sudo (litely), make sure you are in tmux!
     if [ "$1" = "--v2ray" ]; then  # use v2ray core if specified
@@ -260,12 +260,28 @@ pinfo() {
     fi
 }
 
-# opencode with proxy
+# opencode with proxy (use --no-proxy or --no_proxy to force skipping system proxy)
 opencode() {
-    # jump echo for some subcommands
-    [[ -z "$1" || ! "$1" =~ ^(help|-h|--help|version|-v|--version|completion|models|providers|auth|agent|mcp|acp|stats|session|export|import|github|db|uninstall|debug|attach)$ ]] && echo "Setting opencode with proxy..."
-    # run in a subshell, `command` to avoid recursion
-    (system_proxy > /dev/null 2>&1; command opencode "$@")
+    local skip_proxy=0
+    local -a args=()
+    for arg in "$@"; do
+        if [[ $arg == --no-proxy || $arg == --no_proxy ]]; then
+            skip_proxy=1
+        else
+            args+=("$arg")
+        fi
+    done
+
+    local help_re='^(help|-h|--help|version|-v|--version|completion|models|providers|auth|agent|mcp|acp|stats|session|export|import|github|db|uninstall|debug|attach)$'
+    if [[ -z "${args[1]-}" || ! "${args[1]}" =~ $help_re ]]; then
+        [[ $skip_proxy -eq 0 ]] && echo "Setting opencode with proxy..."
+    fi
+
+    if [[ $skip_proxy -eq 1 ]]; then
+        (command opencode "${args[@]}")
+    else
+        (system_proxy > /dev/null 2>&1; command opencode "${args[@]}")
+    fi
 }
 
 # bun completions

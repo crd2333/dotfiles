@@ -6,17 +6,16 @@ rm -f "$conf_file"
 
 # Part 1: Basic Configuration
 {
-  echo "port: 19198"                         # API port for dashboard and external control
-  echo "socks-port: 11451"                   # SOCKS5 proxy port
-  echo "geodata-mode: true"                  # Use geoip.dat (true) or mmdb (false)
-  echo "tcp-concurrent: true"                # Enable TCP concurrency for better performance
-  echo "unified-delay: true"                 # Unified delay display for all nodes
-  echo "allow-lan: false"                    # Allow connections from local network devices
-  echo "bind-address: '*'"                   # Listen on all available IP addresses
-  echo "find-process-mode: strict"           # Process matching: strict, off, or always
-  echo "ipv6: false"                         # Disable IPv6 support
-  echo "mode: rule"                          # Running mode: rule, global, or direct
-  echo "log-level: info"                     # Log verbosity: debug, info, warning, error, silent
+  echo "mixed-port: ${SYSTEM_PROXY_PORT_BACKUP:-20171}"  # Mixed HTTP/SOCKS5 port, from environment variable
+  echo "geodata-mode: true"                              # Use geoip.dat (true) or mmdb (false)
+  echo "tcp-concurrent: true"                            # Enable TCP concurrency for better performance
+  echo "unified-delay: true"                             # Unified delay display for all nodes
+  echo "allow-lan: false"                                # Allow connections from local network devices
+  echo "bind-address: '*'"                               # Listen on all available IP addresses
+  echo "find-process-mode: strict"                       # Process matching: strict, off, or always
+  echo "ipv6: false"                                     # Disable IPv6 support
+  echo "mode: rule"                                      # Running mode: rule, global, or direct
+  echo "log-level: info"                                 # Log verbosity: debug, info, warning, error, silent
   echo ""
 } >> "$conf_file"
 
@@ -24,7 +23,7 @@ rm -f "$conf_file"
 {
   echo "external-controller: '127.0.0.1:2017'" # API address for external dashboards
   echo "external-ui: ./ui"                     # Path to the dashboard UI files
-  echo "secret: '${MIHOMO_SECRET}'"          # Dashboard access password
+  echo "secret: '${MIHOMO_SECRET}'"            # Dashboard access password
   echo ""
 } >> "$conf_file"
 
