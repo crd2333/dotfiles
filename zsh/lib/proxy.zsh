@@ -5,15 +5,21 @@
 export no_proxy="localhost,127.0.0.1,0.0.0.0,::1"
 
 # Default ports (override in .zshrc before sourcing if needed).
-: "${SYSTEM_PROXY_HTTP_PORT:=20171}"
-: "${SYSTEM_PROXY_SOCKS_PORT:=20170}"
-
+: "${SYSTEM_PROXY_PORT:=20170}"
+: "${SYSTEM_PROXY_PORT_BACKUP:=20171}"
 system_proxy() {
-    export http_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
-    export https_proxy="http://127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}"
-    export all_proxy="socks5://127.0.0.1:${SYSTEM_PROXY_SOCKS_PORT}"
-    echo "System proxy set: http/https -> 127.0.0.1:${SYSTEM_PROXY_HTTP_PORT}, socks -> 127.0.0.1:${SYSTEM_PROXY_SOCKS_PORT}"
+    export http_proxy="http://127.0.0.1:${SYSTEM_PROXY_PORT}"
+    export https_proxy="http://127.0.0.1:${SYSTEM_PROXY_PORT}"
+    export all_proxy="socks5://127.0.0.1:${SYSTEM_PROXY_PORT}"
+    echo "System proxy set: http/https -> 127.0.0.1:${SYSTEM_PROXY_PORT}, socks -> 127.0.0.1:${SYSTEM_PROXY_PORT}"
 }
+system_proxy_backup() {
+    export http_proxy="http://127.0.0.1:${SYSTEM_PROXY_PORT_BACKUP}"
+    export https_proxy="http://127.0.0.1:${SYSTEM_PROXY_PORT_BACKUP}"
+    export all_proxy="socks5://127.0.0.1:${SYSTEM_PROXY_PORT_BACKUP}"
+    echo "System proxy set to backup: http/https -> 127.0.0.1:${SYSTEM_PROXY_PORT_BACKUP}, socks -> 127.0.0.1:${SYSTEM_PROXY_PORT_BACKUP}"
+}
+
 
 unset_proxy() {
     unset http_proxy https_proxy all_proxy
