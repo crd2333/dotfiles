@@ -1,11 +1,13 @@
 # Home directories
 if [[ "$HOME" == */ ]]; then HOME=${HOME:0:-1}; fi
 
+
 # XDG Base Directory Specification
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 export XDG_DATA_HOME=$HOME/.local/share
 export XDG_STATE_HOME=$HOME/.local/state
+
 
 # Application specific data files
 export LESSHISTFILE="$XDG_STATE_HOME/less/history"
@@ -14,8 +16,10 @@ export WGETRC="$XDG_CONFIG_HOME/wgetrc"
 alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 
+
 # ZSH HOME
 export ZSH=$HOME/dotfiles/zsh
+
 
 # Set up the prompt and 'ls' colors
 if [ -x /usr/bin/dircolors ]; then
@@ -50,18 +54,22 @@ SPACESHIP_CHAR_SYMBOL="❯"
 SPACESHIP_CHAR_SUFFIX=" "
 SPACESHIP_PROMPT_ASYNC=false # https://github.com/spaceship-prompt/spaceship-prompt/issues/1193
 
+
 # make history appears only once and shared by all terminals
 setopt histignorealldups sharehistory
 setopt HIST_FIND_NO_DUPS
+
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=1000
 SAVEHIST=1000
 export HISTFILE=$ZSH/.zsh_history
 
+
 # Use modern completion system
 autoload -Uz compinit
 compinit
+
 
 # styles
 zstyle ':completion:*' auto-description 'specify: %d'
@@ -81,6 +89,7 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
+
 # extensions setting
 source $ZSH/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -89,34 +98,36 @@ source $ZSH/plugins/extract/extract.plugin.zsh
 source $ZSH/plugins/expand-multiple-dots.zsh
 source $ZSH/plugins/slash-spliter-keybindings.zsh
 
+
 # environment variables
 if [ $PATH ]; then
-    export PATH=$PATH:/usr/bin
+    export PATH="$PATH:/usr/bin"
 else
-    export PATH=/usr/bin
+    export PATH="/usr/bin"
 fi
 if [ $LD_LIBRARY_PATH ]; then
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib"
 else
-    export LD_LIBRARY_PATH=/usr/lib
+    export LD_LIBRARY_PATH="/usr/lib"
 fi
-export PATH=$PATH:$HOME/local/bin
+
 
 # cuda
 export CUDA_HOME=/usr/local/cuda-12.8   # change cuda version here
 if [ $LD_LIBRARY_PATH ]; then
-   export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+   export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$LD_LIBRARY_PATH"
 else
-    export LD_LIBRARY_PATH=$CUDA_HOME/lib64
+    export LD_LIBRARY_PATH="$CUDA_HOME/lib64"
 fi
 if [ $PATH ]; then
-    export PATH=$CUDA_HOME/bin:$PATH
+    export PATH="$CUDA_HOME/bin:$PATH"
 else
-    export PATH=$CUDA_HOME/bin
+    export PATH="$CUDA_HOME/bin"
 fi
 # export TORCH_CUDA_ARCH_LIST=8.9  # for 4090
 # export TORCH_CUDA_ARCH_LIST=8.6  # for A6000
 export TORCH_CUDA_ARCH_LIST="8.9;12.0"  # for 4090 + A6000Pro
+
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -133,16 +144,19 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+
 export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/local/bin"
 export NPM_GLOBAL="$HOME/.npm-global"
 export PATH="$NPM_GLOBAL/bin:$PATH"
 export NODE_PATH="$NPM_GLOBAL/lib/node_modules:$NODE_PATH"
 
 # source local private configuration (not committed to git) if exists
 # should contains opencode configs and mihomo provider configs
-if [ -f ~/private/.zshrc.local ]; then
-    source ~/private/.zshrc.local
+if [ -f "$HOME/private/.zshrc.local" ]; then
+    source "$HOME/private/.zshrc.local"
 fi
+
 
 # aliases
 alias cl='clear'
@@ -150,6 +164,8 @@ alias ll='ls -alF'
 alias la='ls -al'
 alias l='ls -CF'
 alias rsync='rsync -avzh --info=progress2 --partial' # human-readable rsync with progress, compression and partial files
+alias nuke_ssh="pkill -9 -u $USER sshd"  # force kill all ssh sessions of the current user, useful when you are locked out due to some ssh config issues
+
 
 # advcp / advmv if in PATH
 if command -v advcp >/dev/null 2>&1; then
@@ -158,6 +174,7 @@ fi
 if command -v advmv >/dev/null 2>&1; then
     alias mv='advmv -g'
 fi
+
 
 # tmux aliases and functions
 alias tls='tmux ls'
@@ -189,6 +206,7 @@ trn() {  # trn <old-session-name> <new-session-name>
         echo "Usage: trn <old-session-name> <new-session-name>"
     fi
 }
+
 
 # Proxy helpers (system_proxy / unset_proxy / test_proxy)
 SYSTEM_PROXY_PORT=20170
@@ -234,6 +252,56 @@ mihomo_launch() {
     ~/local/mihomo/mihomo -d ~/local/mihomo
 }
 
+
+# CPA launcher with ephemeral config in /dev/shm and secret injection from env variable
+cpa_launch() {
+    (  # Wrap the entire execution in a subshell `(...)`
+        echo "Init CLIProxyAPI ephemeral env (/dev/shm)..."
+
+        local cpa_dir="$HOME/cliproxyapi"
+        local persist_config="$cpa_dir/config.yaml"
+
+        # 1. Secure memory allocation
+        local run_dir
+        run_dir=$(mktemp -d -p /dev/shm cpa_run.XXXXXX) || { echo "Failed to create temp dir"; return 1; }
+        local ephemeral_config="$run_dir/config.yaml"
+
+        export CPA_SECRET="${CPA_SECRET:-'123456'}"
+
+        # 2. Define a dedicated cleanup function inside the subshell
+        cleanup() {
+            trap - EXIT INT TERM
+            echo -e "\n[Sync] Exiting. Syncing runtime config to disk..."
+            if [ -f "$ephemeral_config" ]; then
+                # Strip secret and save back to disk
+                sed 's/^\([[:space:]]*secret-key:\).*/\1 ""/' "$ephemeral_config" > "$persist_config.tmp"
+                mv "$persist_config.tmp" "$persist_config"
+            fi
+            rm -rf "$run_dir"
+            echo "[Clean] Ephemeral workspace destroyed."
+        }
+
+        # Bind the cleanup function to signals
+        trap cleanup EXIT INT TERM
+
+        # 3. Inject secret into memory config
+        sed "s/^\([[:space:]]*secret-key:\).*/\1 \"${CPA_SECRET}\"/" "$persist_config" > "$ephemeral_config"
+        chmod 600 "$ephemeral_config"
+
+        # 4. Extract top-level port and print clickable link
+        local cpa_port
+        cpa_port=$(grep -m 1 -E '^port:[[:space:]]*[0-9]+' "$ephemeral_config" | awk '{print $2}')
+        cpa_port="${cpa_port:-8317}"
+
+        echo -e "\n--> CPA Management Center ready at: http://localhost:${cpa_port}/management.html\n"
+
+        # 5. Launch CPA core
+        cd "$cpa_dir" || exit 1
+        ./cli-proxy-api --config "$ephemeral_config"
+    )
+}
+
+
 # comvenient ps
 pinfo() {
     local force_name=0  # Check if the first argument is the force flag '-n'
@@ -260,6 +328,7 @@ pinfo() {
     fi
 }
 
+
 # opencode with proxy (use --no-proxy or --no_proxy to force skipping system proxy)
 opencode() {
     local skip_proxy=0
@@ -284,6 +353,7 @@ opencode() {
     fi
 }
 
+
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
@@ -292,6 +362,7 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 . "$HOME/.local/share/../bin/env"
+
 
 # limit MAX_JOBS in memory-bound servers
 export MAX_JOBS=8

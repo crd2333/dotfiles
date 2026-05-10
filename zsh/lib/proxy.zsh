@@ -153,3 +153,7 @@ test_proxy() {
         fi
     fi
 }
+
+# Remove zombie processes that may be holding the proxy ports, and also kill any vscode-server instances that might be using them.
+# After executing this, reload VSCode window to restart the proxy server and re-establish the ssh connection.
+alias clean_proxy='fuser -k -n tcp $SYSTEM_PROXY_PORT $SYSTEM_PROXY_PORT_BACKUP && pkill -u $USER -f vscode-server'
