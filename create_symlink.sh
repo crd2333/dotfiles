@@ -18,8 +18,12 @@ $DOTFILES/bash/.profile|$HOME_DIR/.profile
 $DOTFILES/.tmux.conf|$HOME_DIR/.tmux.conf
 $DOTFILES/.gitconfig|$HOME_DIR/.gitconfig
 $DOTFILES/.condarc|$HOME_DIR/.condarc
-$DOTFILES/config/npm/npmrc|$HOME_DIR/.npmrc
-$DOTFILES/config|$HOME_DIR/.config
+$DOTFILES/npm/npmrc|$HOME_DIR/.npmrc
+$DOTFILES/config/btop/themes|$HOME_DIR/.config/btop/themes
+$DOTFILES/config/opencode|$HOME_DIR/.config/opencode
+$DOTFILES/config/pip|$HOME_DIR/.config/pip
+$DOTFILES/config/wgetrc|$HOME_DIR/.config/wgetrc
+$DOTFILES/config/fish|$HOME_DIR/.config/fish
 EOF
 
 # Iterate lines in PAIRS

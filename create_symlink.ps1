@@ -18,10 +18,14 @@ function Write-End ($text) { Write-Host $text -ForegroundColor Green }
 $Pairs = @"
 $Dotfiles\.gitconfig|$Home\.gitconfig
 $Dotfiles\.condarc|$Home\.condarc
-$Dotfiles\config\npm\npmrc_win|$Home\.npmrc
+$Dotfiles\npm\npmrc_win|$Home\.npmrc
 $Dotfiles\.wslconfig|$Home\.wslconfig
 $Dotfiles\posh\Microsoft.PowerShell_profile.ps1|$PowerShellProfile
-$Dotfiles\config|$Home\.config
+$Dotfiles\config\btop\themes|$Home\.config\btop\themes
+$Dotfiles\config\opencode|$Home\.config\opencode
+$Dotfiles\config\pip|$Home\.config\pip
+$Dotfiles\config\wgetrc|$Home\.config\wgetrc
+$Dotfiles\config\fish|$Home\.config\fish
 "@
 
 # Iterate lines in Pairs
