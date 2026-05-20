@@ -36,6 +36,7 @@ set-alias -Name cl -Value clear
 set-alias -Name vi -Value vim
 set-alias -Name la -Value "Get-ChildItem -Force"
 set-alias -Name conda -Value (Join-Path $HOME 'dotfiles\posh\conda_posh_lazy.ps1') # lazy load conda initialization
+set-alias -Name cc -Value claude
 
 
 # 函数设置
