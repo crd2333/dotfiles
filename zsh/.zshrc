@@ -21,6 +21,13 @@ export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export ZSH=$HOME/dotfiles/zsh
 
 
+# Load local/private configurations (not tracked by git)
+#   bypass local should contains user-specific environment variables (maybe configs for different machines)
+#   outer private should contains something more secret, like opencode web auth configs and proxy provider configs
+[[ -f "$ZSH/.zshrc.local" ]] && source "$ZSH/.zshrc.local"
+[[ -f "$HOME/private/.zshrc.local" ]] && source "$HOME/private/.zshrc.local"
+
+
 # Set up the prompt and 'ls' colors
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -67,6 +74,7 @@ export HISTFILE=$ZSH/.zsh_history
 
 
 # Use modern completion system
+fpath=(~/dotfiles/zsh/completions $fpath)
 autoload -Uz compinit
 compinit
 
@@ -110,6 +118,7 @@ if [ $LD_LIBRARY_PATH ]; then
 else
     export LD_LIBRARY_PATH="/usr/lib"
 fi
+. "$HOME/.local/share/../bin/env" # load env variables from ~/.local/bin/env
 
 
 # cuda
@@ -151,12 +160,6 @@ export NPM_GLOBAL="$HOME/.npm-global"
 export PATH="$NPM_GLOBAL/bin:$PATH"
 export NODE_PATH="$NPM_GLOBAL/lib/node_modules:$NODE_PATH"
 
-# source local private configuration (not committed to git) if exists
-# should contains opencode configs and mihomo provider configs
-if [ -f "$HOME/private/.zshrc.local" ]; then
-    source "$HOME/private/.zshrc.local"
-fi
-
 
 # aliases
 alias cl='clear'
@@ -165,15 +168,13 @@ alias la='ls -al'
 alias l='ls -CF'
 alias rsync='rsync -avzh --info=progress2 --partial' # human-readable rsync with progress, compression and partial files
 alias nuke_ssh="pkill -9 -u $USER sshd"  # force kill all ssh sessions of the current user, useful when you are locked out due to some ssh config issues
+alias download='npx degit' # e.g. download user/repo#branch local_name
 
-
-# advcp / advmv if in PATH
-if command -v advcp >/dev/null 2>&1; then
-    alias cp='advcp -g'
-fi
-if command -v advmv >/dev/null 2>&1; then
-    alias mv='advmv -g'
-fi
+# add aliases for cc-switch, cc, advcp, advmv if in PATH
+command -v cc-switch >/dev/null 2>&1 && alias ccs='cc-switch'
+command -v claude >/dev/null 2>&1 && alias cc='claude'
+command -v advcp >/dev/null 2>&1 && alias cp='advcp -g' # override default cp with advcp and enable progress bar
+command -v advmv >/dev/null 2>&1 && alias mv='advmv -g'
 
 
 # tmux aliases and functions
@@ -209,11 +210,7 @@ trn() {  # trn <old-session-name> <new-session-name>
 
 
 # Proxy helpers (system_proxy / unset_proxy / test_proxy)
-SYSTEM_PROXY_PORT=20170
-SYSTEM_PROXY_PORT_BACKUP=20171
-if [ -f "$ZSH/lib/proxy.zsh" ]; then
-    source "$ZSH/lib/proxy.zsh"
-fi
+[[ -f "$ZSH/lib/proxy.zsh" ]] && source "$ZSH/lib/proxy.zsh"
 
 # v2raya launcher is kept in .zshrc (not part of the 3 proxy helper functions)
 v2raya_lite_launch() {
@@ -354,14 +351,38 @@ opencode() {
 }
 
 
-# bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+# codex with proxy (use --no-proxy or --no_proxy to force skipping system proxy)
+codex() {
+    local skip_proxy=0
+    local -a args=()
+    for arg in "$@"; do
+        if [[ $arg == --no-proxy || $arg == --no_proxy ]]; then
+            skip_proxy=1
+        else
+            args+=("$arg")
+        fi
+    done
+
+    local help_re='^(help|-h|--help|version|-v|-V|--version|completion|login|logout|mcp|plugin|mcp-server|app-server|remote-control|sandbox|debug|apply|a|exec-server|features)$'
+    if [[ -z "${args[1]-}" || ! "${args[1]}" =~ $help_re ]]; then
+        [[ $skip_proxy -eq 0 ]] && echo "Setting codex with proxy..."
+    fi
+
+    if [[ $skip_proxy -eq 1 ]]; then
+        (command codex "${args[@]}")
+    else
+        (system_proxy > /dev/null 2>&1; command codex "${args[@]}")
+    fi
+}
+
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-. "$HOME/.local/share/../bin/env"
+
+# texlive
+export PATH="$HOME/local/texlive/2026/bin/x86_64-linux:$PATH"
 
 
 # limit MAX_JOBS in memory-bound servers
