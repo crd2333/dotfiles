@@ -1,4 +1,5 @@
 zsh/.zsh_history
 config/opencode/package-lock.json
-config/opencode/opencode.json  # managed by cc-switch
+config/opencode/skills/
+config/opencode/opencode.json
 **/*.local

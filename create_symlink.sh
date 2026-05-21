@@ -18,7 +18,7 @@ $DOTFILES/bash/.profile|$HOME_DIR/.profile
 $DOTFILES/.tmux.conf|$HOME_DIR/.tmux.conf
 $DOTFILES/.gitconfig|$HOME_DIR/.gitconfig
 $DOTFILES/.condarc|$HOME_DIR/.condarc
-$DOTFILES/npm/npmrc|$HOME_DIR/.npmrc
+$DOTFILES/npm/npmrc|$HOME_DIR/.config/npm/npmrc
 $DOTFILES/config/btop/themes|$HOME_DIR/.config/btop/themes
 $DOTFILES/config/opencode|$HOME_DIR/.config/opencode
 $DOTFILES/config/pip|$HOME_DIR/.config/pip
