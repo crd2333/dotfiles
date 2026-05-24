@@ -62,7 +62,7 @@ SPACESHIP_CHAR_SUFFIX=" "
 SPACESHIP_PROMPT_ASYNC=false # https://github.com/spaceship-prompt/spaceship-prompt/issues/1193
 
 
-# make history appears only once and shared by all terminals
+# Make history appears only once and shared by all terminals
 setopt histignorealldups sharehistory
 setopt HIST_FIND_NO_DUPS
 
@@ -79,7 +79,7 @@ autoload -Uz compinit
 compinit
 
 
-# styles
+# Styles
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
@@ -98,7 +98,7 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 
-# extensions setting
+# Extensions setting
 source $ZSH/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 fpath=($ZSH/plugins/zsh-completions/src $fpath)
@@ -107,36 +107,27 @@ source $ZSH/plugins/expand-multiple-dots.zsh
 source $ZSH/plugins/slash-spliter-keybindings.zsh
 
 
-# environment variables
-if [ $PATH ]; then
-    export PATH="$PATH:/usr/bin"
-else
-    export PATH="/usr/bin"
-fi
-if [ $LD_LIBRARY_PATH ]; then
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib"
-else
-    export LD_LIBRARY_PATH="/usr/lib"
-fi
-. "$HOME/.local/share/../bin/env" # load env variables from ~/.local/bin/env
+# Proxy helpers (system_proxy / unset_proxy / test_proxy)
+[[ -f "$ZSH/lib/proxy.zsh" ]] && source "$ZSH/lib/proxy.zsh"
 
+
+# ===== Environment Variables =====
+. "$HOME/.local/share/../bin/env" # load env variables from ~/.local/bin/env
+export PATH="$HOME/.local/bin${PATH:+:$PATH}"  # user-level local bin
+export PATH="$HOME/.bun/bin${PATH:+:$PATH}"  # bun
+export PATH="$HOME/opt/texlive/2026/bin/x86_64-linux${PATH:+:$PATH}"  # texlive
 
 # cuda
 export CUDA_HOME=/usr/local/cuda-12.8   # change cuda version here
-if [ $LD_LIBRARY_PATH ]; then
-   export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$LD_LIBRARY_PATH"
-else
-    export LD_LIBRARY_PATH="$CUDA_HOME/lib64"
-fi
-if [ $PATH ]; then
-    export PATH="$CUDA_HOME/bin:$PATH"
-else
-    export PATH="$CUDA_HOME/bin"
-fi
+export PATH="$CUDA_HOME/bin${PATH:+:$PATH}"
+export LD_LIBRARY_PATH="$CUDA_HOME/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 # export TORCH_CUDA_ARCH_LIST=8.9  # for 4090
 # export TORCH_CUDA_ARCH_LIST=8.6  # for A6000
 export TORCH_CUDA_ARCH_LIST="8.9;12.0"  # for 4090 + A6000Pro
 
+# ONNX Runtime
+export ONNXRUNTIME_ROOT=$HOME/opt/onnxruntime/current-gpu
+export LD_LIBRARY_PATH="$ONNXRUNTIME_ROOT/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -161,11 +152,15 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
     unset NPM_CONFIG_PREFIX  # disable global prefix when nvm is present
 else  # use system node, redirect global npm packages to home directory to avoid permission issues
     export NPM_CONFIG_PREFIX="$HOME/.npm-global"
-    export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
-    export NODE_PATH="$NPM_CONFIG_PREFIX/lib/node_modules:$NODE_PATH"
+    export PATH="$NPM_CONFIG_PREFIX/bin${PATH:+:$PATH}"
+    export NODE_PATH="$NPM_CONFIG_PREFIX/lib/node_modules${NODE_PATH:+:$NODE_PATH}"
 fi
 
-# aliases
+# limit MAX_JOBS in memory-bound servers
+export MAX_JOBS=8
+
+
+# ===== Aliases =====
 alias cl='clear'
 alias ll='ls -alF'
 alias la='ls -al'
@@ -179,7 +174,6 @@ command -v cc-switch >/dev/null 2>&1 && alias ccs='cc-switch'
 command -v claude >/dev/null 2>&1 && alias cc='claude'
 command -v advcp >/dev/null 2>&1 && alias cp='advcp -g' # override default cp with advcp and enable progress bar
 command -v advmv >/dev/null 2>&1 && alias mv='advmv -g'
-
 
 # tmux aliases and functions
 alias tls='tmux ls'
@@ -213,28 +207,26 @@ trn() {  # trn <old-session-name> <new-session-name>
 }
 
 
-# Proxy helpers (system_proxy / unset_proxy / test_proxy)
-[[ -f "$ZSH/lib/proxy.zsh" ]] && source "$ZSH/lib/proxy.zsh"
-
+# ===== Custom Launchers =====
 # v2raya launcher is kept in .zshrc (not part of the 3 proxy helper functions)
 v2raya_lite_launch() {
     # v2raya launch with no sudo (litely), make sure you are in tmux!
     if [ "$1" = "--v2ray" ]; then  # use v2ray core if specified
-        export V2RAYA_V2RAY_BIN="$HOME/local/v2ray/v2ray"
-        export V2RAYA_V2RAY_CONFDIR="$HOME/local/v2ray"
-        export V2RAYA_V2RAY_ASSETSDIR="$HOME/local/v2ray"
-        ~/local/v2raya/v2raya --lite
+        export V2RAYA_V2RAY_BIN="$HOME/opt/v2ray/v2ray"
+        export V2RAYA_V2RAY_CONFDIR="$HOME/opt/v2ray"
+        export V2RAYA_V2RAY_ASSETSDIR="$HOME/opt/v2ray"
+        ~/opt/v2raya/v2raya --lite
         return
     fi
-    export V2RAYA_V2RAY_BIN="$HOME/local/xray/xray"
-    export V2RAYA_V2RAY_CONFDIR="$HOME/local/xray"
-    export V2RAYA_V2RAY_ASSETSDIR="$HOME/local/xray"
-    ~/local/v2raya/v2raya --lite
+    export V2RAYA_V2RAY_BIN="$HOME/opt/xray/xray"
+    export V2RAYA_V2RAY_CONFDIR="$HOME/opt/xray"
+    export V2RAYA_V2RAY_ASSETSDIR="$HOME/opt/xray"
+    ~/opt/v2raya/v2raya --lite
 }
 mihomo_launch() {
     echo "Initializing Mihomo env..."
 
-    local mihomo_dir="$HOME/local/mihomo"
+    local mihomo_dir="$HOME/opt/mihomo"
     local config_path="$mihomo_dir/config.yaml"
     local generator="$ZSH/lib/mihomo_gen.zsh"
 
@@ -250,7 +242,7 @@ mihomo_launch() {
     ulimit -n 65535 2>/dev/null
 
     echo "Launching Mihomo Core, serving in http://127.0.0.1:2017/ui ..."
-    ~/local/mihomo/mihomo -d ~/local/mihomo
+    ~/opt/mihomo/mihomo -d ~/opt/mihomo
 }
 
 
@@ -378,16 +370,3 @@ codex() {
         (system_proxy > /dev/null 2>&1; command codex "${args[@]}")
     fi
 }
-
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-
-# texlive
-export PATH="$HOME/local/texlive/2026/bin/x86_64-linux:$PATH"
-
-
-# limit MAX_JOBS in memory-bound servers
-export MAX_JOBS=8
