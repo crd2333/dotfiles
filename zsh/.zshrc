@@ -153,13 +153,17 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-
-export PATH="$PATH:$HOME/.local/bin"
-export PATH="$PATH:$HOME/local/bin"
-export NPM_GLOBAL="$HOME/.npm-global"
-export PATH="$NPM_GLOBAL/bin:$PATH"
-export NODE_PATH="$NPM_GLOBAL/lib/node_modules:$NODE_PATH"
-
+# node (system/nvm)
+export NVM_DIR="$HOME/.config/nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    \. "$NVM_DIR/nvm.sh"                                                # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    unset NPM_CONFIG_PREFIX  # disable global prefix when nvm is present
+else  # use system node, redirect global npm packages to home directory to avoid permission issues
+    export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+    export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+    export NODE_PATH="$NPM_CONFIG_PREFIX/lib/node_modules:$NODE_PATH"
+fi
 
 # aliases
 alias cl='clear'
