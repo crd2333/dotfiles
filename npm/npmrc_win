@@ -1,4 +1,4 @@
 # windows reads npm config from ~/.npmrc
 registry=https://registry.npmmirror.com
-prefix=D:\NodeJS\npm_global
 cache=D:\NodeJS\npm_cache
+# prefix=D:\NodeJS\npm_global  # disable this in npmrc, use system_variable `NPM_CONFIG_PREFIX` instead
