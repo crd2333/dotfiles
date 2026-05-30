@@ -172,6 +172,7 @@ alias download='npx degit' # e.g. download user/repo#branch local_name
 # add aliases for cc-switch, cc, advcp, advmv if in PATH
 command -v cc-switch >/dev/null 2>&1 && alias ccs='cc-switch'
 command -v claude >/dev/null 2>&1 && alias cc='claude'
+command -v codex >/dev/null 2>&1 && alias cx='codex'
 command -v advcp >/dev/null 2>&1 && alias cp='advcp -g' # override default cp with advcp and enable progress bar
 command -v advmv >/dev/null 2>&1 && alias mv='advmv -g'
 
