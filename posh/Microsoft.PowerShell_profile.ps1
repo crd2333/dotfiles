@@ -34,17 +34,18 @@ Set-PSReadLineOption -Colors @{
 # 别名设置
 set-alias -Name cl -Value clear
 set-alias -Name vi -Value vim
-set-alias -Name la -Value "Get-ChildItem -Force"
 set-alias -Name conda -Value (Join-Path $HOME 'dotfiles\posh\conda_posh_lazy.ps1') # lazy load conda initialization
 set-alias -Name cc -Value claude
+set-alias -Name cx -Value codex
+
+
+# Linux-like cmds
+. (Join-Path $HOME 'dotfiles\posh\linux_like_cmds.ps1')
 
 
 # 函数设置
 function work {
     Set-Location -Path "D:\documents"
-}
-function site {
-    Set-Location -Path "D:\documents\site"
 }
 function countSize {
     Get-ChildItem -Directory | ForEach-Object {

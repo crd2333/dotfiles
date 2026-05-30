@@ -1,5 +1,8 @@
 zsh/.zsh_history
-config/opencode/package-lock.json
 config/opencode/skills/
 config/opencode/opencode.json
+config/opencode/opencode.jsonc
+config/opencode/node_modules
+config/opencode/package.json
+config/opencode/package-lock.json
 **/*.local
