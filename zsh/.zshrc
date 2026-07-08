@@ -112,7 +112,9 @@ source $ZSH/plugins/slash-spliter-keybindings.zsh
 
 
 # ===== Environment Variables =====
-. "$HOME/.local/share/../bin/env" # load env variables from ~/.local/bin/env
+if [ -f "$HOME/.local/bin/env" ]; then
+    . "$HOME/.local/bin/env"  # load env variables from ~/.local/bin/env
+fi
 export PATH="$HOME/.local/bin${PATH:+:$PATH}"  # user-level local bin
 export PATH="$HOME/.bun/bin${PATH:+:$PATH}"  # bun
 export PATH="$HOME/opt/texlive/2026/bin/x86_64-linux${PATH:+:$PATH}"  # texlive
@@ -131,7 +133,7 @@ export LD_LIBRARY_PATH="$ONNXRUNTIME_ROOT/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PAT
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$("$HOME/miniconda3/bin/conda" "shell.zsh" "hook" 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else

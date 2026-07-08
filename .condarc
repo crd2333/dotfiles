@@ -13,6 +13,6 @@ custom_channels:
   pytorch: https://mirrors.zju.edu.cn/anaconda/cloud
   pytorch-lts: https://mirrors.zju.edu.cn/anaconda/cloud
   simpleitk: https://mirrors.zju.edu.cn/anaconda/cloud
-auto_activate_base: true
+auto_activate_base: false
 changeps1: false
 solver: libmamba
