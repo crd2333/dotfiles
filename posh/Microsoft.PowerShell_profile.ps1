@@ -1,6 +1,10 @@
 Import-Module DirColors
 Import-Module PSReadLine  # 这个工具主要做命令提示管理等操作，默认集成在了 PowerShell 中，不需要安装
-Set-PSReadLineOption -PredictionSource History # 设置预测文本来源为历史记录
+# Set-PSReadLineOption -PredictionSource History # 设置预测文本来源为历史记录
+if ($Host.Name -eq 'ConsoleHost' -and -not [Console]::IsInputRedirected -and
+    -not [Console]::IsOutputRedirected -and $Host.UI.SupportsVirtualTerminal) {
+    Set-PSReadLineOption -PredictionSource History # 设置预测文本来源为历史记录
+}
 Set-PSReadlineKeyHandler -Chord Tab -Function MenuComplete # 类似 zsh 的带菜单补全
 Set-PSReadlineKeyHandler -Chord Ctrl+x,Ctrl+X -Function DeleteLine # 清空整行
 
@@ -104,13 +108,14 @@ function opencode {
             Write-Host "Setting opencode with proxy..."
         }
 
+        $opencodeBin = (Get-Command opencode -CommandType Application | Select-Object -First 1).Source
         if ($NoProxy) {
-            & (Get-Command opencode -CommandType Application) @RemainingArgs
+            & $opencodeBin @RemainingArgs
         } else {
             if (Get-Command system_proxy -ErrorAction SilentlyContinue) {
                 system_proxy > $null 2>&1
             }
-            & (Get-Command opencode -CommandType Application) @RemainingArgs
+            & $opencodeBin @RemainingArgs
         }
     }
 }
@@ -133,13 +138,14 @@ function codex {
             Write-Host "Setting codex with proxy..."
         }
 
+        $codexBin = (Get-Command codex -CommandType Application | Select-Object -First 1).Source
         if ($NoProxy) {
-            & (Get-Command codex -CommandType Application) @RemainingArgs
+            & $codexBin @RemainingArgs
         } else {
             if (Get-Command system_proxy -ErrorAction SilentlyContinue) {
                 system_proxy > $null 2>&1
             }
-            & (Get-Command codex -CommandType Application) @RemainingArgs
+            & $codexBin @RemainingArgs
         }
     }
 }
