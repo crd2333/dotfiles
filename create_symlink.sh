@@ -19,6 +19,7 @@ $DOTFILES/.tmux.conf|$HOME_DIR/.tmux.conf
 $DOTFILES/.gitconfig|$HOME_DIR/.gitconfig
 $DOTFILES/.condarc|$HOME_DIR/.condarc
 $DOTFILES/npm/npmrc|$HOME_DIR/.config/npm/npmrc
+$DOTFILES/config/btop/btop.conf|$HOME_DIR/.config/btop/btop.conf
 $DOTFILES/config/btop/themes|$HOME_DIR/.config/btop/themes
 $DOTFILES/config/opencode|$HOME_DIR/.config/opencode
 $DOTFILES/config/pip|$HOME_DIR/.config/pip
@@ -50,9 +51,18 @@ while IFS='|' read -r source target; do
     continue
   fi
 
-  # 4. Create symlink
-  ln -s "$source" "$target"
-  printf "%b\n" "${GREEN}Created:${RESET} $target -> $source"
+  # 4. Ensure target dir exists
+  target_dir=$(dirname "$target")
+  if [ ! -d "$target_dir" ]; then
+    mkdir -p "$target_dir"
+  fi
+
+  # 5. Create symlink
+  if ln -s "$source" "$target"; then
+    printf "%b\n" "${GREEN}Created:${RESET} $target -> $source"
+  else
+    printf "%b\n" "${RED}Error:${RESET} Failed to create symlink - $target"
+  fi
 
 done <<< "$PAIRS"
 
