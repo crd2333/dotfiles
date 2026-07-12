@@ -123,13 +123,19 @@ export PATH="$HOME/opt/texlive/2026/bin/x86_64-linux${PATH:+:$PATH}"  # texlive
 export CUDA_HOME=/usr/local/cuda-12.8   # change cuda version here
 export PATH="$CUDA_HOME/bin${PATH:+:$PATH}"
 export LD_LIBRARY_PATH="$CUDA_HOME/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-# export TORCH_CUDA_ARCH_LIST=8.9  # for 4090
-# export TORCH_CUDA_ARCH_LIST=8.6  # for A6000
-export TORCH_CUDA_ARCH_LIST="8.9;12.0"  # for 4090 + A6000Pro
+# Set TORCH_CUDA_ARCH_LIST based on the local GPU architecture if nvidia-smi is available
+if command -v nvidia-smi >/dev/null 2>&1; then
+    LOCAL_CUDA_ARCHS=$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader 2>/dev/null | sort -u | paste -sd ";" -)
+    if [ -n "$LOCAL_CUDA_ARCHS" ]; then
+        export TORCH_CUDA_ARCH_LIST="$LOCAL_CUDA_ARCHS"
+    fi
+fi
 
 # ONNX Runtime
-export ONNXRUNTIME_ROOT=$HOME/opt/onnxruntime/current-gpu
-export LD_LIBRARY_PATH="$ONNXRUNTIME_ROOT/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+if [ -d "$HOME/opt/onnxruntime/current-gpu" ]; then
+    export ONNXRUNTIME_ROOT=$HOME/opt/onnxruntime/current-gpu
+    export LD_LIBRARY_PATH="$ONNXRUNTIME_ROOT/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
