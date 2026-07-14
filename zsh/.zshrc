@@ -153,7 +153,11 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 # node (system/nvm)
-export NVM_DIR="$HOME/.config/nvm"
+if [ -s "$HOME/.config/nvm/nvm.sh" ]; then
+    export NVM_DIR="$HOME/.config/nvm"  # if XDG variables set, nvm will be downloaded here
+elif [ -s "$HOME/.nvm/nvm.sh" ]; then
+    export NVM_DIR="$HOME/.nvm"
+fi
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     \. "$NVM_DIR/nvm.sh"                                                # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
