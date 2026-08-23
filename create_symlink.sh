@@ -25,6 +25,9 @@ $DOTFILES/config/opencode|$HOME_DIR/.config/opencode
 $DOTFILES/config/pip|$HOME_DIR/.config/pip
 $DOTFILES/config/wgetrc|$HOME_DIR/.config/wgetrc
 $DOTFILES/config/fish|$HOME_DIR/.config/fish
+$DOTFILES/config/pi/models.json|$HOME_DIR/.pi/agent/models.json
+$DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME_DIR/.pi/agent/extensions/pi-permission-system/config.json
+$DOTFILES/config/pi/extensions/pi-custom-header/config.json|$HOME_DIR/.pi/agent/extensions/pi-custom-header/config.json
 EOF
 
 # Iterate lines in PAIRS

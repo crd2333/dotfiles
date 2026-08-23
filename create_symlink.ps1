@@ -26,6 +26,9 @@ $Dotfiles\config\opencode|$Home\.config\opencode
 $Dotfiles\config\pip|$Home\.config\pip
 $Dotfiles\config\wgetrc|$Home\.config\wgetrc
 $Dotfiles\config\fish|$Home\.config\fish
+$Dotfiles\config\pi\models.json|$Home\.pi\agent\models.json
+$Dotfiles\config\pi\extensions\pi-permission-system\config.json|$Home\.pi\agent\extensions\pi-permission-system\config.json
+$Dotfiles\config\pi\extensions\pi-custom-header\config.json|$Home\.pi\agent\extensions\pi-custom-header\config.json
 "@
 
 # Iterate lines in Pairs

@@ -335,51 +335,44 @@ pinfo() {
 }
 
 
+# ===== Coding Agents with Proxy Support =====
+_coding_agent_with_proxy() {
+    local cmd=$1
+    local local_re=$2
+    shift 2
+
+    local force_no_proxy=0
+    local -a args=()
+    local arg
+
+    for arg in "$@"; do
+        if [[ $arg == --no-proxy || $arg == --no_proxy ]]; then
+            force_no_proxy=1
+        else
+            args+=("$arg")
+        fi
+    done
+
+    if (( force_no_proxy )); then
+        (unset_proxy > /dev/null 2>&1; command "$cmd" "${args[@]}")
+    elif [[ -n "${args[1]-}" && "${args[1]}" =~ $local_re ]]; then
+        (command "$cmd" "${args[@]}")
+    else
+        echo "Setting ${cmd} with proxy..."
+        (system_proxy > /dev/null 2>&1; command "$cmd" "${args[@]}")
+    fi
+}
+
 # opencode with proxy (use --no-proxy or --no_proxy to force skipping system proxy)
 opencode() {
-    local skip_proxy=0
-    local -a args=()
-    for arg in "$@"; do
-        if [[ $arg == --no-proxy || $arg == --no_proxy ]]; then
-            skip_proxy=1
-        else
-            args+=("$arg")
-        fi
-    done
-
-    local help_re='^(help|-h|--help|version|-v|--version|completion|models|providers|auth|agent|mcp|acp|stats|session|export|import|github|db|uninstall|debug|attach)$'
-    if [[ -z "${args[1]-}" || ! "${args[1]}" =~ $help_re ]]; then
-        [[ $skip_proxy -eq 0 ]] && echo "Setting opencode with proxy..."
-    fi
-
-    if [[ $skip_proxy -eq 1 ]]; then
-        (command opencode "${args[@]}")
-    else
-        (system_proxy > /dev/null 2>&1; command opencode "${args[@]}")
-    fi
+    _coding_agent_with_proxy opencode \
+        '^(help|-h|--help|version|-v|--version|completion|models|providers|auth|agent|mcp|acp|stats|session|export|import|github|db|uninstall|debug|attach)$' \
+        "$@"
 }
-
-
 # codex with proxy (use --no-proxy or --no_proxy to force skipping system proxy)
 codex() {
-    local skip_proxy=0
-    local -a args=()
-    for arg in "$@"; do
-        if [[ $arg == --no-proxy || $arg == --no_proxy ]]; then
-            skip_proxy=1
-        else
-            args+=("$arg")
-        fi
-    done
-
-    local help_re='^(help|-h|--help|version|-v|-V|--version|completion|login|logout|mcp|plugin|mcp-server|app-server|remote-control|sandbox|debug|apply|a|exec-server|features)$'
-    if [[ -z "${args[1]-}" || ! "${args[1]}" =~ $help_re ]]; then
-        [[ $skip_proxy -eq 0 ]] && echo "Setting codex with proxy..."
-    fi
-
-    if [[ $skip_proxy -eq 1 ]]; then
-        (command codex "${args[@]}")
-    else
-        (system_proxy > /dev/null 2>&1; command codex "${args[@]}")
-    fi
+    _coding_agent_with_proxy codex \
+        '^(help|-h|--help|version|-v|-V|--version|completion|login|logout|mcp|plugin|mcp-server|app-server|remote-control|sandbox|debug|apply|a|exec-server|features)$' \
+        "$@"
 }
+# Pi and ClaudeCode proxy config are in their config files, no need to wrap them here.
