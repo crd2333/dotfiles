@@ -1,88 +1,117 @@
 {
   "$schema": "https://raw.githubusercontent.com/gotgenes/pi-packages/refs/heads/main/packages/pi-permission-system/schemas/permissions.schema.json",
+
   "debugLog": false,
   "permissionReviewLog": false,
   "yoloMode": false,
 
+  "forwardingTimeoutMs": 600000,
+  "promptMaxRows": 24,
+  "promptFieldMaxWidth": 400,
+  "reviewLogFieldMaxWidth": 1000,
+
+  "piInfrastructureReadPaths": [],
+  "authorizerChain": [],
+
   "permission": {
     "*": "allow",
-
-    "external_directory": {
-      "*": "ask",
-
-      "*\\users\\*\\.pi\\agent\\skills\\*": "allow",
-      "*\\users\\*\\.pi\\agent\\npm\\*": "allow",
-      "*\\users\\*\\.pi\\agent\\sessions\\*": "allow",
-      "*\\users\\*\\.pi\\agent\\repos\\*": "allow",
-
-      "~/.pi/agent/npm/*": "allow",
-      "~/.pi/agent/git/*": "allow",
-      "~/.pi/agent/sessions/*": "allow",
-
-      "*\\dev\\null\\*": "allow",
-      "*\\dev\\null*": "allow",
-      "*\\dev\\null\\": "allow",
-      "*\\dev\\null": "allow",
-
-      "~/.config/nvm/versions/node/v24.16.0/lib/node_modules/@earendil-works/*": "allow",
-      "D:\\NodeJS\\npm_global\\node_modules\\@earendil-works\\*": "allow",
-
-      "~/downloads/*": "allow",
-      "~/dev/*": "allow",
-      "/tmp/*": "allow",
-      "~/projects/*": "allow"
-    },
 
     "path": {
       "*": "allow",
 
       "*.env": "deny",
       "*.env.*": "deny",
-      "~/.ssh/*": "deny",
-      "$HOME/.ssh/*": "deny",
+      "*.env.example": "allow",
 
-      "*\\users\\*\\.pi\\agent\\auth.json": "deny",
-      "*\\users\\*\\.pi\\agent\\models.json": "ask",
+      "~/.ssh/*": "deny",
+
       "~/.pi/agent/auth.json": "deny",
       "~/.pi/agent/models.json": "ask",
       "~/.pi/agent/pi-crd233.json": "deny"
     },
 
+    "external_directory": {
+      "*": "ask",
+
+      "~/projects/*": "allow",
+      "~/dev/*": "allow",
+      "~/downloads/*": "allow",
+      "~/Downloads/*": "allow",
+      "/tmp/*": "allow",
+
+      "~/.pi/agent/sessions/*": "allow",
+      "~/.pi/agent/npm/*": "allow",
+      "~/.pi/agent/git/*": "allow",
+
+      "~/.cc-switch/skills/*": "allow",
+      "~/.config/nvm/versions/node/*/lib/node_modules/*": "allow",
+      "D:/NodeJS/npm_global/node_modules/*": "allow",
+      "~/miniconda3/*": "allow"
+    },
+
     "bash": {
-      "Remove-Item *": "ask",
-      "remove-item *": "ask",
+      "*": "allow",
+
       "rm *": "ask",
+      "rmdir *": "ask",
+      "unlink *": "ask",
+      "shred *": "ask",
+      "truncate *": "ask",
+      "find *-delete*": "ask",
+
       "del *": "ask",
       "erase *": "ask",
       "rd *": "ask",
-      "rmdir *": "ask",
-      "ri *": "ask",
-      "mv *": "ask",
 
       "cmd /c del *": "ask",
       "cmd /c erase *": "ask",
       "cmd /c rd *": "ask",
       "cmd /c rmdir *": "ask",
+
       "cmd.exe /c del *": "ask",
       "cmd.exe /c erase *": "ask",
       "cmd.exe /c rd *": "ask",
       "cmd.exe /c rmdir *": "ask",
 
-      "powershell *Remove-Item*": "ask",
-      "powershell.exe *Remove-Item*": "ask",
-      "pwsh *Remove-Item*": "ask",
-      "pwsh.exe *Remove-Item*": "ask",
-
-      "git clean *": "ask",
-      "git reset --hard *": "ask",
-      "git checkout -- *": "ask",
-      "git restore *": "ask",
-
+      "Remove-Item *": "ask",
+      "remove-item *": "ask",
       "Clear-Content *": "ask",
-      "Set-Content *": "ask",
-      "Out-File *": "ask",
-      "Move-Item *": "ask",
-      "Rename-Item *": "ask"
+      "clear-content *": "ask",
+
+      "powershell *Remove-Item*": "ask",
+      "powershell *remove-item*": "ask",
+      "powershell.exe *Remove-Item*": "ask",
+      "powershell.exe *remove-item*": "ask",
+
+      "pwsh *Remove-Item*": "ask",
+      "pwsh *remove-item*": "ask",
+      "pwsh.exe *Remove-Item*": "ask",
+      "pwsh.exe *remove-item*": "ask",
+
+      "git *clean *": "ask",
+      "git *reset *--hard*": "ask",
+      "git *checkout *-- *": "ask",
+      "git *restore *": "ask",
+      "git *branch -D *": "ask",
+      "git *stash drop *": "ask",
+      "git *stash clear *": "ask",
+
+      "dropdb *": "ask",
+      "mysql *": "ask",
+      "mariadb *": "ask",
+      "psql *": "ask",
+      "sqlite3 *": "ask",
+      "mongosh *": "ask",
+      "redis-cli *": "ask",
+
+      "docker *system prune*": "ask",
+      "docker *volume prune*": "ask",
+      "docker *volume rm *": "ask",
+      "docker *rm *": "ask",
+
+      "kubectl *delete *": "ask",
+      "helm *uninstall *": "ask",
+      "terraform *destroy*": "ask"
     }
   }
 }

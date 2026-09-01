@@ -175,3 +175,14 @@ if (Get-Command nvm -ErrorAction SilentlyContinue) {
         }
     }
 }
+
+# --- Cygwin 动态加载 ---
+$cygwinCandidatePaths = @('D:\cygwin64\bin', 'C:\cygwin64\bin')
+foreach ($binPath in $cygwinCandidatePaths) {
+    if (Test-Path -LiteralPath $binPath) {
+        if ($env:PATH -notlike "*$binPath*") {
+            $env:PATH = "$binPath;$env:PATH"
+        }
+        break
+    }
+}
