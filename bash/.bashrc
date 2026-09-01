@@ -133,3 +133,4 @@ unset __conda_setup
 
 
 . "$HOME/.local/share/../bin/env"
+. "$HOME/.cargo/env"

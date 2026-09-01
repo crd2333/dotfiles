@@ -1,18 +1,88 @@
 {
   "providers": {
-    "axonhub": {
-      "name": "AxonHub",
-      "baseUrl": "https://axonhub-d410.onrender.com/v1",
-      "api": "openai-completions",
+    "aio": {
+      "name": "aio",
+      "baseUrl": "http://127.0.0.1:37123/v1",
+      "api": "openai-responses",
+      "models": [
+        {
+          "id": "gpt-6-astra",
+          "name": "GPT-6-Astra",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 372000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": null
+          },
+          "compat": {
+              "remoteCompaction": {
+              "protocol": "v2"
+            }
+          }
+        },
+        {
+          "id": "gpt-5.6-sol",
+          "name": "GPT-5.6-Sol",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 372000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "compat": {
+              "remoteCompaction": {
+              "protocol": "v2"
+            }
+          }
+        },
+        {
+          "id": "gpt-5.6-luna",
+          "name": "GPT-5.6-Luna",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 372000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "compat": {
+              "remoteCompaction": {
+              "protocol": "v2"
+            }
+          }
+        }
+      ]
+    },
+    "aio-cc": {
+      "name": "aio-cc",
+      "baseUrl": "http://127.0.0.1:37123/claude",
+      "api": "anthropic-messages",
       "models": [
         {
           "id": "claude-opus-5",
           "name": "Claude Opus 5",
           "reasoning": true,
-          "input": [
-            "text",
-            "image"
-          ],
+          "input": ["text", "image"],
           "contextWindow": 1000000,
           "maxTokens": 128000,
           "thinkingLevelMap": {
@@ -21,13 +91,10 @@
           }
         },
         {
-          "id": "claude-fable-5",
-          "name": "Claude Fable 5",
+          "id": "claude-fable-5-1",
+          "name": "Claude Fable 5.1",
           "reasoning": true,
-          "input": [
-            "text",
-            "image"
-          ],
+          "input": ["text", "image"],
           "contextWindow": 1000000,
           "maxTokens": 128000,
           "thinkingLevelMap": {
@@ -35,17 +102,23 @@
             "xhigh": "xhigh",
             "max": "max"
           }
-        },
+        }
+      ]
+    },
+    "aio-ds": {
+      "name": "aio-ds",
+      "baseUrl": "http://127.0.0.1:37123/deepseek/v1",
+      "api": "openai-completions",
+      "models": [
         {
           "id": "deepseek-v4-pro",
           "name": "DeepSeek V4 Pro",
           "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 393216,
+          "input": ["text"],
+          "contextWindow": 1000000,
           "maxTokens": 393216,
           "thinkingLevelMap": {
+            "off": null,
             "minimal": null,
             "low": "low",
             "medium": "medium",
@@ -58,9 +131,7 @@
           "id": "deepseek-v4-flash",
           "name": "DeepSeek V4 Flash",
           "reasoning": true,
-          "input": [
-            "text"
-          ],
+          "input": ["text"],
           "contextWindow": 1000000,
           "maxTokens": 384000,
           "thinkingLevelMap": {
@@ -70,14 +141,19 @@
             "high": "high",
             "max": "max"
           }
-        },
+        }
+      ]
+    },
+    "aio-glm": {
+      "name": "aio-glm",
+      "baseUrl": "http://127.0.0.1:37123/glm/v1",
+      "api": "openai-completions",
+      "models": [
         {
           "id": "glm-5.3",
           "name": "GLM-5.3",
           "reasoning": true,
-          "input": [
-            "text"
-          ],
+          "input": ["text"],
           "contextWindow": 1000000,
           "maxTokens": 131072,
           "thinkingLevelMap": {
@@ -91,73 +167,58 @@
           }
         },
         {
-          "id": "gpt-5.5",
-          "name": "GPT-5.5",
+          "id": "glm-5.3-flash",
+          "name": "Glm 5.3 Flash",
           "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 1000000,
+          "maxTokens": 131072,
           "thinkingLevelMap": {
             "off": null,
             "minimal": null,
             "low": "low",
-            "medium": "medium",
+            "medium": null,
             "high": "high",
-            "xhigh": "xhigh",
-            "max": null
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 128000
-        },
-        {
-          "id": "gpt-5.6-luna",
-          "name": "GPT-5.6-Luna",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
+            "xhigh": null,
             "max": "max"
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 372000,
-          "maxTokens": 128000
-        },
+          }
+        }
+      ]
+    },
+    "aio-kimi": {
+      "name": "aio-kimi",
+      "baseUrl": "http://127.0.0.1:37123/kimi/v1",
+      "api": "openai-completions",
+      "models": [
         {
-          "id": "gpt-5.6-sol",
-          "name": "GPT-5.6-Sol",
+          "id": "kimi-k3",
+          "name": "Kimi K3",
           "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 1000000,
+          "maxTokens": 131072,
           "thinkingLevelMap": {
             "off": null,
             "minimal": null,
             "low": "low",
-            "medium": "medium",
+            "medium": null,
             "high": "high",
-            "xhigh": "xhigh",
+            "xhigh": null,
             "max": "max"
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 372000,
-          "maxTokens": 128000
-        },
+          }
+        }
+      ]
+    },
+    "aio-grok": {
+      "name": "aio-grok",
+      "baseUrl": "http://127.0.0.1:37123/grok/v1",
+      "api": "openai-responses",
+      "models": [
         {
           "id": "grok-4.6",
           "name": "Grok 4.6",
           "reasoning": true,
-          "input": [
-            "text",
-            "image"
-          ],
+          "input": ["text", "image"],
           "contextWindow": 500000,
           "maxTokens": 500000,
           "thinkingLevelMap": {
@@ -168,26 +229,6 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": null
-          }
-        },
-        {
-          "id": "kimi-k3",
-          "name": "Kimi K3",
-          "reasoning": true,
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 1048576,
-          "maxTokens": 131072,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": null,
-            "high": "high",
-            "xhigh": null,
-            "max": "max"
           }
         }
       ]
@@ -198,239 +239,12 @@
       "api": "openai-completions",
       "models": [
         {
-          "id": "gpt-5.5",
-          "name": "GPT-5.5",
+          "id": "gpt-6-astra",
+          "name": "GPT-6-Astra",
           "reasoning": true,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": null
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 128000
-        }
-      ]
-    },
-    "micu": {
-      "name": "micu",
-      "baseUrl": "https://www.micuapi.ai",
-      "api": "anthropic-messages",
-      "models": [
-        {
-          "id": "claude-opus-5",
-          "name": "Claude Opus 5",
-          "reasoning": true,
-          "input": [
-            "image",
-            "text"
-          ],
-          "contextWindow": 1000000,
-          "maxTokens": 128000,
-          "thinkingLevelMap": {
-            "minimal": null,
-            "low": null,
-            "medium": null,
-            "high": null,
-            "xhigh": "xhigh",
-            "max": "max"
-          },
-          "compat": {
-            "forceAdaptiveThinking": true
-          }
-        },
-        {
-          "id": "gpt-5.5",
-          "name": "GPT-5.5",
-          "api": "openai-responses",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": null
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 128000
-        }
-      ]
-    },
-    "shit-router": {
-      "name": "shit-router",
-      "baseUrl": "https://api.shitrouter.com/v1",
-      "api": "openai-responses",
-      "models": [
-        {
-          "id": "gpt-5.5",
-          "name": "GPT-5.5",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": null
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 128000
-        }
-      ]
-    },
-    "aio": {
-      "name": "aio",
-      "baseUrl": "http://127.0.0.1:37123/v1",
-      "api": "openai-responses",
-      "models": [
-        {
-          "id": "gpt-5.5",
-          "name": "GPT-5.5",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": null
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 128000,
-          "compat": {
-              "remoteCompaction": {
-              "protocol": "v2"
-            }
-          }
-        },
-        {
-          "id": "gpt-5.6-sol",
-          "name": "GPT-5.6-Sol",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          },
-          "input": [
-            "text",
-            "image"
-          ],
+          "input": ["text", "image"],
           "contextWindow": 372000,
           "maxTokens": 128000,
-          "compat": {
-              "remoteCompaction": {
-              "protocol": "v2"
-            }
-          }
-        },
-        {
-          "id": "gpt-5.6-luna",
-          "name": "GPT-5.6-Luna",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          },
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 372000,
-          "maxTokens": 128000,
-          "compat": {
-              "remoteCompaction": {
-              "protocol": "v2"
-            }
-          }
-        }
-      ]
-    },
-    "aio-cc": {
-      "name": "aio-cc",
-      "baseUrl": "http://127.0.0.1:37123",
-      "api": "anthropic-messages",
-      "models": [
-        {
-          "id": "claude-opus-5",
-          "name": "Claude Opus 5",
-          "reasoning": true,
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 1000000,
-          "maxTokens": 128000,
-          "thinkingLevelMap": {
-            "xhigh": "xhigh",
-            "max": "max"
-          }
-        },
-        {
-          "id": "claude-fable-5",
-          "name": "Claude Fable 5",
-          "reasoning": true,
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 1000000,
-          "maxTokens": 128000,
-          "thinkingLevelMap": {
-            "off": null,
-            "xhigh": "xhigh",
-            "max": "max"
-          }
-        }
-      ]
-    },
-    "aio-grok": {
-      "name": "aio-grok",
-      "baseUrl": "http://127.0.0.1:37123",
-      "api": "grok-messages",
-      "models": [
-        {
-          "id": "grok-4.6",
-          "name": "Grok 4.6",
-          "reasoning": true,
-          "input": [
-            "text",
-            "image"
-          ],
-          "contextWindow": 500000,
-          "maxTokens": 500000,
           "thinkingLevelMap": {
             "off": null,
             "minimal": null,

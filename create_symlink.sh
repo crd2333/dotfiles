@@ -1,10 +1,10 @@
 #!/bin/bash
 
 USER=$(whoami)
-DOTFILES="/home/$USER/dotfiles"
-HOME_DIR="/home/$USER"
+DOTFILES="$HOME/dotfiles"
 
 # Color definitions
+RED="\e[31m"
 GREEN="\e[32m"
 YELLOW="\e[33m"
 BLUE="\e[34m"
@@ -12,22 +12,23 @@ RESET="\e[0m"
 
 # List of symlink pairs (source|target)
 read -r -d '' PAIRS <<EOF
-$DOTFILES/zsh/.zshrc|$HOME_DIR/.zshrc
-$DOTFILES/bash/.bashrc|$HOME_DIR/.bashrc
-$DOTFILES/bash/.profile|$HOME_DIR/.profile
-$DOTFILES/.tmux.conf|$HOME_DIR/.tmux.conf
-$DOTFILES/.gitconfig|$HOME_DIR/.gitconfig
-$DOTFILES/.condarc|$HOME_DIR/.condarc
-$DOTFILES/npm/npmrc|$HOME_DIR/.config/npm/npmrc
-$DOTFILES/config/btop/btop.conf|$HOME_DIR/.config/btop/btop.conf
-$DOTFILES/config/btop/themes|$HOME_DIR/.config/btop/themes
-$DOTFILES/config/opencode|$HOME_DIR/.config/opencode
-$DOTFILES/config/pip|$HOME_DIR/.config/pip
-$DOTFILES/config/wgetrc|$HOME_DIR/.config/wgetrc
-$DOTFILES/config/fish|$HOME_DIR/.config/fish
-$DOTFILES/config/pi/models.json|$HOME_DIR/.pi/agent/models.json
-$DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME_DIR/.pi/agent/extensions/pi-permission-system/config.json
-$DOTFILES/config/pi/extensions/pi-custom-header/config.json|$HOME_DIR/.pi/agent/extensions/pi-custom-header/config.json
+$DOTFILES/zsh/.zshrc|$HOME/.zshrc
+$DOTFILES/bash/.bashrc|$HOME/.bashrc
+$DOTFILES/bash/.profile|$HOME/.profile
+$DOTFILES/.tmux.conf|$HOME/.tmux.conf
+$DOTFILES/.gitconfig|$HOME/.gitconfig
+$DOTFILES/.condarc|$HOME/.condarc
+$DOTFILES/npm/npmrc|$HOME/.config/npm/npmrc
+$DOTFILES/config/btop/btop.conf|$HOME/.config/btop/btop.conf
+$DOTFILES/config/btop/themes|$HOME/.config/btop/themes
+$DOTFILES/config/opencode|$HOME/.config/opencode
+$DOTFILES/config/pip|$HOME/.config/pip
+$DOTFILES/config/wgetrc|$HOME/.config/wgetrc
+$DOTFILES/config/fish|$HOME/.config/fish
+$DOTFILES/config/pi/models.json|$HOME/.pi/agent/models.json
+$DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME/.pi/agent/extensions/pi-permission-system/config.json
+$DOTFILES/config/pi/extensions/pi-model-fix/config.json|$HOME/.pi/agent/extensions/pi-model-fix/config.json
+$DOTFILES/config/pi/extensions/pi-custom-header/config.json|$HOME/.pi/agent/extensions/pi-custom-header/config.json
 EOF
 
 # Iterate lines in PAIRS
