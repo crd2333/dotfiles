@@ -1,4 +1,6 @@
 # windows reads npm config from ~/.npmrc
+# variant for the old multi-drive machine (NodeJS lives on D:)
+# auto-selected by create_symlink.ps1 when D:\NodeJS exists
 registry=https://registry.npmmirror.com
 cache=D:\NodeJS\npm_cache
 # prefix=D:\NodeJS\npm_global  # disable this in npmrc, use system_variable `NPM_CONFIG_PREFIX` instead

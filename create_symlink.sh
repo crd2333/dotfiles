@@ -1,6 +1,5 @@
 #!/bin/bash
 
-USER=$(whoami)
 DOTFILES="$HOME/dotfiles"
 
 # Color definitions
@@ -10,31 +9,59 @@ YELLOW="\e[33m"
 BLUE="\e[34m"
 RESET="\e[0m"
 
-# List of symlink pairs (source|target)
+# Tool detection: a candidate is either a command name (checked via PATH) or an absolute path (checked for existence)
+check_tool() {
+  local c
+  for c in "$@"; do
+    case "$c" in
+      /*) [ -e "$c" ] && return 0 ;;
+      *)  command -v "$c" >/dev/null 2>&1 && return 0 ;;
+    esac
+  done
+  return 1
+}
+
+# Link list, each line is fully self-contained: source|target|required-tool|candidates
+#   tool column empty      -> always create
+#   candidates column empty -> default to the tool name itself (a simple command check)
+#   candidates are ;-separated command names and/or absolute paths
 read -r -d '' PAIRS <<EOF
-$DOTFILES/zsh/.zshrc|$HOME/.zshrc
-$DOTFILES/bash/.bashrc|$HOME/.bashrc
-$DOTFILES/bash/.profile|$HOME/.profile
-$DOTFILES/.tmux.conf|$HOME/.tmux.conf
-$DOTFILES/.gitconfig|$HOME/.gitconfig
-$DOTFILES/.condarc|$HOME/.condarc
-$DOTFILES/npm/npmrc|$HOME/.config/npm/npmrc
-$DOTFILES/config/btop/btop.conf|$HOME/.config/btop/btop.conf
-$DOTFILES/config/btop/themes|$HOME/.config/btop/themes
-$DOTFILES/config/opencode|$HOME/.config/opencode
-$DOTFILES/config/pip|$HOME/.config/pip
-$DOTFILES/config/wgetrc|$HOME/.config/wgetrc
-$DOTFILES/config/fish|$HOME/.config/fish
-$DOTFILES/config/pi/models.json|$HOME/.pi/agent/models.json
-$DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME/.pi/agent/extensions/pi-permission-system/config.json
-$DOTFILES/config/pi/extensions/pi-model-fix/config.json|$HOME/.pi/agent/extensions/pi-model-fix/config.json
-$DOTFILES/config/pi/extensions/pi-custom-header/config.json|$HOME/.pi/agent/extensions/pi-custom-header/config.json
+$DOTFILES/zsh/.zshrc|$HOME/.zshrc||
+$DOTFILES/bash/.bashrc|$HOME/.bashrc||
+$DOTFILES/bash/.profile|$HOME/.profile||
+$DOTFILES/.tmux.conf|$HOME/.tmux.conf|tmux|
+$DOTFILES/.gitconfig|$HOME/.gitconfig||
+$DOTFILES/.condarc|$HOME/.condarc|conda|conda;$HOME/miniconda3;$HOME/anaconda3;/opt/miniconda3;/opt/anaconda3;/opt/conda
+$DOTFILES/npm/npmrc|$HOME/.config/npm/npmrc|npm|npm;node
+$DOTFILES/config/btop/btop.conf|$HOME/.config/btop/btop.conf|btop|
+$DOTFILES/config/btop/themes|$HOME/.config/btop/themes|btop|
+$DOTFILES/config/opencode|$HOME/.config/opencode|opencode|
+$DOTFILES/config/pip|$HOME/.config/pip|pip|pip;pip3
+$DOTFILES/config/wgetrc|$HOME/.config/wgetrc|wget|
+$DOTFILES/config/fish|$HOME/.config/fish|fish|
+$DOTFILES/config/pi/models.json|$HOME/.pi/agent/models.json|pi|
+$DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME/.pi/agent/extensions/pi-permission-system/config.json|pi|
+$DOTFILES/config/pi/extensions/pi-model-fix/config.json|$HOME/.pi/agent/extensions/pi-model-fix/config.json|pi|
+$DOTFILES/config/pi/extensions/pi-custom-header/config.json|$HOME/.pi/agent/extensions/pi-custom-header/config.json|pi|
 EOF
 
 # Iterate lines in PAIRS
-while IFS='|' read -r source target; do
+while IFS='|' read -r source target tool candidates; do
   # Skip empty lines
   [ -z "$source" ] && continue
+
+  # 0. Skip if the required tool is not installed
+  if [ -n "$tool" ]; then
+    if [ -z "$candidates" ]; then
+      cand=("$tool")
+    else
+      IFS=';' read -ra cand <<< "$candidates"
+    fi
+    if ! check_tool "${cand[@]}"; then
+      printf "%b\n" "${YELLOW}Warning:${RESET} $tool not detected, skipping - $target"
+      continue
+    fi
+  fi
 
   # 1. Check if Source exists
   if [ ! -e "$source" ]; then

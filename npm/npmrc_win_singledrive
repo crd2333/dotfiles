@@ -1,0 +1,7 @@
+# windows reads npm config from ~/.npmrc
+# variant for single-drive machines (NodeJS lives under $HOME)
+# auto-selected by create_symlink.ps1 when D:\NodeJS does NOT exist
+# NOTE: with nvm-windows, prefix is managed per node version; do not set it here (cache is safe to set)
+registry=https://registry.npmmirror.com
+cache=${USERPROFILE}\NodeJS\npm_cache
+# prefix=${USERPROFILE}\NodeJS\npm_global  # disable this in npmrc, use system_variable `NPM_CONFIG_PREFIX` instead
