@@ -1,7 +1,23 @@
 # separate conda initialization (lazy) from profile.ps1 for speed
-$condaExe = "D:\MiniConda\Scripts\conda.exe"
-if (-not (Test-Path $condaExe)) {
-    Write-Error "conda.exe not found at $condaExe"
+$condaCandidates = @(
+    "$env:USERPROFILE\miniconda3",
+    "$env:USERPROFILE\anaconda3",
+    "$env:USERPROFILE\Miniconda3",
+    "$env:USERPROFILE\Anaconda3",
+    "D:\MiniConda",
+    "C:\miniconda3",
+    "C:\ProgramData\miniconda3"
+)
+$condaExe = $null
+foreach ($root in $condaCandidates) {
+    $exe = Join-Path $root 'Scripts\conda.exe'
+    if (Test-Path -LiteralPath $exe) {
+        $condaExe = $exe
+        break
+    }
+}
+if (-not $condaExe) {
+    Write-Warning "conda not found (searched common install paths); skipping. If you have switched to uv, this alias is simply unused."
     return
 }
 

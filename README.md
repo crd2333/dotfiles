@@ -41,7 +41,7 @@ ln -s /home/<user>/dotfiles/.gitconfig ~/.gitconfig
 ln -s /home/<user>/dotfiles/.condarc ~/.condarc
 ln -s /home/<user>/dotfiles/config ~/.config
 # if in Windows (PowerShell)
-New-Item -ItemType SymbolicLink -Path "D:\文档\PowerShell\Microsoft.PowerShell_profile.ps1" -Target ".\Microsoft.PowerShell_profile.ps1"
-# or in cmd
-# mklink "D:\文档\PowerShell\Microsoft.PowerShell_profile.ps1" ".\Microsoft.PowerShell_profile.ps1"
+New-Item -ItemType SymbolicLink -Path $PROFILE -Target ".\posh\Microsoft.PowerShell_profile.ps1"
+# or in cmd (replace $PROFILE with the actual path, e.g. C:\Users\<user>\Documents\PowerShell\Microsoft.PowerShell_profile.ps1)
+# mklink "C:\Users\<user>\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" ".\posh\Microsoft.PowerShell_profile.ps1"
 ```
