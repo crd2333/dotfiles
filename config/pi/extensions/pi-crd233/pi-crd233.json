@@ -1,0 +1,46 @@
+{
+  "network": {
+    "providers": ["tavily", "exa"],
+    "fetch": {
+      "order": ["tavily", "firecrawl", "smart", "direct"]
+    },
+    "proxy": {
+      "access": {
+        "github": "allow",
+        "ai_docs": "allow",
+        "ai_sites": "allow",
+        "google_ai": "allow",
+        "huggingface": "allow",
+        "youtube": "allow",
+        "paper": "allow"
+      },
+      "categories": {
+        "github": ["github.com", "githubusercontent.com", "githubassets.com"],
+        "ai_docs": ["platform.openai.com", "platform.claude.com", "developers.openai.com", "docs.anthropic.com", "docs.claude.com", "ai.google.dev", "docs.x.ai", "docs.mistral.ai", "docs.cohere.com", "docs.perplexity.ai", "console.groq.com", "docs.together.ai", "docs.fireworks.ai", "docs.ollama.com", "ai-sdk.dev", "agentskills.io"],
+        "ai_sites": ["chatgpt.com", "claude.ai", "gemini.google.com", "aistudio.google.com", "perplexity.ai", "poe.com", "replicate.com", "openrouter.ai"],
+        "google_ai": ["ai.google.dev", "generativelanguage.googleapis.com", "aiplatform.googleapis.com"],
+        "huggingface": ["huggingface.co", "hf.co"],
+        "youtube": ["youtube.com", "youtu.be", "youtube-nocookie.com", "googlevideo.com", "ytimg.com"],
+        "paper": ["arxiv.org", "openreview.net"]
+      }
+    },
+    "tavily": {
+      "searchDepth": "advanced",
+      "answerDepth": "advanced",
+      "extractDepth": "advanced",
+      "searchChunksPerSource": 3
+    }
+  },
+  "subagents": {
+    "models": {
+      "explore": ["aio-ds/deepseek-v4.1-flash"],
+      "search": ["aio-ds/deepseek-v4.1-flash"],
+      "check": ["aio-ds/deepseek-v4.1-flash"],
+      "implement": ["aio-ds/deepseek-v4.1-flash"]
+    },
+    "maxTurns": { "explore": 8, "search": 8, "check": 10, "implement": 12 },
+    "maxBatch": 4,
+    "maxParallel": 3,
+    "inheritContext": { "explore": false, "search": false, "check": false, "implement": false }
+  }
+}

@@ -273,6 +273,30 @@
         }
       ]
     },
+    "aio-gemini": {
+      "name": "aio-gemini",
+      "baseUrl": "http://127.0.0.1:37123/gemini",
+      "api": "google-generative-ai",
+      "models": [
+        {
+          "id": "gemini-4-pro",
+          "name": "Gemini 4.0 Pro",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 1048576,
+          "maxTokens": 65536,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          }
+        }
+      ]
+    },
     "cpa": {
       "name": "cpa",
       "baseUrl": "http://127.0.0.1:8318/v1",

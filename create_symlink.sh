@@ -43,6 +43,9 @@ $DOTFILES/config/pi/models.json|$HOME/.pi/agent/models.json|pi|
 $DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME/.pi/agent/extensions/pi-permission-system/config.json|pi|
 $DOTFILES/config/pi/extensions/pi-model-fix/config.json|$HOME/.pi/agent/extensions/pi-model-fix/config.json|pi|
 $DOTFILES/config/pi/extensions/pi-custom-header/config.json|$HOME/.pi/agent/extensions/pi-custom-header/config.json|pi|
+$DOTFILES/config/pi/extensions/pi-crd233/pi-crd233.json|$HOME/.pi/agent/extensions/pi-crd233/pi-crd233.json|pi|
+$DOTFILES/config/pi/extensions/pi-crd233/pi-crd233.private.json|$HOME/.pi/agent/extensions/pi-crd233/pi-crd233.private.json|pi|
+$DOTFILES/config/pi/pi-vcc-config.json|$HOME/.pi/agent/pi-vcc-config.json|pi|
 EOF
 
 # Iterate lines in PAIRS
