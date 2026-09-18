@@ -9,3 +9,4 @@ config/opencode/package-lock.json
 config/btop/btop.log
 config/crossnote/
 prompts/copilot/
+**/*.private.json
