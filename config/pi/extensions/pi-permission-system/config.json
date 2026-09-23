@@ -45,6 +45,7 @@
 
       "~/.cc-switch/skills/*": "allow",
       "~/.config/nvm/versions/node/*/lib/node_modules/*": "allow",
+      "~/.vscode-server/extensions/*": "allow",
       "D:/NodeJS/npm_global/node_modules/*": "allow",
       "~/miniconda3/*": "allow"
     },

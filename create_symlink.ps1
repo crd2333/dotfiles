@@ -59,7 +59,6 @@ $Dotfiles\config\wgetrc|$Home\.config\wgetrc|wget|
 $Dotfiles\config\fish|$Home\.config\fish|fish|
 $Dotfiles\config\pi\models.json|$Home\.pi\agent\models.json|pi|
 $Dotfiles\config\pi\extensions\pi-permission-system\config.json|$Home\.pi\agent\extensions\pi-permission-system\config.json|pi|
-$Dotfiles\config\pi\extensions\pi-model-fix\config.json|$Home\.pi\agent\extensions\pi-model-fix\config.json|pi|
 $Dotfiles\config\pi\extensions\pi-custom-header\config.json|$Home\.pi\agent\extensions\pi-custom-header\config.json|pi|
 $Dotfiles\config\pi\extensions\pi-crd233\pi-crd233.json|$Home\.pi\agent\extensions\pi-crd233\pi-crd233.json|pi|
 $Dotfiles\config\pi\extensions\pi-crd233\pi-crd233.private.json|$Home\.pi\agent\extensions\pi-crd233\pi-crd233.private.json|pi|

@@ -50,8 +50,8 @@
           }
         },
         {
-          "id": "gpt-5.6-sol",
-          "name": "GPT-5.6-Sol",
+          "id": "gpt-6-luna",
+          "name": "GPT-6-Luna",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 372000,
@@ -72,8 +72,8 @@
           }
         },
         {
-          "id": "gpt-5.6-luna",
-          "name": "GPT-5.6-Luna",
+          "id": "gpt-5.6-sol",
+          "name": "GPT-5.6-Sol",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 372000,
@@ -101,8 +101,8 @@
       "api": "anthropic-messages",
       "models": [
         {
-          "id": "claude-opus-5",
-          "name": "Claude Opus 5",
+          "id": "claude-opus-5.5",
+          "name": "Claude Opus 5.5",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 1000000,
@@ -130,7 +130,7 @@
     "aio-ds": {
       "name": "aio-ds",
       "baseUrl": "http://127.0.0.1:37123/deepseek/v1",
-      "api": "openai-completions",
+      "api": "openai-responses",
       "models": [
         {
           "id": "deepseek-v4-pro",
@@ -172,7 +172,7 @@
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 1048576,
-          "maxTokens": 32768,
+          "maxTokens": 384000,
           "thinkingLevelMap": {
             "off": "none",
             "minimal": null,
@@ -187,7 +187,7 @@
     "aio-glm": {
       "name": "aio-glm",
       "baseUrl": "http://127.0.0.1:37123/glm/v1",
-      "api": "openai-completions",
+      "api": "openai-responses",
       "models": [
         {
           "id": "glm-5.3",
@@ -231,8 +231,8 @@
       "api": "openai-completions",
       "models": [
         {
-          "id": "kimi-k3",
-          "name": "Kimi K3",
+          "id": "kimi-k3.1",
+          "name": "Kimi K3.1",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 1000000,
@@ -255,8 +255,8 @@
       "api": "openai-responses",
       "models": [
         {
-          "id": "grok-4.6",
-          "name": "Grok 4.6",
+          "id": "grok-4.7",
+          "name": "Grok 4.7",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 500000,
@@ -300,7 +300,7 @@
     "cpa": {
       "name": "cpa",
       "baseUrl": "http://127.0.0.1:8318/v1",
-      "api": "openai-completions",
+      "api": "openai-responses",
       "models": [
         {
           "id": "gpt-6-astra",
