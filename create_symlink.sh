@@ -45,6 +45,7 @@ $DOTFILES/config/pi/extensions/pi-custom-header/config.json|$HOME/.pi/agent/exte
 $DOTFILES/config/pi/extensions/pi-crd233/pi-crd233.json|$HOME/.pi/agent/extensions/pi-crd233/pi-crd233.json|pi|
 $DOTFILES/config/pi/extensions/pi-crd233/pi-crd233.private.json|$HOME/.pi/agent/extensions/pi-crd233/pi-crd233.private.json|pi|
 $DOTFILES/config/pi/pi-vcc-config.json|$HOME/.pi/agent/pi-vcc-config.json|pi|
+$DOTFILES/.curlrc|$HOME/.curlrc|curl|
 EOF
 
 # Iterate lines in PAIRS

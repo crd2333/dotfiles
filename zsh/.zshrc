@@ -381,3 +381,14 @@ codex() {
         "$@"
 }
 # Pi and ClaudeCode proxy config are in their config files, no need to wrap them here.
+
+# Tokdash
+run_tokdash() {
+    system_proxy > /dev/null 2>&1
+    # check if tokdash is in PATH
+    if ! command -v tokdash >/dev/null 2>&1; then
+        echo "Error: 'tokdash' command not found. Please ensure it is installed and in your PATH."
+        return 1
+    fi
+    tokdash serve --bind 127.0.0.1 --port 55423 --no-open
+}
