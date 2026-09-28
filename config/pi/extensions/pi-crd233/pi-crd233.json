@@ -13,7 +13,8 @@
         "huggingface": "allow",
         "youtube": "allow",
         "paper": "allow",
-        "research_apis": "allow"
+        "research_apis": "allow",
+        "dns": "allow"
       },
       "categories": {
         "github": ["github.com", "githubusercontent.com", "githubassets.com"],
@@ -23,7 +24,16 @@
         "huggingface": ["huggingface.co", "hf.co"],
         "youtube": ["youtube.com", "youtu.be", "youtube-nocookie.com", "googlevideo.com", "ytimg.com"],
         "paper": ["arxiv.org", "openreview.net", "nature.com"],
-        "research_apis": ["tavily.com", "firecrawl.dev", "context7.com", "semanticscholar.org", "openalex.org"]
+        "research_apis": ["tavily.com", "firecrawl.dev", "context7.com", "semanticscholar.org", "openalex.org"],
+        "dns": ["cloudflare-dns.com"]
+      }
+    },
+    "dns": {
+      "mode": "doh",
+      "doh": {
+        "url": "https://cloudflare-dns.com/dns-query",
+        "bootstrapAddresses": ["1.1.1.1", "1.0.0.1"],
+        "timeoutMs": 5000
       }
     },
     "tavily": {
@@ -35,12 +45,12 @@
   },
   "subagents": {
     "models": {
-      "explore": ["aio-ds/deepseek-v4.1-flash"],
-      "search": ["aio-ds/deepseek-v4.1-flash"],
-      "check": ["aio-ds/deepseek-v4.1-flash"],
-      "implement": ["aio-ds/deepseek-v4.1-flash"]
+      "explore": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"],
+      "search": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"],
+      "check": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"],
+      "implement": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"]
     },
-    "maxTurns": { "explore": 12, "search": 12, "check": 15, "implement": 30 },
+    "maxTurns": { "explore": 20, "search": 20, "check": 25, "implement": 40 },
     "maxBatch": 4,
     "maxParallel": 3,
     "inheritContext": { "explore": false, "search": false, "check": false, "implement": false }
@@ -58,6 +68,18 @@
           "modelIdRegex": "^glm-5\\.3(?:-|$)"
         },
         "prompt": "glm-5.3.md"
+      },
+      {
+          "match": {
+            "modelIdRegex": "^deepseek-v4\\.1-flash(?:-|$)"
+          },
+          "prompt": "deepseek-v4.1-flash.md"
+      },
+      {
+        "match": {
+          "modelIdRegex": "^gpt-6-astra(?:-|$)"
+        },
+        "prompt": "gpt-6-astra.md"
       }
     ]
   }
