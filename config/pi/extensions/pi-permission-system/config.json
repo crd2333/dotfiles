@@ -33,21 +33,45 @@
     "external_directory": {
       "*": "ask",
 
-      "~/projects/*": "allow",
-      "~/dev/*": "allow",
-      "~/downloads/*": "allow",
-      "~/Downloads/*": "allow",
+      "/tmp": "allow",
       "/tmp/*": "allow",
 
+      "~/projects": "allow",
+      "~/projects/*": "allow",
+      "~/dev": "allow",
+      "~/dev/*": "allow",
+      "~/downloads": "allow",
+      "~/downloads/*": "allow",
+      "~/Downloads": "allow",
+      "~/Downloads/*": "allow",
+
+      "~/.pi": "allow",
+      "~/.pi/agent": "allow",
+      "~/.pi/agent/sessions": "allow",
       "~/.pi/agent/sessions/*": "allow",
+      "~/.pi/agent/npm": "allow",
       "~/.pi/agent/npm/*": "allow",
+      "~/.pi/agent/git": "allow",
       "~/.pi/agent/git/*": "allow",
 
+      "~/.cc-switch/skills": "allow",
       "~/.cc-switch/skills/*": "allow",
+      "~/.config/nvm/versions/node/*/lib/node_modules": "allow",
       "~/.config/nvm/versions/node/*/lib/node_modules/*": "allow",
+      "~/.vscode-server/extensions": "allow",
       "~/.vscode-server/extensions/*": "allow",
+      "~/miniconda3": "allow",
+      "~/miniconda3/*": "allow",
+
+      "D:/NodeJS/npm_global": "allow",
+      "D:/NodeJS/npm_global/node_modules": "allow",
       "D:/NodeJS/npm_global/node_modules/*": "allow",
-      "~/miniconda3/*": "allow"
+      "D:/AITools": "allow",
+      "D:/AITools/*": "allow",
+      "D:/下载": "allow",
+      "D:/下载/*": "allow",
+      "D:/MiniConda": "allow",
+      "D:/MiniConda/*": "allow"
     },
 
     "bash": {
