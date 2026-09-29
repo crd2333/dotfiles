@@ -1,6 +1,5 @@
 Import-Module DirColors
 Import-Module PSReadLine  # 这个工具主要做命令提示管理等操作，默认集成在了 PowerShell 中，不需要安装
-# Set-PSReadLineOption -PredictionSource History # 设置预测文本来源为历史记录
 if ($Host.Name -eq 'ConsoleHost' -and -not [Console]::IsInputRedirected -and
     -not [Console]::IsOutputRedirected -and $Host.UI.SupportsVirtualTerminal) {
     Set-PSReadLineOption -PredictionSource History # 设置预测文本来源为历史记录
@@ -8,30 +7,9 @@ if ($Host.Name -eq 'ConsoleHost' -and -not [Console]::IsInputRedirected -and
 Set-PSReadlineKeyHandler -Chord Tab -Function MenuComplete # 类似 zsh 的带菜单补全
 Set-PSReadlineKeyHandler -Chord Ctrl+x,Ctrl+X -Function DeleteLine # 清空整行
 
-# 下面这些都已集成在 powershell7 中了
-# Set-PSReadlineKeyHandler -Key Tab -Function Complete  # 设置 Tab 键补全
-# Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo  # 设置 Ctrl+Z 为撤销
-# Set-PSReadLineKeyHandler -Key UpArrow -ScriptBlock {
-# [Microsoft.PowerShell.PSConsoleReadLine]::HistorySearchBackward()
-# [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
-# } # 设置向上键为后向搜索历史记录，并将光标移动到行尾
-# Set-PSReadLineKeyHandler -Key DownArrow -ScriptBlock {
-# [Microsoft.PowerShell.PSConsoleReadLine]::HistorySearchForward()
-# [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
-# } # 设置向下键为前向搜索历史纪录，并将光标移动到行尾
-
-# Set-PSReadLineOption -BellStyle Audible -DingTone 1221 -DingDuration 60 # 设置为以 1221 Hz 发出 60 毫秒的可听觉蜂鸣声
 Set-PSReadLineOption -Colors @{
-#   Command            = 'Magenta'
-#   Number             = 'Green'
-#   Member             = 'Green'
-#   Operator           = 'Yellow'
-#   Type               = 'Green'
-#   Variable           = 'Yellow'
-  Parameter          = 'Green'
-#   ContinuationPrompt = 'Green'
-#   Default            = 'Green'
-  InlinePrediction   = "#438a55"
+    Parameter        = 'Green'
+    InlinePrediction = "#438a55"
 }
 
 
@@ -62,32 +40,12 @@ function countSize {
 }
 
 
-# 网络代理设置
-$env:NO_PROXY="localhost,127.0.0.1,0.0.0.0,::1"
-function system_proxy {
-    $env:HTTP_PROXY="http://127.0.0.1:7890/"
-    $env:HTTPS_PROXY="http://127.0.0.1:7890/"  # 注意，极有可能这里就是 http，不需要改成 https
-    $env:ALL_PROXY="socks5://127.0.0.1:7890/"
-}
-function unset_proxy {
-    Remove-Item Env:HTTP_PROXY -ErrorAction SilentlyContinue
-    Remove-Item Env:HTTPS_PROXY -ErrorAction SilentlyContinue
-    Remove-Item Env:ALL_PROXY -ErrorAction SilentlyContinue
-}
+# 网络代理设置（system_proxy / unset_proxy / test_proxy / clean_proxy）
+. (Join-Path $HOME 'dotfiles\posh\lib\proxy.ps1')
 
 
 $ompTheme = Join-Path $HOME 'dotfiles\posh\tokyo_modified.omp.json'
 oh-my-posh init pwsh --config $ompTheme | Invoke-Expression  # 设置主题，可以去 https://ohmyposh.dev/docs/themes 找
-
-
-# 设置字符编码为 UTF-8，我也不知道为什么要做两个设置，但是这样才能正常显示中文
-# [Console]::OutputEncoding = [System.Text.Encoding]::Default
-# chcp 65001 > $null
-
-
-#f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
-# Import-Module -Name Microsoft.WinGet.CommandNotFound
-#f45873b3-b655-43a6-b217-97c00aa0db58
 
 
 # opencode with proxy

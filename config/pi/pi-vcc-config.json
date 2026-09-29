@@ -3,6 +3,6 @@
   "smartKeepTail": true,
   "continueAfterThresholdCompact": true,
   "debug": false,
-  "skipForProviders": ["aio"],
+  "skipForProviders": ["aio", "openai-codex"],
   "skipCustomTypes": []
 }

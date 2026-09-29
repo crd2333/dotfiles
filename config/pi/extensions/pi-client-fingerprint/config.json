@@ -1,0 +1,17 @@
+{
+  "rules": [
+    {
+      "match": { "provider": "aio-cc", "modelIdRegex": "^claude-" },
+      "headers": { "template": "claude-code.headers" },
+      "body": { "billingHeader": true, "metadataUserId": true },
+      "systemPrompt": { "sanitizeClientName": true, "stripDocs": false }
+    },
+    {
+      "match": { "provider": "aio", "modelIdRegex": "^gpt-" },
+      "headers": { "template": "codex.headers" }
+    }
+  ],
+  "blacklist": ["Authorization", "Content-Length", "Host", "Content-Encoding", "Connection", "Accept-Encoding"],
+  "sandbox": "seccomp",
+  "debug": false
+}
