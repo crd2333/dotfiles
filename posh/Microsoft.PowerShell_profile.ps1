@@ -135,12 +135,13 @@ if (Get-Command nvm -ErrorAction SilentlyContinue) {
     }
 }
 
-# --- Cygwin 动态加载 ---
+# --- Cygwin 动态加载---
+# 不要前置！Cygwin 的 git/ssh 等会遮蔽原生工具（Git for Windows / OpenSSH），
 $cygwinCandidatePaths = @('D:\cygwin64\bin', 'C:\cygwin64\bin')
 foreach ($binPath in $cygwinCandidatePaths) {
     if (Test-Path -LiteralPath $binPath) {
         if ($env:PATH -notlike "*$binPath*") {
-            $env:PATH = "$binPath;$env:PATH"
+            $env:PATH = "$env:PATH;$binPath"
         }
         break
     }
