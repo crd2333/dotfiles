@@ -100,4 +100,13 @@ while IFS='|' read -r source target tool candidates; do
 
 done <<< "$PAIRS"
 
+# --- Merge JSON config overlays into live files (see merge_json.mjs). Some
+# tools own a JSON file and keep rewriting it with machine-local state, so it
+# is merged instead of symlinked.
+if command -v node >/dev/null 2>&1; then
+  node "$DOTFILES/merge_json.mjs" || printf "%b\n" "${YELLOW}Warning:${RESET} Failed to merge JSON configs"
+else
+  printf "%b\n" "${YELLOW}Warning:${RESET} node not detected, skipping JSON config merge"
+fi
+
 printf "%b\n" "${GREEN}Symlink setup completed!${RESET}"
