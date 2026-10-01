@@ -132,5 +132,5 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 
-. "$HOME/.local/share/../bin/env"
+export PATH="$HOME/.local/bin${PATH:+:$PATH}"  # user-level local bin
 . "$HOME/.cargo/env"

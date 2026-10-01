@@ -82,5 +82,11 @@
         "prompt": "gpt-6-astra.md"
       }
     ]
+  },
+  "modelFilter": {
+    "allow": [
+      "openai/gpt-6.1-sol",
+      "openai/gpt-6-*"
+    ]
   }
 }
