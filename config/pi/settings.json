@@ -1,0 +1,13 @@
+{
+  "defaultProvider": "aio-ds",
+  "defaultModel": "deepseek-v4.1-flash",
+  "defaultThinkingLevel": "medium",
+  "defaultTools": ["+codemode", "+tool_search"],
+  "theme": "dark",
+  "compaction": {
+    "enabled": true
+  },
+  "retry": {
+    "enabled": true
+  }
+}

@@ -118,4 +118,18 @@ $Pairs -split "`r?`n" | ForEach-Object {
     }
 }
 
+# --- Merge JSON config overlays into live files (see merge_json.mjs). Some
+# tools own a JSON file and keep rewriting it with machine-local state, so it
+# is merged instead of symlinked.
+if (Test-Installed node) {
+    try {
+        node (Join-Path $Dotfiles 'merge_json.mjs')
+        if ($LASTEXITCODE -ne 0) { Write-Yellow "Failed to merge JSON configs" }
+    } catch {
+        Write-Yellow "Failed to merge JSON configs ($($_.Exception.Message))"
+    }
+} else {
+    Write-Yellow "node not detected, skipping JSON config merge"
+}
+
 Write-End "`nSymlink setup completed!"
