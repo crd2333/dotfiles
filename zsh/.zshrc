@@ -112,9 +112,6 @@ source $ZSH/plugins/slash-spliter-keybindings.zsh
 
 
 # ===== Environment Variables =====
-if [ -f "$HOME/.local/bin/env" ]; then
-    . "$HOME/.local/bin/env"  # load env variables from ~/.local/bin/env
-fi
 export PATH="$HOME/.local/bin${PATH:+:$PATH}"  # user-level local bin
 export PATH="$HOME/.bun/bin${PATH:+:$PATH}"  # bun
 export PATH="$HOME/opt/texlive/2026/bin/x86_64-linux${PATH:+:$PATH}"  # texlive

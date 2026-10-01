@@ -10,3 +10,6 @@ else
     end
 end
 # <<< conda initialize <<<
+
+# user-level local bin (previously added by uv's conf.d/uv.env.fish snippet)
+fish_add_path $HOME/.local/bin

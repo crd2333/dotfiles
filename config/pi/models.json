@@ -50,8 +50,8 @@
           }
         },
         {
-          "id": "gpt-5.6-sol",
-          "name": "GPT-5.6-Sol",
+          "id": "gpt-6.1-sol",
+          "name": "GPT-6.1-Sol",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 272000,
@@ -279,6 +279,28 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": null
+          }
+        },
+        {
+          "id": "gpt-6.1-sol",
+          "name": "GPT-6.1-Sol",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "compat": {
+            "remoteCompaction": {
+              "protocol": "v2"
+            }
           }
         }
       ]
