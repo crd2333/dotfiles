@@ -22,9 +22,23 @@
  * Merge rules: later layers win per key; objects merge recursively; arrays and
  * scalars are replaced. Keys that only exist in the target are preserved.
  *
+ * A target that is still a symlink (left over from a previous symlink-managed
+ * setup, e.g. `~/.pi/agent/models.json -> dotfiles/config/pi/models.json`) is
+ * replaced by a real file: writing through the link would rewrite the tracked
+ * dotfiles file and silently commit live machine state into the repo.
+ *
  * Usage: node merge_json.mjs [--dry-run]
  */
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  readlinkSync,
+  statSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { delimiter, dirname, join } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -74,6 +88,22 @@ function localPathFor(source) {
     : `${source}.local`;
 }
 
+function isSymlink(path) {
+  try {
+    return lstatSync(path).isSymbolicLink();
+  } catch {
+    return false;
+  }
+}
+
+function readlinkSafe(path) {
+  try {
+    return readlinkSync(path);
+  } catch {
+    return "?";
+  }
+}
+
 function isExecutableFile(path) {
   try {
     if (!statSync(path).isFile()) return false;
@@ -118,6 +148,9 @@ function mergeEntry(source, target, tool) {
 
   const localSource = localPathFor(source);
   const hasLocal = existsSync(localSource);
+  // A leftover symlink target must never be written through: the merged file
+  // would land in dotfiles and dirty (or later commit) the tracked file.
+  const targetIsSymlink = isSymlink(target);
 
   let live;
   let overlay;
@@ -135,19 +168,29 @@ function mergeEntry(source, target, tool) {
   const serialized = JSON.stringify(next, null, 2);
   const current = existsSync(target) ? readFileSync(target, "utf8") : undefined;
 
-  if (current !== undefined && current.trimEnd() === serialized) {
+  // Even when the content already matches, a symlink target is still
+  // replaced so the next tool-driven write cannot escape into dotfiles.
+  if (!targetIsSymlink && current !== undefined && current.trimEnd() === serialized) {
     console.log(`[merge] unchanged: ${target}`);
     return true;
   }
 
+  const replaced = targetIsSymlink ? ` (replaced symlink -> ${readlinkSafe(target)})` : "";
+
   if (DRY_RUN) {
-    console.log(`[merge] would apply: ${target} <- ${source}${hasLocal ? ` + ${localSource}` : ""}`);
+    console.log(
+      `[merge] would apply: ${target} <- ${source}${hasLocal ? ` + ${localSource}` : ""}` +
+        (targetIsSymlink ? ` (would replace symlink -> ${readlinkSafe(target)})` : ""),
+    );
     return true;
   }
 
   mkdirSync(dirname(target), { recursive: true });
+  // Unlink first so the new file is written in place instead of following the
+  // link into the dotfiles checkout.
+  if (targetIsSymlink) unlinkSync(target);
   writeFileSync(target, serialized + "\n", "utf8");
-  console.log(`[merge] applied: ${target} <- ${source}${hasLocal ? ` + ${localSource}` : ""}`);
+  console.log(`[merge] applied: ${target} <- ${source}${hasLocal ? ` + ${localSource}` : ""}${replaced}`);
   return true;
 }
 
