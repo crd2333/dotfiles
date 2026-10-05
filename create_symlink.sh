@@ -39,7 +39,6 @@ $DOTFILES/config/opencode|$HOME/.config/opencode|opencode|
 $DOTFILES/config/pip|$HOME/.config/pip|pip|pip;pip3
 $DOTFILES/config/wgetrc|$HOME/.config/wgetrc|wget|
 $DOTFILES/config/fish|$HOME/.config/fish|fish|
-$DOTFILES/config/pi/models.json|$HOME/.pi/agent/models.json|pi|
 $DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME/.pi/agent/extensions/pi-permission-system/config.json|pi|
 $DOTFILES/config/pi/extensions/pi-client-fingerprint/config.json|$HOME/.pi/agent/extensions/pi-client-fingerprint/config.json|pi|
 $DOTFILES/config/pi/extensions/pi-crd233/pi-crd233.json|$HOME/.pi/agent/extensions/pi-crd233/pi-crd233.json|pi|

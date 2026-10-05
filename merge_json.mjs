@@ -36,6 +36,7 @@ const HOME = homedir();
 //   tool column empty -> always merge
 const PAIRS = `
 ${DOTFILES}/config/pi/settings.json|${HOME}/.pi/agent/settings.json|pi
+${DOTFILES}/config/pi/models.json|${HOME}/.pi/agent/models.json|pi
 `;
 
 const DRY_RUN = process.argv.slice(2).includes("--dry-run") || process.argv.slice(2).includes("-n");
