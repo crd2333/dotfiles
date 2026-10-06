@@ -20,11 +20,6 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": null
-          },
-          "compat": {
-            "remoteCompaction": {
-              "protocol": "v2"
-            }
           }
         },
         {
@@ -42,11 +37,6 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": "max"
-          },
-          "compat": {
-            "remoteCompaction": {
-              "protocol": "v2"
-            }
           }
         },
         {
@@ -64,14 +54,17 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": "max"
-          },
-          "compat": {
-            "remoteCompaction": {
-              "protocol": "v2"
-            }
           }
         }
-      ]
+      ],
+      "compat": {
+        "remoteCompaction": {
+          "protocol": "v2"
+        },
+        "responsesWebSocket": {
+          "mode": "auto"
+        }
+      }
     },
     "aio-cc": {
       "name": "aio-cc",

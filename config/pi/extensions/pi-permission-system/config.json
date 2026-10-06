@@ -71,7 +71,15 @@
       "D:/下载": "allow",
       "D:/下载/*": "allow",
       "D:/MiniConda": "allow",
-      "D:/MiniConda/*": "allow"
+      "D:/MiniConda/*": "allow",
+
+      "/data": "allow",
+      "/data/*": "allow",
+
+      "~/.pi/agent/extensions/pi-crd233/pi-crd233-content": "allow",
+      "~/.pi/agent/extensions/pi-crd233/pi-crd233-content/*": "allow",
+      "~/.pi/agent/extensions/pi-crd233/pi-crd233-cache": "allow",
+      "~/.pi/agent/extensions/pi-crd233/pi-crd233-cache/*": "allow"
     },
 
     "bash": {
