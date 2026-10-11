@@ -5,6 +5,21 @@ Linux 中最前带有 `.` 的文件为隐藏文件，其中有一些是配置文
 
 In linux, files with `.` at the beginning are hidden files, some of which are configuration files. By managing these files in a centralized way and linking them to their appropriate locations using `ln` symbolic links, we can achieve more convenient migration of configuration file management.
 
+## JSON 配置合并
+
+Pi 的 `settings.json`、`models.json` 和 `extensions/pi-crd233/pi-crd233.json` 不做软链接，由 `merge_json.mjs` 生成实际文件。Linux / Windows 的 setup 脚本都会调用它，也可以单独运行：
+
+```bash
+node ~/dotfiles/merge_json.mjs --dry-run
+node ~/dotfiles/merge_json.mjs
+```
+
+合并顺序是：目标现有内容 → dotfiles 中受版本控制的 JSON → 同目录的 `*.local.json`。对象递归合并，数组和标量整体替换；目标独有的键保留。已有的目标软链接会转换为普通文件，不会把合并结果写回受版本控制的源文件。
+
+`pi-crd233` 的公共配置位于 `config/pi/extensions/pi-crd233/pi-crd233.json`，API key、代理地址等本机配置放在同目录的 `pi-crd233.local.json`（已被 Git 忽略）。迁移机器时统一迁移 dotfiles 中的 local 文件，再运行 merge。插件只读取生成的 `~/.pi/agent/extensions/pi-crd233/pi-crd233.json`，不读取 local 文件或旧的 private 文件。
+
+升级旧部署时，先把 `pi-crd233.private.json` 中的值迁入 `pi-crd233.local.json`（若 local 已存在，合并而不是覆盖），运行 merge 并确认凭据/代理已进入目标文件，再删除旧 private 文件及软链接。包含凭据的 local 和生成文件应设置为仅当前用户可读写（Linux 使用 `chmod 600`；Windows 使用对应的 ACL）。脚本不会自动迁移或删除旧 private 文件。
+
 ## 注意 Notice
 ### zsh
 市面上多数配置都会采用 Oh My Zsh 辅以许多插件和主题，虽然酷炫，但却臃肿且龟速，虽然存在优化方法（如 `zinit` 等延迟加载的插件管理器），但依旧显得冗余。其实直接采用 pure zsh 加上少数所需插件就足够了（不过，这种 manual install 方式需要手动 git clone 那些插件的整个仓库，为了保持更新，我采用 submodule 方式管理），并通过自定义插件来实现 oh-my-zsh 中的某些特性。
