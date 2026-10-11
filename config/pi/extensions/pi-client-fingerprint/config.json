@@ -4,7 +4,8 @@
       "match": { "provider": "aio-cc", "modelIdRegex": "^claude-" },
       "headers": { "template": "claude-code.headers" },
       "body": { "billingHeader": true, "metadataUserId": true },
-      "systemPrompt": { "sanitizeClientName": true, "stripDocs": false }
+      "systemPrompt": { "sanitizeClientName": true, "stripDocs": false },
+      "tools": { "claudeCodeNames": true }
     },
     {
       "match": { "provider": "aio", "modelIdRegex": "^gpt-" },
