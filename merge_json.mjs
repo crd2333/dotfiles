@@ -51,6 +51,7 @@ const HOME = homedir();
 const PAIRS = `
 ${DOTFILES}/config/pi/settings.json|${HOME}/.pi/agent/settings.json|pi
 ${DOTFILES}/config/pi/models.json|${HOME}/.pi/agent/models.json|pi
+${DOTFILES}/config/pi/extensions/pi-crd233/pi-crd233.json|${HOME}/.pi/agent/extensions/pi-crd233/pi-crd233.json|pi
 `;
 
 const DRY_RUN = process.argv.slice(2).includes("--dry-run") || process.argv.slice(2).includes("-n");
