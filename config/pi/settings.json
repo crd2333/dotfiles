@@ -1,6 +1,6 @@
 {
-  "defaultProvider": "aio-ds",
-  "defaultModel": "deepseek-v4.1-flash",
+  "defaultProvider": "aio",
+  "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "medium",
   "defaultTools": ["+codemode", "+tool_search"],
   "theme": "dark",
