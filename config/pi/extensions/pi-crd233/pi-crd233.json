@@ -45,14 +45,34 @@
   },
   "subagents": {
     "models": {
-      "explore": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"],
-      "search": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"],
-      "check": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"],
-      "implement": ["aio-ds/deepseek-v4.1-flash", "aio-glm/glm-5.3-flash"]
+      "explore": [
+        {
+          "model": "aio-ds/deepseek-v4.1-flash",
+          "thinkingLevel": "high"
+        }
+      ],
+      "search": [
+        {
+          "model": "aio-ds/deepseek-v4.1-flash",
+          "thinkingLevel": "high"
+        }
+      ],
+      "check": [
+        {
+          "model": "aio-ds/deepseek-v4.1-flash",
+          "thinkingLevel": "high"
+        }
+      ],
+      "implement": [
+        {
+          "model": "aio-ds/deepseek-v4.1-flash",
+          "thinkingLevel": "high"
+        }
+      ]
     },
     "maxTurns": { "explore": 20, "search": 20, "check": 25, "implement": 40 },
-    "maxBatch": 4,
-    "maxParallel": 3,
+    "maxBatch": 5,
+    "maxParallel": 4,
     "inheritContext": { "explore": false, "search": false, "check": false, "implement": false }
   },
   "modelFix": {
@@ -80,6 +100,12 @@
           "modelIdRegex": "^gpt-6-astra(?:-|$)"
         },
         "prompt": "gpt-6-astra.md"
+      },
+      {
+        "match": {
+          "modelIdRegex": "^gpt-6\\.1-sol(?:-|$)"
+        },
+        "prompt": "gpt-6.1-sol.md"
       }
     ]
   },

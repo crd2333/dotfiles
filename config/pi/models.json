@@ -103,6 +103,11 @@
         }
       ],
       "compat": {
+        "supportsOpenAIGrammarTools": true,
+        "supportsStrictMode": true,
+        "supportsAdditionalTools": true,
+        "supportsToolSearch": true,
+        "supportsMidConvoSystemMessages": true,
         "remoteCompaction": {
           "protocol": "v2"
         },
@@ -147,7 +152,11 @@
           },
           "compat": { "forceAdaptiveThinking": true }
         }
-      ]
+      ],
+      "compat": {
+        "supportsMidConvoSystemMessages": true,
+        "supportsMidConvoToolChanges": true
+      }
     },
     "aio-ds": {
       "name": "aio-ds",
@@ -240,8 +249,8 @@
       "api": "openai-completions",
       "models": [
         {
-          "id": "kimi-k3.1",
-          "name": "Kimi K3.1",
+          "id": "kimi-k3",
+          "name": "Kimi K3",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 1000000,
@@ -295,7 +304,12 @@
             "max": null
           }
         }
-      ]
+      ],
+      "compat": {
+        "supportsAdditionalTools": true,
+        "supportsToolSearch": true,
+        "supportsMidConvoSystemMessages": true
+      }
     },
     "aio-gemini": {
       "name": "aio-gemini",
