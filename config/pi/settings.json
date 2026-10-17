@@ -1,9 +1,9 @@
 {
   "defaultProvider": "aio",
   "defaultModel": "gpt-6.1-sol",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "cacheWarming": "idle",
-  "showCacheMissNotices": true,
+  "showCacheMissNotices": false,
   "defaultTools": ["+codemode", "+tool_search"],
   "theme": "dark",
   "compaction": {
