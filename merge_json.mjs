@@ -1,26 +1,27 @@
 #!/usr/bin/env node
 /**
- * Merge JSON config overlays into live files, key by key.
+ * Generate JSON configs from tracked sources and machine-local overrides.
  *
  * Some tools own a JSON config file and keep rewriting it with their own
  * machine-local state (Pi writes `deviceId`, `packages`, and
  * `lastChangelogVersion` into `~/.pi/agent/settings.json`). Symlinking such a
  * file into dotfiles would drag that state around and dirty this repo on every
- * write. This script merges a tracked overlay into the live file instead and
- * leaves every key it does not define untouched.
+ * write. For these files, merge mode preserves keys not defined by the source.
+ * Fully managed configs use replace mode so removed keys do not linger.
  *
- * Entries are `source|target|tool`, one per line, like create_symlink.sh:
+ * Entries are `source|target|tool|mode`, one per line, like create_symlink.sh:
  *   source  tracked JSON file holding the keys to enforce
  *   target  live JSON file to merge into (created when missing)
  *   tool    optional command or absolute path; the entry is skipped when the
  *           tool is not installed (empty column = always)
+ *   mode    merge (default): preserve live keys; replace: rebuild from source
  *
  * A sibling `<source stem>.local.json` (e.g. `settings.json` ->
  * `settings.local.json`) is merged after the source when it exists, so
  * machine-local overrides stay untracked via the repo's `*.local.json` rule.
  *
  * Merge rules: later layers win per key; objects merge recursively; arrays and
- * scalars are replaced. Keys that only exist in the target are preserved.
+ * scalars are replaced. Only merge mode preserves keys from the target.
  *
  * A target that is still a symlink (left over from a previous symlink-managed
  * setup, e.g. `~/.pi/agent/models.json -> dotfiles/config/pi/models.json`) is
@@ -46,12 +47,12 @@ import { fileURLToPath } from "node:url";
 const DOTFILES = dirname(fileURLToPath(import.meta.url));
 const HOME = homedir();
 
-// Merge list, each line is fully self-contained: source|target|tool
-//   tool column empty -> always merge
+// Merge list, each line is fully self-contained: source|target|tool|mode
+//   tool column empty -> always apply; mode omitted -> merge
 const PAIRS = `
-${DOTFILES}/config/pi/settings.json|${HOME}/.pi/agent/settings.json|pi
-${DOTFILES}/config/pi/models.json|${HOME}/.pi/agent/models.json|pi
-${DOTFILES}/config/pi/extensions/pi-crd233/pi-crd233.json|${HOME}/.pi/agent/extensions/pi-crd233/pi-crd233.json|pi
+${DOTFILES}/config/pi/settings.json|${HOME}/.pi/agent/settings.json|pi|merge
+${DOTFILES}/config/pi/models.json|${HOME}/.pi/agent/models.json|pi|replace
+${DOTFILES}/config/pi/extensions/pi-crd233/pi-crd233.json|${HOME}/.pi/agent/extensions/pi-crd233/pi-crd233.json|pi|replace
 `;
 
 const DRY_RUN = process.argv.slice(2).includes("--dry-run") || process.argv.slice(2).includes("-n");
@@ -137,7 +138,7 @@ function toolInstalled(candidate) {
   return false;
 }
 
-function mergeEntry(source, target, tool) {
+function mergeEntry(source, target, tool, mode) {
   if (!toolInstalled(tool)) {
     console.log(`[merge] skipped (${tool} not installed): ${target}`);
     return true;
@@ -157,7 +158,7 @@ function mergeEntry(source, target, tool) {
   let overlay;
   let local;
   try {
-    live = readJson(target) ?? {};
+    live = mode === "merge" ? readJson(target) ?? {} : {};
     overlay = readJson(source) ?? {};
     local = hasLocal ? readJson(localSource) ?? {} : {};
   } catch (error) {
@@ -201,13 +202,13 @@ function main() {
     const line = rawLine.trim();
     if (line === "" || line.startsWith("#")) continue;
 
-    const [source, target, tool = ""] = line.split("|").map((part) => part.trim());
-    if (!source || !target) {
-      console.error(`[merge] error: malformed entry (expected source|target|tool): ${line}`);
+    const [source, target, tool = "", mode = "merge"] = line.split("|").map((part) => part.trim());
+    if (!source || !target || !["merge", "replace"].includes(mode)) {
+      console.error(`[merge] error: malformed entry (expected source|target|tool|merge-or-replace): ${line}`);
       ok = false;
       continue;
     }
-    if (!mergeEntry(source, target, tool)) ok = false;
+    if (!mergeEntry(source, target, tool, mode)) ok = false;
   }
   return ok ? 0 : 1;
 }
