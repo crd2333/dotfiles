@@ -27,7 +27,18 @@
 
       "~/.pi/agent/auth.json": "deny",
       "~/.pi/agent/models.json": "ask",
-      "~/.pi/agent/pi-crd233.json": "deny"
+      "~/.pi/agent/extensions/pi-crd233/pi-crd233.json": "deny"
+    },
+
+    "external_directory_read": {
+      "/usr": "allow",
+      "/usr/*": "allow",
+      "/opt": "allow",
+      "/opt/*": "allow",
+      "/etc/systemd": "allow",
+      "/etc/systemd/*": "allow",
+      "/var/log": "allow",
+      "/var/log/*": "allow"
     },
 
     "external_directory": {
@@ -44,6 +55,12 @@
       "~/downloads/*": "allow",
       "~/Downloads": "allow",
       "~/Downloads/*": "allow",
+      "~/documents": "allow",
+      "~/documents/*": "allow",
+      "~/.local": "allow",
+      "~/.local/*": "allow",
+      "~/.cache": "allow",
+      "~/.cache/*": "allow",
 
       "~/.pi": "allow",
       "~/.pi/agent": "allow",
@@ -63,9 +80,20 @@
       "~/miniconda3": "allow",
       "~/miniconda3/*": "allow",
 
-      "D:/NodeJS/npm_global": "allow",
-      "D:/NodeJS/npm_global/node_modules": "allow",
-      "D:/NodeJS/npm_global/node_modules/*": "allow",
+      "~/AppData/Local/Temp": "allow",
+      "~/AppData/Local/Temp/*": "allow",
+      "~/.agents": "allow",
+      "~/.agents/*": "allow",
+      "~/AppData/Roaming/PiDeck/chat-workspace": "allow",
+      "~/AppData/Roaming/PiDeck/chat-workspace/*": "allow",
+      "~/AppData/Local/browser-testing": "allow",
+      "~/AppData/Local/browser-testing/*": "allow",
+      "~/dotfiles": "allow",
+      "~/dotfiles/*": "allow",
+      "C:/tmp": "allow",
+      "C:/tmp/*": "allow",
+      "D:/NodeJS": "allow",
+      "D:/NodeJS/*": "allow",
       "D:/AITools": "allow",
       "D:/AITools/*": "allow",
       "D:/下载": "allow",
