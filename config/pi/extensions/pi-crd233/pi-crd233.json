@@ -1,38 +1,85 @@
 {
   "network": {
-    "providers": ["tavily", "exa"],
+    "providers": [
+      "deepseek",
+      "tavily",
+      "exa"
+    ],
+    "search": {
+      "mode": "parallel"
+    },
+    "curator": {
+      "model": "aio-ds/deepseek-v4.1-flash"
+    },
     "fetch": {
-      "order": ["tavily", "firecrawl", "smart", "direct"]
+      "order": [
+        "deepseek",
+        "tavily",
+        "firecrawl",
+        "smart",
+        "direct"
+      ]
     },
     "proxy": {
-      "access": {
-        "github": "allow",
-        "ai_docs": "allow",
-        "ai_sites": "allow",
-        "google_ai": "allow",
-        "huggingface": "allow",
-        "youtube": "allow",
-        "paper": "allow",
-        "research_apis": "allow",
-        "dns": "allow"
-      },
-      "categories": {
-        "github": ["github.com", "githubusercontent.com", "githubassets.com"],
-        "ai_docs": ["platform.openai.com", "platform.claude.com", "developers.openai.com", "docs.anthropic.com", "docs.claude.com", "ai.google.dev", "docs.x.ai", "docs.mistral.ai", "docs.cohere.com", "docs.perplexity.ai", "console.groq.com", "docs.together.ai", "docs.fireworks.ai", "docs.ollama.com", "ai-sdk.dev", "agentskills.io", "z.ai", "vllm.ai"],
-        "ai_sites": ["chatgpt.com", "claude.ai", "gemini.google.com", "aistudio.google.com", "perplexity.ai", "poe.com", "replicate.com", "openrouter.ai"],
-        "google_ai": ["ai.google.dev", "generativelanguage.googleapis.com", "aiplatform.googleapis.com"],
-        "huggingface": ["huggingface.co", "hf.co"],
-        "youtube": ["youtube.com", "youtu.be", "youtube-nocookie.com", "googlevideo.com", "ytimg.com"],
-        "paper": ["arxiv.org", "openreview.net", "nature.com"],
-        "research_apis": ["tavily.com", "firecrawl.dev", "context7.com", "semanticscholar.org", "openalex.org"],
-        "dns": ["cloudflare-dns.com"]
-      }
+      "url": "http://127.0.0.1:19198",
+      "hosts": [
+        "github.com",
+        "githubusercontent.com",
+        "githubassets.com",
+        "platform.openai.com",
+        "platform.claude.com",
+        "developers.openai.com",
+        "docs.anthropic.com",
+        "docs.claude.com",
+        "ai.google.dev",
+        "docs.x.ai",
+        "docs.mistral.ai",
+        "docs.cohere.com",
+        "docs.perplexity.ai",
+        "console.groq.com",
+        "docs.together.ai",
+        "docs.fireworks.ai",
+        "docs.ollama.com",
+        "ai-sdk.dev",
+        "agentskills.io",
+        "z.ai",
+        "vllm.ai",
+        "chatgpt.com",
+        "claude.ai",
+        "gemini.google.com",
+        "aistudio.google.com",
+        "perplexity.ai",
+        "poe.com",
+        "replicate.com",
+        "openrouter.ai",
+        "generativelanguage.googleapis.com",
+        "aiplatform.googleapis.com",
+        "huggingface.co",
+        "hf.co",
+        "youtube.com",
+        "youtu.be",
+        "youtube-nocookie.com",
+        "googlevideo.com",
+        "ytimg.com",
+        "arxiv.org",
+        "openreview.net",
+        "nature.com",
+        "tavily.com",
+        "firecrawl.dev",
+        "context7.com",
+        "semanticscholar.org",
+        "openalex.org",
+        "cloudflare-dns.com"
+      ]
     },
     "dns": {
       "mode": "doh",
       "doh": {
         "url": "https://cloudflare-dns.com/dns-query",
-        "bootstrapAddresses": ["1.1.1.1", "1.0.0.1"],
+        "bootstrapAddresses": [
+          "1.1.1.1",
+          "1.0.0.1"
+        ],
         "timeoutMs": 5000
       }
     },
@@ -70,10 +117,20 @@
         }
       ]
     },
-    "maxTurns": { "explore": 20, "search": 20, "check": 25, "implement": 40 },
+    "maxTurns": {
+      "explore": 30,
+      "search": 30,
+      "check": 40,
+      "implement": 50
+    },
     "maxBatch": 5,
     "maxParallel": 4,
-    "inheritContext": { "explore": false, "search": false, "check": false, "implement": false }
+    "inheritContext": {
+      "explore": false,
+      "search": false,
+      "check": false,
+      "implement": false
+    }
   },
   "modelFix": {
     "rules": [
@@ -90,10 +147,10 @@
         "prompt": "glm-5.3.md"
       },
       {
-          "match": {
-            "modelIdRegex": "^deepseek-v4\\.1-flash(?:-|$)"
-          },
-          "prompt": "deepseek-v4.1-flash.md"
+        "match": {
+          "modelIdRegex": "^deepseek-v4\\.1-flash(?:-|$)"
+        },
+        "prompt": "deepseek-v4.1-flash.md"
       },
       {
         "match": {
