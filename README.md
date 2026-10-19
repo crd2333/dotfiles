@@ -14,7 +14,14 @@ node ~/dotfiles/merge_json.mjs --dry-run
 node ~/dotfiles/merge_json.mjs
 ```
 
-合并顺序是：目标现有内容 → dotfiles 中受版本控制的 JSON → 同目录的 `*.local.json`。对象递归合并，数组和标量整体替换；目标独有的键保留。已有的目标软链接会转换为普通文件，不会把合并结果写回受版本控制的源文件。
+按文件区分两种生成策略：
+
+- `settings.json` 使用 `merge`：目标现有内容 → 公共 JSON → 同目录的 `settings.local.json`，保留 Pi 写入的 `deviceId`、`packages`、`lastChangelogVersion` 等目标独有键。
+- `models.json` 和 `pi-crd233.json` 使用 `replace`：仅由公共 JSON → 同目录的 `*.local.json` 完整生成，不继承目标内容。公共配置或 local 中删除的键会从生成结果中消失，避免 breaking changes 后残留旧结构。
+
+各层之间对象递归合并，数组和标量整体替换，local 优先级最高。已有的目标软链接会转换为普通文件，不会把生成结果写回受版本控制的源文件。
+
+**首次使用 `replace` 策略前，请备份现有目标文件，并将其中需要保留的凭据、本机配置迁入对应的 `*.local.json`。只存在于目标中的值会被清除。** 从公共配置删除的旧字段也应从 local 中移除，否则 local 会再次加入这些字段。
 
 `pi-crd233` 的公共配置位于 `config/pi/extensions/pi-crd233/pi-crd233.json`，API key、代理地址等本机配置放在同目录的 `pi-crd233.local.json`（已被 Git 忽略）。迁移机器时统一迁移 dotfiles 中的 local 文件，再运行 merge。插件只读取生成的 `~/.pi/agent/extensions/pi-crd233/pi-crd233.json`，不读取 local 文件或旧的 private 文件。
 
