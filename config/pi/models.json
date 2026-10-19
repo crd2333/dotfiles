@@ -113,9 +113,6 @@
         "supportsMidConvoSystemMessages": true,
         "remoteCompaction": {
           "protocol": "v2"
-        },
-        "responsesWebSocket": {
-          "mode": "auto"
         }
       }
     },
