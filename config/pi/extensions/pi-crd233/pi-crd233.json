@@ -9,7 +9,9 @@
       "mode": "parallel"
     },
     "curator": {
-      "model": "aio-ds/deepseek-v4.1-flash"
+      "model": "aio-ds/deepseek-v4.1-flash",
+      "thinkingLevel": "low",
+      "retryOnce": true
     },
     "fetch": {
       "order": [
