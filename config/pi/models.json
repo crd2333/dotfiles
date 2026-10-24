@@ -210,11 +210,11 @@
       "api": "openai-completions",
       "models": [
         {
-          "id": "kimi-k3",
-          "name": "Kimi K3",
+          "id": "kimi-k3.1-pro",
+          "name": "Kimi K3.1 Pro",
           "reasoning": true,
           "input": ["text", "image"],
-          "cost": { "input": 3, "output": 15, "cacheRead": 0.3, "cacheWrite": 3 },
+          "cost": { "input": 2, "output": 10, "cacheRead": 0.2, "cacheWrite": 2 },
           "contextWindow": 1000000,
           "maxTokens": 131072,
           "thinkingLevelMap": {

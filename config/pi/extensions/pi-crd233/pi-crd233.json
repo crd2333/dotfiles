@@ -1,7 +1,6 @@
 {
   "network": {
     "providers": [
-      "deepseek",
       "tavily",
       "exa"
     ],
@@ -15,7 +14,6 @@
     },
     "fetch": {
       "order": [
-        "deepseek",
         "tavily",
         "firecrawl",
         "smart",
@@ -120,10 +118,10 @@
       ]
     },
     "maxTurns": {
-      "explore": 30,
-      "search": 30,
-      "check": 40,
-      "implement": 50
+      "explore": 60,
+      "search": 60,
+      "check": 80,
+      "implement": 100
     },
     "maxBatch": 5,
     "maxParallel": 4,
