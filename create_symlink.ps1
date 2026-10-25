@@ -61,6 +61,7 @@ $Dotfiles\config\pi\keybindings.json|$Home\.pi\agent\keybindings.json|pi|
 $Dotfiles\config\pi\extensions\pi-permission-system\config.json|$Home\.pi\agent\extensions\pi-permission-system\config.json|pi|
 $Dotfiles\config\pi\extensions\pi-client-fingerprint\config.json|$Home\.pi\agent\extensions\pi-client-fingerprint\config.json|pi|
 $Dotfiles\config\pi\pi-vcc-config.json|$Home\.pi\agent\pi-vcc-config.json|pi|
+$Dotfiles\config\pi\pi-tidy-tools.json|$Home\.pi\agent\pi-tidy-tools.json|pi|
 $Dotfiles\.curlrc|$Home\.curlrc|curl|
 "@
 
