@@ -1,0 +1,10 @@
+{
+  "protocol": "openai-compatible",
+  "base_url": "http://127.0.0.1:37123/v1",
+  "api_key": "aio",
+  "model": "gpt-image-2.5-flare",
+  "defaults": {
+    "size": "1024x1024",
+    "timeout_seconds": 600
+  }
+}

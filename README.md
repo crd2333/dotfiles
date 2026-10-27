@@ -61,7 +61,8 @@ ln -s /home/<user>/dotfiles/.zsh/.zshrc ~/.zshrc
 ln -s /home/<user>/dotfiles/.tmux.conf ~/.tmux.conf
 ln -s /home/<user>/dotfiles/.gitconfig ~/.gitconfig
 ln -s /home/<user>/dotfiles/.condarc ~/.condarc
-ln -s /home/<user>/dotfiles/config ~/.config
+mkdir -p ~/.config/pip
+ln -s /home/<user>/dotfiles/config/pip/pip.conf ~/.config/pip/pip.conf
 # if in Windows (PowerShell)
 New-Item -ItemType SymbolicLink -Path $PROFILE -Target ".\posh\Microsoft.PowerShell_profile.ps1"
 # or in cmd (replace $PROFILE with the actual path, e.g. C:\Users\<user>\Documents\PowerShell\Microsoft.PowerShell_profile.ps1)

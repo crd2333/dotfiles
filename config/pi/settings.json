@@ -5,6 +5,7 @@
   "cacheWarming": "idle",
   "showCacheMissNotices": false,
   "defaultTools": ["+codemode", "+tool_search"],
+  "pendantBackgroundTerminals": false,
   "theme": "dark",
   "compaction": {
     "enabled": true
