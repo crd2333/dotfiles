@@ -62,7 +62,6 @@
         "googlevideo.com",
         "ytimg.com",
         "reddit.com",
-        "v2ex.com",
         "x.com",
         "twitter.com",
         "tiktok.com",
@@ -88,14 +87,24 @@
           "223.6.6.6"
         ],
         "timeoutMs": 5000
-      }
+      },
+      "routes": [
+        {
+          "hosts": ["reddit.com", "facebook.com"],
+          "doh": {
+            "url": "https://cloudflare-dns.com/dns-query",
+            "bootstrapAddresses": ["1.1.1.1", "1.0.0.1"],
+            "timeoutMs": 5000
+          }
+        }
+      ]
     },
     "platforms": {
       "xiaohongshu": { "mode": "authenticated" },
       "bilibili": { "mode": "authenticated" },
       "youtube": { "mode": "authenticated" },
       "reddit": { "mode": "authenticated" },
-      "v2ex": { "mode": "authenticated" },
+      "v2ex": { "mode": "anonymous" },
       "zhihu": { "mode": "authenticated" },
       "twitter": { "mode": "authenticated" },
       "weibo": { "mode": "authenticated" },
