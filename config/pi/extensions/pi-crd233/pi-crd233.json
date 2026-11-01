@@ -61,6 +61,13 @@
         "youtube-nocookie.com",
         "googlevideo.com",
         "ytimg.com",
+        "reddit.com",
+        "v2ex.com",
+        "x.com",
+        "twitter.com",
+        "tiktok.com",
+        "instagram.com",
+        "facebook.com",
         "arxiv.org",
         "openreview.net",
         "nature.com",
@@ -75,13 +82,27 @@
     "dns": {
       "mode": "doh",
       "doh": {
-        "url": "https://cloudflare-dns.com/dns-query",
+        "url": "https://dns.alidns.com/dns-query",
         "bootstrapAddresses": [
-          "1.1.1.1",
-          "1.0.0.1"
+          "223.5.5.5",
+          "223.6.6.6"
         ],
         "timeoutMs": 5000
       }
+    },
+    "platforms": {
+      "xiaohongshu": { "mode": "authenticated" },
+      "bilibili": { "mode": "authenticated" },
+      "youtube": { "mode": "authenticated" },
+      "reddit": { "mode": "authenticated" },
+      "v2ex": { "mode": "authenticated" },
+      "zhihu": { "mode": "authenticated" },
+      "twitter": { "mode": "authenticated" },
+      "weibo": { "mode": "authenticated" },
+      "douyin": { "mode": "authenticated" },
+      "tiktok": { "mode": "authenticated" },
+      "instagram": { "mode": "authenticated" },
+      "facebook": { "mode": "authenticated" }
     },
     "tavily": {
       "searchDepth": "advanced",
@@ -106,7 +127,7 @@
       ],
       "check": [
         {
-          "model": "aio-ds/deepseek-v4.1-flash",
+          "model": "aio-kimi/kimi-k3.1-pro",
           "thinkingLevel": "high"
         }
       ],
