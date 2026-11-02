@@ -67,30 +67,6 @@
       "leading_diamond": "<#7eb8da>\u2523</>",
       "segments": [
         {
-          "foreground": "#7eb8da",
-          "style": "diamond",
-          "template": "[<#ffffff>\uebd8</> Subscription: <#ffff00>{{ .Name }}</>]",
-          "type": "az"
-        },
-        {
-          "foreground": "#7eb8da",
-          "style": "diamond",
-          "template": "[<#ffffff>\uebd8</> Azure Developer CLI Environment: <#ffff00>{{ .DefaultEnvironment  }}</> :: <#ffff00>{{ .Version }}</>]",
-          "type": "azd"
-        },
-        {
-          "foreground": "#7eb8da",
-          "style": "diamond",
-          "template": "[<#ffffff>\uf270</> <#ffff00>{{ .Profile }}</>{{if .Region}}@<#ffff00>{{ .Region }}</>{{ end }}]",
-          "type": "aws"
-        },
-        {
-          "foreground": "#7eb8da",
-          "style": "diamond",
-          "template": "[{{ if .Error }}{{ .Error }}{{ else }}<#ffffff>\uf1a0</> <#ffff00>{{ .Project }}</> :: <#ffff00>{{.Account}}</>{{ end }}]",
-          "type": "gcp"
-        },
-        {
           "foreground": "#ffa5d8",
           "style": "diamond",
           "template": "[<#ffffff>\udb84\udcfe</> <#ffff00>{{.Context}}</>{{if .Namespace}} :: <#ffff00>{{.Namespace}}</>{{end}}]",

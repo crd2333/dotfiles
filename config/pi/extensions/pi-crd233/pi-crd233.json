@@ -75,7 +75,8 @@
         "context7.com",
         "semanticscholar.org",
         "openalex.org",
-        "cloudflare-dns.com"
+        "cloudflare-dns.com",
+        "twimg.com"
       ]
     },
     "dns": {
@@ -90,28 +91,63 @@
       },
       "routes": [
         {
-          "hosts": ["reddit.com", "facebook.com"],
+          "hosts": [
+            "reddit.com",
+            "facebook.com",
+            "tiktok.com",
+            "instagram.com",
+            "x.com",
+            "twitter.com",
+            "twimg.com"
+          ],
           "doh": {
             "url": "https://cloudflare-dns.com/dns-query",
-            "bootstrapAddresses": ["1.1.1.1", "1.0.0.1"],
+            "bootstrapAddresses": [
+              "1.1.1.1",
+              "1.0.0.1"
+            ],
             "timeoutMs": 5000
           }
         }
       ]
     },
     "platforms": {
-      "xiaohongshu": { "mode": "authenticated" },
-      "bilibili": { "mode": "authenticated" },
-      "youtube": { "mode": "authenticated" },
-      "reddit": { "mode": "authenticated" },
-      "v2ex": { "mode": "anonymous" },
-      "zhihu": { "mode": "authenticated" },
-      "twitter": { "mode": "authenticated" },
-      "weibo": { "mode": "authenticated" },
-      "douyin": { "mode": "authenticated" },
-      "tiktok": { "mode": "authenticated" },
-      "instagram": { "mode": "authenticated" },
-      "facebook": { "mode": "authenticated" }
+      "xiaohongshu": {
+        "mode": "authenticated"
+      },
+      "bilibili": {
+        "mode": "authenticated"
+      },
+      "youtube": {
+        "mode": "authenticated"
+      },
+      "reddit": {
+        "mode": "authenticated"
+      },
+      "v2ex": {
+        "mode": "anonymous"
+      },
+      "zhihu": {
+        "mode": "authenticated"
+      },
+      "twitter": {
+        "mode": "authenticated"
+      },
+      "weibo": {
+        "mode": "authenticated"
+      },
+      "douyin": {
+        "mode": "authenticated"
+      },
+      "tiktok": {
+        "mode": "authenticated"
+      },
+      "instagram": {
+        "mode": "authenticated"
+      },
+      "facebook": {
+        "mode": "authenticated"
+      }
     },
     "tavily": {
       "searchDepth": "advanced",
