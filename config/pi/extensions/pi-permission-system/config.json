@@ -13,6 +13,13 @@
   "piInfrastructureReadPaths": [],
   "authorizerChain": [],
 
+  "commandEffects": {
+    "readlink": { "effects": "read" },
+    "du": { "effects": "read" },
+    "df": { "effects": "read" },
+    "cmp": { "effects": "read" }
+  },
+
   "permission": {
     "*": "allow",
 
@@ -38,7 +45,22 @@
       "/etc/systemd": "allow",
       "/etc/systemd/*": "allow",
       "/var/log": "allow",
-      "/var/log/*": "allow"
+      "/var/log/*": "allow",
+
+      "C:/Program Files": "allow",
+      "C:/Program Files/*": "allow",
+      "C:/Program Files (x86)": "allow",
+      "C:/Program Files (x86)/*": "allow",
+      "D:/Microsoft VS Code": "allow",
+      "D:/Microsoft VS Code/*": "allow",
+      "D:/Sparkle": "allow",
+      "D:/Sparkle/*": "allow",
+      "~/AppData/Local/Programs": "allow",
+      "~/AppData/Local/Programs/*": "allow",
+      "~/AppData/Roaming/sparkle": "allow",
+      "~/AppData/Roaming/sparkle/*": "allow",
+      "~/AppData/Roaming/uv": "allow",
+      "~/AppData/Roaming/uv/*": "allow"
     },
 
     "external_directory": {
@@ -47,6 +69,7 @@
       "/tmp": "allow",
       "/tmp/*": "allow",
 
+      "~": "allow",
       "~/projects": "allow",
       "~/projects/*": "allow",
       "~/dev": "allow",
@@ -64,6 +87,11 @@
 
       "~/.pi": "allow",
       "~/.pi/agent": "allow",
+      "~/.pi/agent/settings.json": "allow",
+      "~/.pi/agent/skills": "allow",
+      "~/.pi/agent/skills/*": "allow",
+      "~/.pi/agent/extensions": "allow",
+      "~/.pi/agent/extensions/*": "allow",
       "~/.pi/agent/sessions": "allow",
       "~/.pi/agent/sessions/*": "allow",
       "~/.pi/agent/npm": "allow",
@@ -100,6 +128,16 @@
       "D:/下载/*": "allow",
       "D:/MiniConda": "allow",
       "D:/MiniConda/*": "allow",
+      "D:/documents": "allow",
+      "D:/documents/*": "allow",
+      "~/ego": "allow",
+      "~/ego/*": "allow",
+      "~/scripts": "allow",
+      "~/scripts/*": "allow",
+
+      "/ssd*": "allow",
+      "/hdd*": "allow",
+      "/nas*": "allow",
 
       "/data": "allow",
       "/data/*": "allow",
