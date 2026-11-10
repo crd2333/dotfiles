@@ -338,6 +338,35 @@ pinfo() {
 
 
 # ===== Coding Agents with Proxy Support =====
+_coding_agent_in_vscode() {
+    local cmd=$1
+    shift
+
+    # Leave pipelines, GUI/RPC clients and explicit non-interactive modes alone.
+    local arg
+    for arg in "$@"; do
+        case "$cmd:$arg" in
+            pi:-p|pi:--print|pi:--mode|pi:--mode=*|claude:-p|claude:--print|claude:--output-format|claude:--output-format=*)
+                command "$cmd" "$@"
+                return $?
+                ;;
+        esac
+    done
+    case "$cmd:${1-}" in
+        codex:exec|codex:e|codex:review|codex:mcp-server|codex:app-server|codex:exec-server|opencode:run|opencode:serve|opencode:web|opencode:acp)
+            command "$cmd" "$@"
+            return $?
+            ;;
+    esac
+
+    if [[ $TERM_PROGRAM == vscode && -n $VSCODE_SSH_HOST && -t 0 && -t 1 && -t 2 ]] \
+        && command -v python3 >/dev/null 2>&1 && command -v script >/dev/null 2>&1; then
+        command python3 "$ZSH/lib/coding-agent-terminal.py" "$cmd" "$@"
+    else
+        command "$cmd" "$@"
+    fi
+}
+
 _coding_agent_with_proxy() {
     local cmd=$1
     local local_re=$2
@@ -356,12 +385,12 @@ _coding_agent_with_proxy() {
     done
 
     if (( force_no_proxy )); then
-        (unset_proxy > /dev/null 2>&1; command "$cmd" "${args[@]}")
+        (unset_proxy > /dev/null 2>&1; _coding_agent_in_vscode "$cmd" "${args[@]}")
     elif [[ -n "${args[1]-}" && "${args[1]}" =~ $local_re ]]; then
-        (command "$cmd" "${args[@]}")
+        (_coding_agent_in_vscode "$cmd" "${args[@]}")
     else
         echo "Setting ${cmd} with proxy..."
-        (system_proxy > /dev/null 2>&1; command "$cmd" "${args[@]}")
+        (system_proxy > /dev/null 2>&1; _coding_agent_in_vscode "$cmd" "${args[@]}")
     fi
 }
 
@@ -377,7 +406,9 @@ codex() {
         '^(help|-h|--help|version|-v|-V|--version|completion|login|logout|mcp|plugin|mcp-server|app-server|remote-control|sandbox|debug|apply|a|exec-server|features)$' \
         "$@"
 }
-# Pi and ClaudeCode proxy config are in their config files, no need to wrap them here.
+# Pi and ClaudeCode manage their own proxy settings; only adapt terminal links.
+pi() { _coding_agent_in_vscode pi "$@"; }
+claude() { _coding_agent_in_vscode claude "$@"; }
 
 # Tokdash
 run_tokdash() {
