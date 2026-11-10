@@ -13,19 +13,25 @@ OSC8 = b"\x1b]8;"
 OSC_END = re.compile(rb"\x07|\x1b\\")
 ST = re.compile(rb"\x1b\\")
 LOCATION = re.compile(rb":\d+(?::\d+)?$")
+SCHEME = re.compile(rb"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 
 
 class LinkRewriter:
-    def __init__(self, host):
+    def __init__(self, host, cwd=None):
         self.base = ("vscode://vscode-remote/ssh-remote+" + quote(host, safe="")).encode()
+        self.cwd = os.fsencode(cwd) if cwd is not None else os.getcwdb()
         self.pending = b""
         self.string_end = None
 
     def target(self, target):
-        if not target.startswith(b"/") or target.startswith(b"//"):
+        if target.startswith(b"//"):
             return target
         location = LOCATION.search(target)
         path = target[:location.start()] if location else target
+        if not path or SCHEME.match(path):
+            return target
+        # Relative Markdown links use the same starting directory as the agent.
+        path = os.path.abspath(os.path.join(self.cwd, path))
         if not os.path.isfile(path):
             return target
         suffix = location.group() if location else b":1"

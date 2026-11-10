@@ -103,6 +103,31 @@ class LinkTests(unittest.TestCase):
         path.touch()
         self.assertTrue(module.LinkRewriter("yq31").target(os.fsencode(path)).endswith(b"/LICENSE:1"))
 
+    def test_relative_files_and_locations_resolve_against_agent_directory(self):
+        for relative, base in (
+            (os.fsencode(self.file.name), self.temp.name),
+            (b"./" + os.fsencode(self.file.name), self.temp.name),
+            (b"../" + os.fsencode(self.file.name), str(Path(self.temp.name) / "subdir")),
+        ):
+            for suffix in (b"", b":42", b":42:7"):
+                rewriter = module.LinkRewriter("yq31", cwd=base)
+                source = link(relative + suffix)
+                result = b"".join(rewriter.feed(bytes([c])) for c in source) + rewriter.finish()
+                self.assertEqual(result, link(self.uri + (suffix or b":1")))
+
+    def test_relative_directory_and_missing_file_are_preserved(self):
+        rewriter = module.LinkRewriter("yq31", cwd=Path(self.temp.name).parent)
+        self.assertEqual(rewriter.target(os.fsencode(Path(self.temp.name).name)),
+                         os.fsencode(Path(self.temp.name).name))
+        self.assertEqual(rewriter.target(b"missing.png"), b"missing.png")
+
+    def test_explicit_uri_is_not_rewritten_even_if_matching_file_exists(self):
+        directory = Path(self.temp.name) / "https:"
+        directory.mkdir()
+        (directory / "example.com").touch()
+        rewriter = module.LinkRewriter("yq31", cwd=self.temp.name)
+        self.assertEqual(rewriter.target(b"https://example.com"), b"https://example.com")
+
     def test_other_targets_remain_identical(self):
         for target in (b"https://example.com/a?q=1", b"file:///tmp/a", b"relative/a.png",
                        b"//example.com/a", os.fsencode(self.temp.name), b"/missing/file", b""):
