@@ -115,6 +115,27 @@ class LinkTests(unittest.TestCase):
                 result = b"".join(rewriter.feed(bytes([c])) for c in source) + rewriter.finish()
                 self.assertEqual(result, link(self.uri + (suffix or b":1")))
 
+    def test_html_files_with_fragments_and_relative_paths(self):
+        relative = b"local/runs/11.13-ref2va-storyboard-control/index.html"
+        path = Path(self.temp.name) / os.fsdecode(relative)
+        path.parent.mkdir(parents=True)
+        path.touch()
+        absolute = os.fsencode(path)
+        uri = b"vscode://vscode-remote/ssh-remote+yq31" + absolute
+        for target in (absolute, relative, b"./" + relative):
+            for suffix, expected in ((b"", b":1"), (b"#round-3", b":1"),
+                                     (b":42#round-3", b":42"), (b"#round-3:99", b":1")):
+                with self.subTest(target=target, suffix=suffix):
+                    rewriter = module.LinkRewriter("yq31", cwd=self.temp.name)
+                    source = link(target + suffix)
+                    result = b"".join(rewriter.feed(bytes([c])) for c in source) + rewriter.finish()
+                    self.assertEqual(result, link(uri + expected))
+
+    def test_missing_files_and_fragment_only_links_are_preserved(self):
+        rewriter = module.LinkRewriter("yq31", cwd=self.temp.name)
+        for target in (b"missing.html#round-3", b"#round-3", b"https://example.com/#round-3"):
+            self.assertEqual(rewriter.target(target), target)
+
     def test_relative_directory_and_missing_file_are_preserved(self):
         rewriter = module.LinkRewriter("yq31", cwd=Path(self.temp.name).parent)
         self.assertEqual(rewriter.target(os.fsencode(Path(self.temp.name).name)),

@@ -26,16 +26,21 @@ class LinkRewriter:
     def target(self, target):
         if target.startswith(b"//"):
             return target
-        location = LOCATION.search(target)
-        path = target[:location.start()] if location else target
-        if not path or SCHEME.match(path):
-            return target
-        # Relative Markdown links use the same starting directory as the agent.
-        path = os.path.abspath(os.path.join(self.cwd, path))
-        if not os.path.isfile(path):
-            return target
-        suffix = location.group() if location else b":1"
-        return self.base + quote_from_bytes(path, safe="/").encode() + suffix
+        candidates = [target]
+        if b"#" in target:
+            # Prefer literal filenames containing '#'; editor opens ignore URL fragments.
+            candidates.append(target.partition(b"#")[0])
+        for candidate in candidates:
+            location = LOCATION.search(candidate)
+            path = candidate[:location.start()] if location else candidate
+            if not path or SCHEME.match(path):
+                return target
+            # Relative Markdown links use the same starting directory as the agent.
+            path = os.path.abspath(os.path.join(self.cwd, path))
+            if os.path.isfile(path):
+                suffix = location.group() if location else b":1"
+                return self.base + quote_from_bytes(path, safe="/").encode() + suffix
+        return target
 
     def feed(self, data):
         self.pending += data
