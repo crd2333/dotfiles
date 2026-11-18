@@ -1,6 +1,6 @@
 {
   "defaultProvider": "aio",
-  "defaultModel": "gpt-6.1-sol",
+  "defaultModel": "gpt-6.2-sol",
   "defaultThinkingLevel": "high",
   "cacheWarming": "idle",
   "showCacheMissNotices": false,
