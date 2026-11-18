@@ -8,6 +8,7 @@
   "pendantBackgroundTerminals": false,
   "fullscreenCopyOnSelect": false,
   "theme": "dark",
+  "outputPad": 0,
   "compaction": {
     "enabled": true
   },
