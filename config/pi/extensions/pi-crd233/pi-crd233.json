@@ -229,6 +229,18 @@
           "modelIdRegex": "^gpt-6\\.1-sol(?:-|$)"
         },
         "prompt": "gpt-6.1-sol.md"
+      },
+      {
+        "match": {
+          "modelIdRegex": "^gpt-6\\.2-astra(?:-|$)"
+        },
+        "prompt": "gpt-6.2-astra.md"
+      },
+      {
+        "match": {
+          "modelIdRegex": "^gpt-6\\.2-sol(?:-|$)"
+        },
+        "prompt": "gpt-6.2-sol.md"
       }
     ]
   },

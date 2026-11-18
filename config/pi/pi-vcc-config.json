@@ -7,7 +7,8 @@
     "aio",
     "openai-codex",
     "openai",
-    "sub2"
+    "sub2",
+    "shuai"
   ],
   "skipCustomTypes": [],
   "trackCommands": []
