@@ -6,6 +6,7 @@
   "showCacheMissNotices": false,
   "defaultTools": ["+codemode", "+tool_search"],
   "pendantBackgroundTerminals": false,
+  "fullscreenCopyOnSelect": false,
   "theme": "dark",
   "compaction": {
     "enabled": true
