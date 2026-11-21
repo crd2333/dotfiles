@@ -58,6 +58,7 @@
         "supportsAdditionalTools": true,
         "supportsToolSearch": true,
         "supportsMidConvoSystemMessages": true,
+        "responsesInstructionsPlaceholder": true,
         "remoteCompaction": {
           "protocol": "v2"
         }

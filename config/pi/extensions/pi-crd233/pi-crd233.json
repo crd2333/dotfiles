@@ -249,5 +249,11 @@
       "openai/gpt-6.1-sol",
       "openai/gpt-6-*"
     ]
+  },
+  "explain": {
+    "prompt": "{sourceModel} 的上一条答复讲得太简略。请用用户的语言重新讲一遍：先说最重要的结论，再补上理解它所必需的背景和理由。如果用户附了追问，先直接回答追问，只补必要背景。",
+    "model": "aio-ds/deepseek-v4.1-flash",
+    "thinkingLevel": "low",
+    "history": "restore"
   }
 }
