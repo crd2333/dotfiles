@@ -189,8 +189,8 @@
       "check": 80,
       "implement": 100
     },
-    "maxBatch": 5,
-    "maxParallel": 4,
+    "maxBatch": 10,
+    "maxParallel": 5,
     "inheritContext": {
       "explore": false,
       "search": false,
@@ -247,7 +247,8 @@
   "modelFilter": {
     "allow": [
       "openai/gpt-6.1-sol",
-      "openai/gpt-6-*"
+      "openai/gpt-6-*",
+      "antigravity-acp/*"
     ]
   },
   "explain": {
