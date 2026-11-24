@@ -115,6 +115,7 @@ source $ZSH/plugins/slash-spliter-keybindings.zsh
 export PATH="$HOME/.local/bin${PATH:+:$PATH}"  # user-level local bin
 export PATH="$HOME/.bun/bin${PATH:+:$PATH}"  # bun
 export PATH="$HOME/opt/texlive/2026/bin/x86_64-linux${PATH:+:$PATH}"  # texlive
+export PATH="/home/REDACTED/.local/bin:$PATH"  # Antigravity CLI
 
 # cuda
 export CUDA_HOME=/usr/local/cuda-12.8   # change cuda version here

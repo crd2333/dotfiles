@@ -11,5 +11,6 @@
     "shuai"
   ],
   "skipCustomTypes": [],
-  "trackCommands": []
+  "trackCommands": [],
+  "summarizeBranches": true
 }

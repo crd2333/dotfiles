@@ -13,3 +13,7 @@ end
 
 # user-level local bin (previously added by uv's conf.d/uv.env.fish snippet)
 fish_add_path $HOME/.local/bin
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/REDACTED/.local/bin" $PATH

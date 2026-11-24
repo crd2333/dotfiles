@@ -222,33 +222,34 @@
         "match": {
           "modelIdRegex": "^gpt-6-astra(?:-|$)"
         },
-        "prompt": "gpt-6-astra.md"
+        "prompt": "gpt-6.md"
       },
       {
         "match": {
           "modelIdRegex": "^gpt-6\\.1-sol(?:-|$)"
         },
-        "prompt": "gpt-6.1-sol.md"
+        "prompt": "gpt-6.md"
       },
       {
         "match": {
           "modelIdRegex": "^gpt-6\\.2-astra(?:-|$)"
         },
-        "prompt": "gpt-6.2-astra.md"
+        "prompt": "gpt-6.2.md"
       },
       {
         "match": {
           "modelIdRegex": "^gpt-6\\.2-sol(?:-|$)"
         },
-        "prompt": "gpt-6.2-sol.md"
+        "prompt": "gpt-6.2.md"
       }
     ]
   },
   "modelFilter": {
     "allow": [
-      "openai/gpt-6.1-sol",
       "openai/gpt-6-*",
-      "antigravity-acp/*"
+      "antigravity-acp/gemini-4-*",
+      "antigravity-acp/gemini-3.8-flash",
+      "antigravity-acp/claude-*"
     ]
   },
   "explain": {

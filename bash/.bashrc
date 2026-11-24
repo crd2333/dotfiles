@@ -134,3 +134,7 @@ unset __conda_setup
 
 export PATH="$HOME/.local/bin${PATH:+:$PATH}"  # user-level local bin
 . "$HOME/.cargo/env"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/REDACTED/.local/bin:$PATH"
