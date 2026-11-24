@@ -6,6 +6,7 @@
   "yoloMode": false,
 
   "forwardingTimeoutMs": 600000,
+  "promptTimeoutMs": 60000,
   "promptMaxRows": 24,
   "promptFieldMaxWidth": 400,
   "reviewLogFieldMaxWidth": 1000,

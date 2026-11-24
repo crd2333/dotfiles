@@ -198,6 +198,19 @@
       "implement": false
     }
   },
+  "idlePolicy": {
+    "permission": {
+      "onTimeout": "allow"
+    },
+    "subagent": {
+      "timeoutMs": 60000,
+      "onTimeout": "approve"
+    },
+    "questionnaire": {
+      "timeoutMs": 60000,
+      "onTimeout": "autonomous"
+    }
+  },
   "modelFix": {
     "rules": [
       {
