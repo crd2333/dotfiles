@@ -349,14 +349,14 @@ _coding_agent_in_vscode() {
     local arg
     for arg in "$@"; do
         case "$cmd:$arg" in
-            pi:-p|pi:--print|pi:--mode|pi:--mode=*|claude:-p|claude:--print|claude:--output-format|claude:--output-format=*)
+            pi:-p|pi:--print|pi:--mode|pi:--mode=*|claude:-p|claude:--print|claude:--output-format|claude:--output-format=*|agy:-p|agy:--print|agy:--prompt|agy:--print=*|agy:--prompt=*)
                 command "$cmd" "$@"
                 return $?
                 ;;
         esac
     done
     case "$cmd:${1-}" in
-        codex:exec|codex:e|codex:review|codex:mcp-server|codex:app-server|codex:exec-server|opencode:run|opencode:serve|opencode:web|opencode:acp)
+        codex:exec|codex:e|codex:review|codex:mcp-server|codex:app-server|codex:exec-server|opencode:run|opencode:serve|opencode:web|opencode:acp|agy:acp)
             command "$cmd" "$@"
             return $?
             ;;
@@ -392,8 +392,17 @@ _coding_agent_with_proxy() {
     elif [[ -n "${args[1]-}" && "${args[1]}" =~ $local_re ]]; then
         (_coding_agent_in_vscode "$cmd" "${args[@]}")
     else
-        echo "Setting ${cmd} with proxy..."
-        (system_proxy > /dev/null 2>&1; _coding_agent_in_vscode "$cmd" "${args[@]}")
+        if [[ "$cmd:${args[1]-}" != agy:acp ]]; then
+            echo "Setting ${cmd} with proxy..." >&2
+        fi
+        (
+            system_proxy > /dev/null 2>&1
+            if [[ $cmd == agy ]]; then
+                # agy prefers uppercase variables if the terminal already has them.
+                export HTTP_PROXY="$http_proxy" HTTPS_PROXY="$https_proxy"
+            fi
+            _coding_agent_in_vscode "$cmd" "${args[@]}"
+        )
     fi
 }
 
@@ -409,6 +418,11 @@ codex() {
         '^(help|-h|--help|version|-v|-V|--version|completion|login|logout|mcp|plugin|mcp-server|app-server|remote-control|sandbox|debug|apply|a|exec-server|features)$' \
         "$@"
 }
+# agy with proxy (use --no-proxy or --no_proxy to force skipping system proxy)
+agy() {
+    _coding_agent_with_proxy agy '^(help|-h|--help|--version)$' "$@"
+}
+
 # Pi and ClaudeCode manage their own proxy settings; only adapt terminal links.
 pi() { _coding_agent_in_vscode pi "$@"; }
 claude() { _coding_agent_in_vscode claude "$@"; }

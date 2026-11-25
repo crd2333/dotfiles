@@ -114,6 +114,36 @@ function codex {
 }
 
 
+# agy with proxy
+function agy {
+    [CmdletBinding(PositionalBinding = $false)]
+    param(
+        [Switch]$NoProxy,
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [string[]]$RemainingArgs
+    )
+
+    $agyBin = (Get-Command agy.exe -CommandType Application -ErrorAction Stop).Source
+    $first_arg = if ($RemainingArgs) { $RemainingArgs[0] } else { '' }
+    $oldHttpProxy = $env:HTTP_PROXY
+    $oldHttpsProxy = $env:HTTPS_PROXY
+    $oldAllProxy = $env:ALL_PROXY
+    try {
+        if ($NoProxy) {
+            unset_proxy 6> $null
+        } elseif ($first_arg -notmatch '^(help|-h|--help|--version)$') {
+            if ($first_arg -ne 'acp') { Write-Host 'Setting agy with proxy...' }
+            system_proxy 6> $null
+        }
+        & $agyBin @RemainingArgs
+    } finally {
+        $env:HTTP_PROXY = $oldHttpProxy
+        $env:HTTPS_PROXY = $oldHttpsProxy
+        $env:ALL_PROXY = $oldAllProxy
+    }
+}
+
+
 # Shared Node setup; ordinary terminals keep Conda lazy-loaded.
 . (Join-Path $HOME 'dotfiles\posh\lib\node-env.ps1')
 
