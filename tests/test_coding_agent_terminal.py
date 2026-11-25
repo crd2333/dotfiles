@@ -308,6 +308,69 @@ class ShellTests(unittest.TestCase):
         self.assertEqual(result[1], [str(WRAPPER), "codex", "a b"])
         self.assertEqual(result[2], "off")
 
+    def test_agy_restores_conversation_model_on_resume(self):
+        fake_home = Path(self.temp.name) / "home"
+        work_dir = fake_home / "work.dir+1"
+        work_dir.mkdir(parents=True)
+        cache_dir = fake_home / ".gemini" / "antigravity-cli" / "cache"
+        cache_dir.mkdir(parents=True)
+        (cache_dir / "last_conversations.json").write_text(
+            json.dumps({str(work_dir): "conv-carbon"}), encoding="utf-8"
+        )
+        for conv_id, models in (
+            ("conv-carbon", ["gemini-4-neon-high", "gemini-4-carbon-medium"]),
+            ("conv-neon", ["gemini-4-neon-xhigh"]),
+        ):
+            log_dir = fake_home / ".gemini" / "antigravity-cli" / "brain" / conv_id / ".system_generated" / "logs"
+            log_dir.mkdir(parents=True)
+            lines = [
+                json.dumps({"step_index": i, "type": "PLANNER_RESPONSE", "status": "DONE",
+                            "created_at": "2026-11-25T12:00:00Z", "model": m,
+                            "tool_calls": [{"args": '{"model":"nested-ignored"}'}]},
+                           separators=(",", ":"))
+                for i, m in enumerate(models)
+            ]
+            (log_dir / "transcript.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+        env = {"HOME": str(fake_home)}
+        # -c resolves cwd -> conv-carbon -> last model gemini-4-carbon-medium
+        res = self.run_shell(f"cd {work_dir!s} && agy -c", **env)
+        self.assertEqual(res, ["agy", ["--model", "gemini-4-carbon-medium", "-c"], "on"])
+
+        # -r / --resume= / --conversation
+        self.assertEqual(
+            self.run_shell("agy -r conv-neon", **env),
+            ["agy", ["--model", "gemini-4-neon-xhigh", "-r", "conv-neon"], "on"],
+        )
+        self.assertEqual(
+            self.run_shell("agy --resume=conv-carbon", **env),
+            ["agy", ["--model", "gemini-4-carbon-medium", "--resume=conv-carbon"], "on"],
+        )
+        self.assertEqual(
+            self.run_shell("agy --no-proxy --conversation conv-neon", **env),
+            ["agy", ["--model", "gemini-4-neon-xhigh", "--conversation", "conv-neon"], "off"],
+        )
+
+        # Explicit --model or --settings with model must NOT be overridden
+        self.assertEqual(
+            self.run_shell(f"cd {work_dir!s} && agy -c --model gemini-4-neon-high", **env),
+            ["agy", ["-c", "--model", "gemini-4-neon-high"], "on"],
+        )
+        self.assertEqual(
+            self.run_shell(f"cd {work_dir!s} && agy -c --settings '{{\"model\":\"Gemini 4 Neon (High)\"}}'", **env),
+            ["agy", ["-c", "--settings", '{"model":"Gemini 4 Neon (High)"}'], "on"],
+        )
+        # --settings without model still restores
+        self.assertEqual(
+            self.run_shell(f"cd {work_dir!s} && agy -c --settings '{{\"colorScheme\":\"dark\"}}'", **env),
+            ["agy", ["--model", "gemini-4-carbon-medium", "-c", "--settings", '{"colorScheme":"dark"}'], "on"],
+        )
+
+        # -p "-c" value must not trigger continue; missing transcript / --help must not inject
+        self.assertEqual(self.run_shell(f"cd {work_dir!s} && agy -p -c", **env), ["agy", ["-p", "-c"], "on"])
+        self.assertEqual(self.run_shell("agy -r missing-id", **env), ["agy", ["-r", "missing-id"], "on"])
+        self.assertEqual(self.run_shell(f"cd {work_dir!s} && agy -c --help", **env), ["agy", ["-c", "--help"], "on"])
+
 
 if __name__ == "__main__":
     unittest.main()
