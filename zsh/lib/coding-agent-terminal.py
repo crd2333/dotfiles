@@ -7,23 +7,36 @@ import shlex
 import signal
 import subprocess
 import sys
-from urllib.parse import quote, quote_from_bytes
+from urllib.parse import quote, quote_from_bytes, unquote_to_bytes
 
 OSC8 = b"\x1b]8;"
 OSC_END = re.compile(rb"\x07|\x1b\\")
 ST = re.compile(rb"\x1b\\")
 LOCATION = re.compile(rb":\d+(?::\d+)?$")
 SCHEME = re.compile(rb"^[a-zA-Z][a-zA-Z0-9+.-]*:")
+FILE_LINE = re.compile(rb"L([1-9]\d*)(?:-L[1-9]\d*)?")
 
 
 class LinkRewriter:
-    def __init__(self, host, cwd=None):
+    def __init__(self, host, cwd=None, *, file_uris=False):
         self.base = ("vscode://vscode-remote/ssh-remote+" + quote(host, safe="")).encode()
         self.cwd = os.fsencode(cwd) if cwd is not None else os.getcwdb()
+        self.file_uris = file_uris
         self.pending = b""
         self.string_end = None
 
+    def editor_uri(self, path, suffix):
+        return self.base + quote_from_bytes(path, safe="/").encode() + suffix
+
     def target(self, target):
+        if self.file_uris and target.startswith(b"file:///"):
+            path, _, fragment = target[len(b"file://"):].partition(b"#")
+            path = unquote_to_bytes(path.partition(b"?")[0])
+            if not path.startswith(b"//") and os.path.isfile(path):
+                # agy uses GitHub-style line fragments, optionally with a range.
+                line = FILE_LINE.fullmatch(fragment)
+                return self.editor_uri(path, b":" + line[1] if line else b":1")
+            return target
         if target.startswith(b"//"):
             return target
         candidates = [target]
@@ -38,8 +51,7 @@ class LinkRewriter:
             # Relative Markdown links use the same starting directory as the agent.
             path = os.path.abspath(os.path.join(self.cwd, path))
             if os.path.isfile(path):
-                suffix = location.group() if location else b":1"
-                return self.base + quote_from_bytes(path, safe="/").encode() + suffix
+                return self.editor_uri(path, location.group() if location else b":1")
         return target
 
     def feed(self, data):
@@ -100,7 +112,8 @@ class LinkRewriter:
 
 
 def main():
-    rewriter = LinkRewriter(os.environ["VSCODE_SSH_HOST"])
+    rewriter = LinkRewriter(os.environ["VSCODE_SSH_HOST"],
+                            file_uris=os.path.basename(sys.argv[1]) == "agy")
     # script handles raw input, signals, window resizing and terminal restoration.
     command = "exec " + shlex.join(sys.argv[1:])
     with subprocess.Popen(

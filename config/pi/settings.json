@@ -1,6 +1,6 @@
 {
-  "defaultProvider": "antigravity-acp",
-  "defaultModel": "gemini-4-neon",
+  "defaultProvider": "aio",
+  "defaultModel": "gpt-6.2-sol",
   "defaultThinkingLevel": "high",
   "cacheWarming": "idle",
   "showCacheMissNotices": false,

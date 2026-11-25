@@ -149,6 +149,20 @@ class LinkTests(unittest.TestCase):
         rewriter = module.LinkRewriter("yq31", cwd=self.temp.name)
         self.assertEqual(rewriter.target(b"https://example.com"), b"https://example.com")
 
+    def test_agy_file_uris_preserve_path_and_start_line(self):
+        file_uri = b"file://" + quote_from_bytes(self.path, safe="/").encode()
+        for fragment, suffix in ((b"", b":1"), (b"#L3", b":3"), (b"#L10-L20", b":10")):
+            rewriter = module.LinkRewriter("yq31", file_uris=True)
+            source = link(file_uri + fragment, params=b"id=agy")
+            output = b"".join(rewriter.feed(bytes([c])) for c in source) + rewriter.finish()
+            self.assertEqual(output, link(self.uri + suffix, params=b"id=agy"))
+        self.assertEqual(self.rewrite([link(file_uri)]), link(file_uri))
+
+    def test_agy_leaves_nonlocal_or_missing_file_uris_unchanged(self):
+        rewriter = module.LinkRewriter("yq31", file_uris=True)
+        for target in (b"file://other-host" + self.path, b"file:///missing/file#L3"):
+            self.assertEqual(rewriter.target(target), target)
+
     def test_other_targets_remain_identical(self):
         for target in (b"https://example.com/a?q=1", b"file:///tmp/a", b"relative/a.png",
                        b"//example.com/a", os.fsencode(self.temp.name), b"/missing/file", b""):
@@ -239,7 +253,7 @@ class ShellTests(unittest.TestCase):
         self.bin = Path(self.temp.name)
         rc = (ROOT / "zsh/.zshrc").read_text()
         self.functions = rc.split("# ===== Coding Agents with Proxy Support =====", 1)[1].split("# Tokdash", 1)[0]
-        for name in ("pi", "claude", "codex", "opencode", "python3"):
+        for name in ("pi", "claude", "codex", "opencode", "agy", "python3"):
             path = self.bin / name
             path.write_text("#!/bin/sh\nexec /usr/bin/python3 -c 'import json,os,sys; print(json.dumps([os.path.basename(sys.argv[1]), sys.argv[2:], os.getenv(\"TEST_PROXY\")]))' \"$0\" \"$@\"\n")
             path.chmod(0o755)
@@ -262,7 +276,7 @@ class ShellTests(unittest.TestCase):
         return json.loads(next(line for line in reversed(output.splitlines()) if line.startswith("[")))
 
     def test_interactive_launch_and_argument_preservation(self):
-        for command in ("pi", "claude", "codex", "opencode"):
+        for command in ("pi", "claude", "codex", "opencode", "agy"):
             result = self.run_shell(command + " 'a b' 'quote\"value'", tty=True)
             self.assertEqual(result[:2], ["python3", [str(WRAPPER), command, "a b", 'quote"value']])
 
@@ -275,7 +289,8 @@ class ShellTests(unittest.TestCase):
 
     def test_noninteractive_modes_bypass(self):
         for command in ("pi --mode rpc", "pi --mode=json", "pi -p test", "claude --print test",
-                        "claude --output-format=json", "codex exec test", "codex review", "opencode run test"):
+                        "claude --output-format=json", "codex exec test", "codex review", "opencode run test",
+                        "agy acp", "agy -p test", "agy --print=test", "agy --prompt=test"):
             self.assertEqual(self.run_shell(command, tty=True)[0], command.split()[0])
         # Codex -p means profile, not print mode.
         self.assertEqual(self.run_shell("codex -p work", tty=True)[0], "python3")
