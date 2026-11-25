@@ -176,6 +176,9 @@ fi
 # limit MAX_JOBS in memory-bound servers
 export MAX_JOBS=8
 
+# Disable Antigravity CLI (agy) auto-update
+export AGY_CLI_DISABLE_AUTO_UPDATE=true
+
 
 # ===== Aliases =====
 alias cl='clear'

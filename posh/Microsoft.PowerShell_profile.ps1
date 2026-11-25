@@ -114,6 +114,9 @@ function codex {
 }
 
 
+# Disable Antigravity CLI (agy) auto-update
+$env:AGY_CLI_DISABLE_AUTO_UPDATE = 'true'
+
 # agy with proxy
 function agy {
     [CmdletBinding(PositionalBinding = $false)]
