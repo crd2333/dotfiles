@@ -205,10 +205,6 @@
     "subagent": {
       "timeoutMs": 60000,
       "onTimeout": "approve"
-    },
-    "questionnaire": {
-      "timeoutMs": 60000,
-      "onTimeout": "autonomous"
     }
   },
   "modelFix": {
