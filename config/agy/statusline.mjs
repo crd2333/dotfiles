@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { sep } from 'node:path';
+import { join, sep } from 'node:path';
 
 const s = JSON.parse(readFileSync(0, 'utf8'));
 const cols = Number.isInteger(s.terminal_width) && s.terminal_width > 0 ? s.terminal_width : 80;
@@ -27,6 +27,25 @@ function clip(text, limit) {
   return `${clipped}…`;
 }
 
+async function conversationTitle(id) {
+  const fallback = clean(s.conversation_title);
+  if (!id) return fallback;
+  // agy can save the generated title without updating the statusline payload.
+  try {
+    const { DatabaseSync } = await import('node:sqlite');
+    const path = join(homedir(), '.gemini', 'antigravity-cli', 'conversation_summaries.db');
+    const db = new DatabaseSync(path, { readOnly: true, timeout: 0 });
+    try {
+      const row = db.prepare('SELECT title FROM conversation_summaries WHERE conversation_id = ?').get(id);
+      return clean(row?.title) || fallback;
+    } finally {
+      db.close();
+    }
+  } catch {
+    return fallback;
+  }
+}
+
 const window = s.context_window;
 const pct = window?.used_percentage;
 const context = window?.context_window_size > 0 && Number.isFinite(pct)
@@ -35,26 +54,36 @@ const context = window?.context_window_size > 0 && Number.isFinite(pct)
 const cwd = clean(s.workspace?.current_dir || s.cwd);
 const home = homedir();
 const dir = cwd === home || cwd.startsWith(home + sep) ? `~${cwd.slice(home.length)}` : cwd;
-const title = clean(s.conversation_title);
 const id = clean(s.conversation_id);
+const title = await conversationTitle(id);
 const mode = clean(s.cycle_mode);
 const modeColor = { 'accept-edits': '38;5;114', auto: '33', plan: '36' }[mode] ?? '90';
 
-const fields = (items) => items.filter(([text]) => text);
-const plain = (items) => fields(items).map(([text]) => text).join(dot);
-const colored = (items) => fields(items).map(([text, color]) => paint(color, text)).join(paint('90', dot));
-const right = [[mode, modeColor], [clean(s.model?.display_name), '96'], [clean(s.model?.effort), '90']];
-const rightWidth = width(plain(right));
-if (rightWidth > cols) {
-  console.log(paint('96', clip(plain(right), cols)));
-} else {
-  const available = cols - rightWidth - (rightWidth ? 2 : 0);
-  const fixed = fields([[context, pct >= 90 ? '91' : pct >= 70 ? '33' : '90'], [id, '90']]);
-  while (width(plain(fixed)) > available && fixed.length) fixed.shift();
-  const cwdAndTitle = [dir, title].filter(Boolean).join(dot);
-  const fixedWidth = width(plain(fixed));
-  const prefixRoom = available - fixedWidth - (fixedWidth ? width(dot) : 0);
-  const left = fields([[clip(cwdAndTitle, prefixRoom), '36'], ...fixed]);
-  const pad = rightWidth ? ' '.repeat(cols - rightWidth - width(plain(left))) : '';
-  console.log(colored(left) + pad + colored(right));
+const plain = (items) => items.map(([text]) => text).join(dot);
+const colored = (items) => items.map(([text, color]) => paint(color, text)).join(paint('90', dot));
+const left = [];
+const right = [];
+const remaining = (l = left, r = right) => cols - width(plain(l)) - width(plain(r)) - (l.length && r.length ? 2 : 0);
+
+// Reserve room for context and a complete, copyable session ID before optional fields.
+for (const item of [[context, pct >= 90 ? '91' : pct >= 70 ? '33' : '90'], [id, '90']]) {
+  if (item[0] && remaining([...left, item]) >= 0) left.push(item);
 }
+
+const effort = clean(s.model?.effort);
+let model = clean(s.model?.display_name);
+const suffix = ` (${effort})`;
+if (effort && model.toLowerCase().endsWith(suffix.toLowerCase())) model = model.slice(0, -suffix.length);
+const modelText = clip(model, remaining() - (left.length ? 2 : 0));
+if (modelText && modelText !== '…') right.push([modelText, '96']);
+if (effort && remaining(left, [...right, [effort, '90']]) >= 0) right.push([effort, '90']);
+
+for (const text of [title, dir]) {
+  const separator = left.length ? width(dot) : right.length ? 2 : 0;
+  const value = clip(text, remaining() - separator);
+  if (value && value !== '…') left.unshift([value, '36']);
+}
+
+if (mode && remaining(left, [[mode, modeColor], ...right]) >= 0) right.unshift([mode, modeColor]);
+const pad = right.length ? ' '.repeat(cols - width(plain(left)) - width(plain(right))) : '';
+console.log(colored(left) + pad + colored(right));
