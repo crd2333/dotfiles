@@ -72,6 +72,11 @@ $Dotfiles\config\pi\extensions\pi-client-fingerprint\config.json|$Home\.pi\agent
 $Dotfiles\config\pi\pi-vcc-config.json|$Home\.pi\agent\pi-vcc-config.json|pi|
 $Dotfiles\config\pi\pi-tidy-tools.json|$Home\.pi\agent\pi-tidy-tools.json|pi|
 $Dotfiles\config\pi\imagegen-auth.json|$Home\.pi\agent\skills\openai-compatible-imagegen\auth.json|pi|
+$Dotfiles\config\agy\statusline.mjs|$Home\.gemini\antigravity-cli\statusline.mjs|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
+$Dotfiles\config\agy\keybindings.json|$Home\.gemini\antigravity-cli\keybindings.json|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
+$Dotfiles\config\agy\skills\pi-subagent|$Home\.gemini\config\skills\pi-subagent|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
+$Dotfiles\config\agy\skills\agy-session-read|$Home\.gemini\config\skills\agy-session-read|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
+$Dotfiles\config\agy\skills\pi-session-read|$Home\.gemini\config\skills\pi-session-read|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
 $Dotfiles\.curlrc|$Home\.curlrc|curl|
 "@
 
@@ -137,8 +142,14 @@ if (Test-Installed node) {
     } catch {
         Write-Yellow "Failed to merge JSON configs ($($_.Exception.Message))"
     }
+    try {
+        node (Join-Path $Dotfiles 'sync_pi_headless.mjs')
+        if ($LASTEXITCODE -ne 0) { Write-Yellow "Failed to sync Pi headless profile" }
+    } catch {
+        Write-Yellow "Failed to sync Pi headless profile ($($_.Exception.Message))"
+    }
 } else {
-    Write-Yellow "node not detected, skipping JSON config merge"
+    Write-Yellow "node not detected, skipping JSON config merge and Pi headless sync"
 }
 
 Write-End "`nSymlink setup completed!"

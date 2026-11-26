@@ -46,19 +46,33 @@ import { fileURLToPath } from "node:url";
 
 const DOTFILES = dirname(fileURLToPath(import.meta.url));
 const HOME = homedir();
+const HOME_POSIX = HOME.replace(/\\/g, "/");
 
 // Merge list, each line is fully self-contained: source|target|tool|mode
-//   tool column empty -> always apply; mode omitted -> merge
+//   tool column empty -> always apply; ;-separated candidates supported; mode omitted -> merge
 const PAIRS = `
 ${DOTFILES}/config/pi/settings.json|${HOME}/.pi/agent/settings.json|pi|merge
 ${DOTFILES}/config/pi/models.json|${HOME}/.pi/agent/models.json|pi|replace
 ${DOTFILES}/config/pi/extensions/pi-crd233/pi-crd233.json|${HOME}/.pi/agent/extensions/pi-crd233/pi-crd233.json|pi|replace
+${DOTFILES}/config/agy/config.json|${HOME}/.gemini/config/config.json|agy;~/.gemini/antigravity-cli|merge
+${DOTFILES}/config/agy/settings.json|${HOME}/.gemini/antigravity-cli/settings.json|agy;~/.gemini/antigravity-cli|merge
 `;
 
 const DRY_RUN = process.argv.slice(2).includes("--dry-run") || process.argv.slice(2).includes("-n");
 
 const isPlainObject = (value) =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+
+function expandTemplates(value) {
+  if (typeof value === "string") return value.replaceAll("${HOME_POSIX}", HOME_POSIX);
+  if (Array.isArray(value)) return value.map(expandTemplates);
+  if (isPlainObject(value)) {
+    const out = {};
+    for (const [key, item] of Object.entries(value)) out[key] = expandTemplates(item);
+    return out;
+  }
+  return value;
+}
 
 // Objects merge recursively; arrays and scalars are replaced by the overlay.
 function merge(base, overlay) {
@@ -117,7 +131,7 @@ function isExecutableFile(path) {
 
 // Mirror create_symlink.sh's check_tool: absolute/relative paths are tested for
 // existence, plain names are looked up on PATH (with PATHEXT on Windows).
-function toolInstalled(candidate) {
+function singleToolInstalled(candidate) {
   if (!candidate) return true;
   if (/^[A-Za-z]:[\\/]/.test(candidate) || candidate.includes("/") || candidate.includes("\\")) {
     const expanded = candidate.startsWith("~")
@@ -136,6 +150,12 @@ function toolInstalled(candidate) {
     }
   }
   return false;
+}
+
+function toolInstalled(spec) {
+  if (!spec) return true;
+  const candidates = spec.split(";").map((item) => item.trim()).filter(Boolean);
+  return candidates.length === 0 || candidates.some(singleToolInstalled);
 }
 
 function mergeEntry(source, target, tool, mode) {
@@ -159,8 +179,8 @@ function mergeEntry(source, target, tool, mode) {
   let local;
   try {
     live = mode === "merge" ? readJson(target) ?? {} : {};
-    overlay = readJson(source) ?? {};
-    local = hasLocal ? readJson(localSource) ?? {} : {};
+    overlay = expandTemplates(readJson(source) ?? {});
+    local = hasLocal ? expandTemplates(readJson(localSource) ?? {}) : {};
   } catch (error) {
     console.error(`[merge] error: ${error.message}`);
     return false;

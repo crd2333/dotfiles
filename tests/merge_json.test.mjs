@@ -165,3 +165,34 @@ test("does not create target on dry-run or when Pi is absent", options, t => {
   assert.match(f.run([], false), /pi not installed/);
   assert.equal(existsSync(f.target), false);
 });
+
+test("merges AGY config and settings with HOME_POSIX expansion while preserving trustedWorkspaces", options, t => {
+  const f = fixture(t);
+  const home = dirname(dirname(dirname(f.settingsTarget)));
+  const dotfiles = join(home, "dotfiles");
+  const agyConfigSource = join(dotfiles, "config/agy/config.json");
+  const agySettingsSource = join(dotfiles, "config/agy/settings.json");
+  const agyConfigTarget = join(home, ".gemini/config/config.json");
+  const agySettingsTarget = join(home, ".gemini/antigravity-cli/settings.json");
+
+  f.put(f.source, {});
+  f.put(agyConfigSource, { plugins: { "agy-fast": { enabled: true }, swarm: { enabled: true } } });
+  f.put(agySettingsSource, {
+    colorScheme: "dark",
+    statusLine: { type: "command", command: "node \"${HOME_POSIX}/.gemini/antigravity-cli/statusline.mjs\"", enabled: true },
+  });
+  f.put(agyConfigTarget, { plugins: { custom: { enabled: false } } });
+  f.put(agySettingsTarget, { colorScheme: "light", trustedWorkspaces: ["/tmp/work"] });
+
+  // Detected via ~/.gemini/antigravity-cli even when `agy` binary is not on PATH
+  f.run([], false);
+
+  assert.deepEqual(f.read(agyConfigTarget), {
+    plugins: { custom: { enabled: false }, "agy-fast": { enabled: true }, swarm: { enabled: true } },
+  });
+  assert.deepEqual(f.read(agySettingsTarget), {
+    colorScheme: "dark",
+    trustedWorkspaces: ["/tmp/work"],
+    statusLine: { type: "command", command: `node "${home}/.gemini/antigravity-cli/statusline.mjs"`, enabled: true },
+  });
+});

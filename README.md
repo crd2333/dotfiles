@@ -27,6 +27,10 @@ node ~/dotfiles/merge_json.mjs
 
 升级旧部署时，先把 `pi-crd233.private.json` 中的值迁入 `pi-crd233.local.json`（若 local 已存在，合并而不是覆盖），运行 merge 并确认凭据/代理已进入目标文件，再删除旧 private 文件及软链接。包含凭据的 local 和生成文件应设置为仅当前用户可读写（Linux 使用 `chmod 600`；Windows 使用对应的 ACL）。脚本不会自动迁移或删除旧 private 文件。
 
+Antigravity (`agy`) 的 `config/agy/config.json` 与 `config/agy/settings.json` 同样通过 `merge_json.mjs` 以 `merge` 模式合并到 `~/.gemini/config/config.json` 与 `~/.gemini/antigravity-cli/settings.json`（支持 `${HOME_POSIX}` 占位符，并保留每台机器各自的 `trustedWorkspaces`）；`statusline.mjs`、`keybindings.json` 以及 `config/agy/skills/` 下的个人 skills 则由 setup 脚本软链接管理。
+
+Pi 无头子代理配置 `~/.pi/agent-headless` 由 `sync_pi_headless.mjs` 自动维护（Linux / Windows 的 setup 脚本都会调用，支持 `--dry-run`）：它会软链接共享的凭据、模型、包和非交互扩展配置目录，隔离 `sessions/`，并基于本机 `~/.pi/agent/settings.json` + `config/pi/settings-headless.json`（及可选的 `settings-headless.local.json`）生成去除交互式插件的 `settings.json`。
+
 ## 注意 Notice
 ### zsh
 市面上多数配置都会采用 Oh My Zsh 辅以许多插件和主题，虽然酷炫，但却臃肿且龟速，虽然存在优化方法（如 `zinit` 等延迟加载的插件管理器），但依旧显得冗余。其实直接采用 pure zsh 加上少数所需插件就足够了（不过，这种 manual install 方式需要手动 git clone 那些插件的整个仓库，为了保持更新，我采用 submodule 方式管理），并通过自定义插件来实现 oh-my-zsh 中的某些特性。

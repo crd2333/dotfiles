@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "agy-fast": {
+      "enabled": true
+    },
+    "swarm": {
+      "enabled": true
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "packages": [
+    "git:github.com/crd2333/pi-client-fingerprint",
+    "git:github.com/crd2333/pi-codex-adapter",
+    "git:github.com/sting8k/pi-vcc.git",
+    {
+      "source": "git:github.com/crd2333/pi-crd233",
+      "extensions": [
+        "extensions/network.ts",
+        "extensions/fff.ts",
+        "extensions/session-read.ts",
+        "extensions/model-fix.ts",
+        "extensions/model-filter.ts",
+        "extensions/retry-fix.ts",
+        "extensions/llm-timeout.ts"
+      ]
+    }
+  ],
+  "cacheWarming": "off",
+  "enableInstallTelemetry": false,
+  "enableAnalytics": false
+}

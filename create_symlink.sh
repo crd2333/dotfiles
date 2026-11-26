@@ -54,6 +54,11 @@ $DOTFILES/config/pi/extensions/pi-client-fingerprint/config.json|$HOME/.pi/agent
 $DOTFILES/config/pi/pi-vcc-config.json|$HOME/.pi/agent/pi-vcc-config.json|pi|
 $DOTFILES/config/pi/pi-tidy-tools.json|$HOME/.pi/agent/pi-tidy-tools.json|pi|
 $DOTFILES/config/pi/imagegen-auth.json|$HOME/.pi/agent/skills/openai-compatible-imagegen/auth.json|pi|
+$DOTFILES/config/agy/statusline.mjs|$HOME/.gemini/antigravity-cli/statusline.mjs|agy|agy;$HOME/.gemini/antigravity-cli
+$DOTFILES/config/agy/keybindings.json|$HOME/.gemini/antigravity-cli/keybindings.json|agy|agy;$HOME/.gemini/antigravity-cli
+$DOTFILES/config/agy/skills/pi-subagent|$HOME/.gemini/config/skills/pi-subagent|agy|agy;$HOME/.gemini/antigravity-cli
+$DOTFILES/config/agy/skills/agy-session-read|$HOME/.gemini/config/skills/agy-session-read|agy|agy;$HOME/.gemini/antigravity-cli
+$DOTFILES/config/agy/skills/pi-session-read|$HOME/.gemini/config/skills/pi-session-read|agy|agy;$HOME/.gemini/antigravity-cli
 $DOTFILES/.curlrc|$HOME/.curlrc|curl|
 EOF
 
@@ -114,8 +119,9 @@ done <<< "$PAIRS"
 # is merged instead of symlinked.
 if command -v node >/dev/null 2>&1; then
   node "$DOTFILES/merge_json.mjs" || printf "%b\n" "${YELLOW}Warning:${RESET} Failed to merge JSON configs"
+  node "$DOTFILES/sync_pi_headless.mjs" || printf "%b\n" "${YELLOW}Warning:${RESET} Failed to sync Pi headless profile"
 else
-  printf "%b\n" "${YELLOW}Warning:${RESET} node not detected, skipping JSON config merge"
+  printf "%b\n" "${YELLOW}Warning:${RESET} node not detected, skipping JSON config merge and Pi headless sync"
 fi
 
 printf "%b\n" "${GREEN}Symlink setup completed!${RESET}"
