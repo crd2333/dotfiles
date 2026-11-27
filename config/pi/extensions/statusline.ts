@@ -108,9 +108,6 @@ export default function (pi: ExtensionAPI) {
           const qualified = model && footer.getAvailableProviderCount() > 1 ? `(${model.provider}) ${modelWithLevel}` : "";
           right = [qualified, modelWithLevel, modelId].find(text => text && visibleWidth(text) <= modelRoom) ?? fit(modelId, modelRoom);
 
-          for (const [, text] of [...footer.getExtensionStatuses()].sort(([a], [b]) => a.localeCompare(b))) {
-            append(clean(text).trim());
-          }
           const subscription = model && (model.provider === "kimi-coding" ||
             (ctx.modelRegistry.isUsingOAuth(model) && ctx.modelRegistry.getProvider(model.provider)?.auth?.oauth?.isSubscription));
           if (summary.cost || subscription) append(theme.fg("dim", `$${summary.cost.toFixed(3)}${subscription ? " (sub)" : ""}`));
@@ -122,7 +119,12 @@ export default function (pi: ExtensionAPI) {
             if (prefix) left = join(theme.fg("dim", prefix), left);
           }
           const padding = right ? " ".repeat(width - visibleWidth(left) - visibleWidth(right)) : "";
-          return [left + padding + (right ? theme.fg("dim", right) : "")];
+          const lines = [left + padding + (right ? theme.fg("dim", right) : "")];
+          const statuses = join(...[...footer.getExtensionStatuses()]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([, text]) => clean(text).trim()));
+          if (statuses) lines.push(truncateToWidth(statuses, width, "…"));
+          return lines;
         },
       };
     });
