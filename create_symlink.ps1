@@ -78,6 +78,8 @@ $Dotfiles\config\agy\keybindings.json|$Home\.gemini\antigravity-cli\keybindings.
 $Dotfiles\config\agy\skills\pi-subagent|$Home\.gemini\config\skills\pi-subagent|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
 $Dotfiles\config\agy\skills\agy-session-read|$Home\.gemini\config\skills\agy-session-read|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
 $Dotfiles\config\agy\skills\pi-session-read|$Home\.gemini\config\skills\pi-session-read|agy|agy;%USERPROFILE%\.gemini\antigravity-cli
+$Dotfiles\config\crossnote\parser.js|$Home\.crossnote\parser.js|
+$Dotfiles\config\crossnote\style.less|$Home\.crossnote\style.less|
 $Dotfiles\.curlrc|$Home\.curlrc|curl|
 "@
 

@@ -31,6 +31,7 @@ Antigravity (`agy`) 的 `config/agy/config.json` 与 `config/agy/settings.json` 
 
 Pi 无头子代理配置 `~/.pi/agent-headless` 由 `sync_pi_headless.mjs` 自动维护（Linux / Windows 的 setup 脚本都会调用，支持 `--dry-run`）：它会软链接共享的凭据、模型、包和非交互扩展配置目录，隔离 `sessions/`，并基于本机 `~/.pi/agent/settings.json` + `config/pi/settings-headless.json`（及可选的 `settings-headless.local.json`）生成去除交互式插件的 `settings.json`。
 
+
 ## 注意 Notice
 ### zsh
 市面上多数配置都会采用 Oh My Zsh 辅以许多插件和主题，虽然酷炫，但却臃肿且龟速，虽然存在优化方法（如 `zinit` 等延迟加载的插件管理器），但依旧显得冗余。其实直接采用 pure zsh 加上少数所需插件就足够了（不过，这种 manual install 方式需要手动 git clone 那些插件的整个仓库，为了保持更新，我采用 submodule 方式管理），并通过自定义插件来实现 oh-my-zsh 中的某些特性。

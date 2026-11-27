@@ -1,0 +1,33 @@
+.agy-carousel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  border: 1px solid var(--vscode-panel-border, #8885);
+  border-radius: 6px;
+  margin-block: 1em;
+}
+
+.agy-carousel:focus-visible {
+  outline: 2px solid var(--vscode-focusBorder, #58a6ff);
+  outline-offset: 2px;
+}
+
+.agy-carousel-slide {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.75em 1em;
+  scroll-snap-align: start;
+}
+
+.agy-carousel-page {
+  text-align: end;
+  font-size: 0.85em;
+  color: var(--vscode-descriptionForeground, inherit);
+}
+
+.agy-carousel-slide img {
+  max-width: 100%;
+  height: auto;
+}

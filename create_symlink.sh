@@ -1,6 +1,8 @@
 #!/bin/bash
 
 DOTFILES="$HOME/dotfiles"
+CROSSNOTE_DIR="${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/crossnote}"
+CROSSNOTE_DIR="${CROSSNOTE_DIR:-$HOME/.local/state/crossnote}"
 
 # Color definitions
 RED="\e[31m"
@@ -60,6 +62,8 @@ $DOTFILES/config/agy/keybindings.json|$HOME/.gemini/antigravity-cli/keybindings.
 $DOTFILES/config/agy/skills/pi-subagent|$HOME/.gemini/config/skills/pi-subagent|agy|agy;$HOME/.gemini/antigravity-cli
 $DOTFILES/config/agy/skills/agy-session-read|$HOME/.gemini/config/skills/agy-session-read|agy|agy;$HOME/.gemini/antigravity-cli
 $DOTFILES/config/agy/skills/pi-session-read|$HOME/.gemini/config/skills/pi-session-read|agy|agy;$HOME/.gemini/antigravity-cli
+$DOTFILES/config/crossnote/parser.js|$CROSSNOTE_DIR/parser.js||
+$DOTFILES/config/crossnote/style.less|$CROSSNOTE_DIR/style.less||
 $DOTFILES/.curlrc|$HOME/.curlrc|curl|
 EOF
 

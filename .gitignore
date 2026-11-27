@@ -1,6 +1,8 @@
 zsh/.zsh_history
 **/*.local
 **/*.local.json
-config/crossnote/
+config/crossnote/*
+!config/crossnote/parser.js
+!config/crossnote/style.less
 prompts/copilot/
 **/*.private.json
