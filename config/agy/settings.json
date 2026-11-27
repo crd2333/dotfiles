@@ -6,6 +6,9 @@
   "colorScheme": "dark",
   "copyOnSelect": false,
   "model": "Gemini 4 Neon (High)",
+  "notifications": true,
+  "pickerGrouping": "grouped",
+  "runningLightSpeed": "fast",
   "showFeedbackSurvey": false,
   "showTips": false,
   "statusLine": {
