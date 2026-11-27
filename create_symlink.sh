@@ -49,6 +49,7 @@ $DOTFILES/config/pip/pip.conf|$HOME/.config/pip/pip.conf|pip|pip;pip3
 $DOTFILES/config/wgetrc|$HOME/.config/wgetrc|wget|
 $DOTFILES/config/fish/config.fish|$HOME/.config/fish/config.fish|fish|
 $DOTFILES/config/pi/keybindings.json|$HOME/.pi/agent/keybindings.json|pi|
+$DOTFILES/config/pi/extensions/statusline.ts|$HOME/.pi/agent/extensions/statusline.ts|pi|
 $DOTFILES/config/pi/extensions/pi-permission-system/config.json|$HOME/.pi/agent/extensions/pi-permission-system/config.json|pi|
 $DOTFILES/config/pi/extensions/pi-client-fingerprint/config.json|$HOME/.pi/agent/extensions/pi-client-fingerprint/config.json|pi|
 $DOTFILES/config/pi/pi-vcc-config.json|$HOME/.pi/agent/pi-vcc-config.json|pi|

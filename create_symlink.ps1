@@ -67,6 +67,7 @@ $Dotfiles\config\pip\pip.conf|$Home\.config\pip\pip.conf|pip|pip;pip3
 $Dotfiles\config\wgetrc|$Home\.config\wgetrc|wget|
 $Dotfiles\config\fish\config.fish|$Home\.config\fish\config.fish|fish|
 $Dotfiles\config\pi\keybindings.json|$Home\.pi\agent\keybindings.json|pi|
+$Dotfiles\config\pi\extensions\statusline.ts|$Home\.pi\agent\extensions\statusline.ts|pi|
 $Dotfiles\config\pi\extensions\pi-permission-system\config.json|$Home\.pi\agent\extensions\pi-permission-system\config.json|pi|
 $Dotfiles\config\pi\extensions\pi-client-fingerprint\config.json|$Home\.pi\agent\extensions\pi-client-fingerprint\config.json|pi|
 $Dotfiles\config\pi\pi-vcc-config.json|$Home\.pi\agent\pi-vcc-config.json|pi|

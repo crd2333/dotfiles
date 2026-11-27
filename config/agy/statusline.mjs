@@ -1,8 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, sep } from 'node:path';
+import { basename, dirname, isAbsolute, join, sep } from 'node:path';
 
 const s = JSON.parse(readFileSync(0, 'utf8'));
+const home = homedir();
+const stateDir = join(home, '.gemini', 'antigravity-cli');
 const cols = Number.isInteger(s.terminal_width) && s.terminal_width > 0 ? s.terminal_width : 80;
 const segmenter = new Intl.Segmenter();
 const segments = (text) => Array.from(segmenter.segment(text), ({ segment }) => segment);
@@ -33,8 +35,7 @@ async function conversationTitle(id) {
   // agy can save the generated title without updating the statusline payload.
   try {
     const { DatabaseSync } = await import('node:sqlite');
-    const path = join(homedir(), '.gemini', 'antigravity-cli', 'conversation_summaries.db');
-    const db = new DatabaseSync(path, { readOnly: true, timeout: 0 });
+    const db = new DatabaseSync(join(stateDir, 'conversation_summaries.db'), { readOnly: true, timeout: 0 });
     try {
       const row = db.prepare('SELECT title FROM conversation_summaries WHERE conversation_id = ?').get(id);
       return clean(row?.title) || fallback;
@@ -46,18 +47,65 @@ async function conversationTitle(id) {
   }
 }
 
+const rate = (cached, prompt) => prompt > 0 ? `${(100 * cached / prompt).toFixed(1)}%` : '';
+const tokenCount = (value) => Number.isSafeInteger(value) && value >= 0;
+
+function conversationCacheRate(id) {
+  const names = ['transcript.jsonl', 'transcript_full.jsonl'];
+  const dirs = new Set();
+  if (typeof s.transcript_path === 'string' && isAbsolute(s.transcript_path) && names.includes(basename(s.transcript_path))) {
+    dirs.add(dirname(s.transcript_path));
+  }
+  if (/^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/i.test(id)) {
+    dirs.add(join(stateDir, 'brain', id, '.system_generated', 'logs'));
+  }
+  for (const dir of dirs) {
+    for (const name of names) {
+      let transcript;
+      try {
+        transcript = readFileSync(join(dir, name), 'utf8');
+      } catch {
+        continue;
+      }
+      let prompt = 0;
+      let cached = 0;
+      // Both transcript variants describe the same requests; only use one.
+      for (const line of transcript.trimEnd().split('\n')) {
+        let step;
+        try {
+          step = JSON.parse(line);
+        } catch {
+          continue; // The last record may be incomplete while agy writes it.
+        }
+        if (step?.source !== 'MODEL' || !tokenCount(step.input_tokens) || !tokenCount(step.cache_read_tokens)) continue;
+        const write = step.cache_creation_input_tokens ?? 0;
+        if (!tokenCount(write)) continue;
+        prompt += step.input_tokens + step.cache_read_tokens + write;
+        cached += step.cache_read_tokens;
+      }
+      if (prompt > 0) return rate(cached, prompt);
+    }
+  }
+  return '';
+}
+
 const window = s.context_window;
 const pct = window?.used_percentage;
 const context = window?.context_window_size > 0 && Number.isFinite(pct)
   ? `${pct.toFixed(1)}%/${new Intl.NumberFormat('en', { notation: 'compact' }).format(window.context_window_size)}`
   : '';
-const cwd = clean(s.workspace?.current_dir || s.cwd);
-const home = homedir();
-const dir = cwd === home || cwd.startsWith(home + sep) ? `~${cwd.slice(home.length)}` : cwd;
 const id = clean(s.conversation_id);
+const { input_tokens: input, cache_read_input_tokens: cacheRead, cache_creation_input_tokens: cacheWrite = 0 } = window?.current_usage ?? {};
+const latest = [input, cacheRead, cacheWrite].every(tokenCount) ? rate(cacheRead, input + cacheRead + cacheWrite) : '';
+const lifetime = conversationCacheRate(id);
+const cache = [latest, lifetime && `Σ${lifetime}`].filter(Boolean).join('/');
+const totalUsd = s.cost?.total_usd;
+const cost = Number.isFinite(totalUsd) && totalUsd > 0
+  ? `${s.cost.estimated ? '~' : ''}$${totalUsd.toFixed(3)}`
+  : '';
+const cwd = clean(s.workspace?.current_dir || s.cwd);
+const dir = cwd === home || cwd.startsWith(home + sep) ? `~${cwd.slice(home.length)}` : cwd;
 const title = await conversationTitle(id);
-const mode = clean(s.cycle_mode);
-const modeColor = { 'accept-edits': '38;5;114', auto: '33', plan: '36' }[mode] ?? '90';
 
 const plain = (items) => items.map(([text]) => text).join(dot);
 const colored = (items) => items.map(([text, color]) => paint(color, text)).join(paint('90', dot));
@@ -65,10 +113,20 @@ const left = [];
 const right = [];
 const remaining = (l = left, r = right) => cols - width(plain(l)) - width(plain(r)) - (l.length && r.length ? 2 : 0);
 
-// Reserve room for context and a complete, copyable session ID before optional fields.
-for (const item of [[context, pct >= 90 ? '91' : pct >= 70 ? '33' : '90'], [id, '90']]) {
-  if (item[0] && remaining([...left, item]) >= 0) left.push(item);
+// Reserve the ID first, then insert usage and cost ahead of it.
+const contextItem = [context, pct >= 90 ? '91' : pct >= 70 ? '33' : '90'];
+if (context && remaining([contextItem]) >= 0) left.push(contextItem);
+const idItem = [id, '90'];
+if (id && remaining([...left, idItem]) >= 0) left.push(idItem);
+function appendStat(value) {
+  if (!value) return false;
+  const index = left.indexOf(idItem);
+  const item = [value, '90'];
+  if (remaining([...left, item]) < 0) return false;
+  left.splice(index < 0 ? left.length : index, 0, item);
+  return true;
 }
+if (cache && !appendStat(`CH${cache}`) && latest) appendStat(`CH${latest}`);
 
 const effort = clean(s.model?.effort);
 let model = clean(s.model?.display_name);
@@ -77,6 +135,7 @@ if (effort && model.toLowerCase().endsWith(suffix.toLowerCase())) model = model.
 const modelText = clip(model, remaining() - (left.length ? 2 : 0));
 if (modelText && modelText !== '…') right.push([modelText, '96']);
 if (effort && remaining(left, [...right, [effort, '90']]) >= 0) right.push([effort, '90']);
+appendStat(cost);
 
 for (const text of [title, dir]) {
   const separator = left.length ? width(dot) : right.length ? 2 : 0;
@@ -84,6 +143,5 @@ for (const text of [title, dir]) {
   if (value && value !== '…') left.unshift([value, '36']);
 }
 
-if (mode && remaining(left, [[mode, modeColor], ...right]) >= 0) right.unshift([mode, modeColor]);
 const pad = right.length ? ' '.repeat(cols - width(plain(left)) - width(plain(right))) : '';
 console.log(colored(left) + pad + colored(right));
