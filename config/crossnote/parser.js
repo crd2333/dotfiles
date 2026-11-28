@@ -16,6 +16,15 @@
       return limit;
     }
 
+    // MPE treats a leading slash as workspace-relative. Artifact reports
+    // live in their run directory alongside the media referenced here.
+    function resolveArtifactImage(line) {
+      return line.replace(
+        /^( {0,3}!\[[^\]\r\n]*\]\([ \t]*<?)(?:[a-z]:)?\/(?:[^/<>\r\n()]+\/)*\.gemini\/antigravity-cli\/brain\/[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}\//i,
+        '$1./',
+      );
+    }
+
     function renderCarousel(start, end) {
       const slides = [[]];
       for (let i = start + 1; i < end; i++) {
@@ -28,12 +37,7 @@
         } else if (/^[ \t]*<!--\s*slide\s*-->[ \t]*\r?$/.test(lines[i])) {
           slides.push([]);
         } else {
-          // agy puts these Markdown files beside scratch/. MPE otherwise
-          // treats a leading slash as relative to the workspace root.
-          slide.push(lines[i].replace(
-            /^( {0,3}!\[[^\]]*\]\([ \t]*<?)(?:[a-z]:)?\/[^<>]*?\/\.gemini\/antigravity-cli\/brain\/[\da-f-]{36}\/scratch\//i,
-            '$1./scratch/',
-          ));
+          slide.push(resolveArtifactImage(lines[i]));
         }
       }
       const pages = slides.filter(slide => slide.some(line => line.trim()));
@@ -51,7 +55,10 @@
     let cursor = 0;
     for (let i = 0; i < lines.length; i++) {
       const fence = fenceAt(lines[i]);
-      if (!fence) continue;
+      if (!fence) {
+        lines[i] = resolveArtifactImage(lines[i]);
+        continue;
+      }
       const end = fenceEnd(i, lines.length, fence);
       if (end < lines.length && fence.marker.startsWith('````') && fence.info === 'carousel') {
         const carousel = renderCarousel(i, end);
