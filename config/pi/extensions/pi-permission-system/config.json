@@ -148,8 +148,11 @@
       "~/.pi/agent/extensions/pi-crd233/pi-crd233-cache": "allow",
       "~/.pi/agent/extensions/pi-crd233/pi-crd233-cache/*": "allow",
 
-      "~/.gemini/antigravity": "allow",
-      "~/.gemini/antigravity/*": "allow"
+      "~/.gemini/": "allow",
+      "~/.gemini/*": "allow",
+
+      "/proc/*": "allow",
+      "/sys/*": "allow"
     },
 
     "bash": {

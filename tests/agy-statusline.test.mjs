@@ -55,3 +55,24 @@ test('weights cache usage from one native log and displays fields in the request
   assert.match(rendered, /Gemini 4 Neon · high$/);
   assert.doesNotMatch(render(usage, 150, fields), /\$/);
 });
+
+test('shows an unknown percentage until a model reports usage after compaction', (t) => {
+  const home = mkdtempSync(join(tmpdir(), 'agy-statusline-'));
+  t.after(() => rmSync(home, { recursive: true, force: true }));
+  const transcript = join(home, 'transcript.jsonl');
+  const before = { source: 'MODEL', type: 'PLANNER_RESPONSE', status: 'DONE', input_tokens: 15000, cache_read_tokens: 450000 };
+  const checkpoint = { source: 'SYSTEM', type: 'CHECKPOINT', input_tokens: 465000, cache_read_tokens: 0, output_tokens: 3772 };
+  const fields = { home, transcript_path: transcript, context_window: { context_window_size: 512000, used_percentage: 91.2 } };
+  const write = (...steps) => writeFileSync(transcript, steps.map(step => JSON.stringify(step)).join('\n'));
+
+  write(before, { ...checkpoint, status: 'RUNNING' });
+  assert.match(render(null, 120, fields), /^91\.2%\/512K/);
+
+  const done = { ...checkpoint, status: 'DONE' };
+  write(before, done, { source: 'USER_EXPLICIT', type: 'USER_INPUT' }, { source: 'MODEL', type: 'GENERIC' });
+  assert.match(render(null, 120, fields), /^~\/512K · CHΣ96\.8%/);
+
+  write(before, done, { ...before, input_tokens: 20000, cache_read_tokens: 0 });
+  const updated = { ...fields, context_window: { ...fields.context_window, used_percentage: 4.0 } };
+  assert.match(render(null, 120, updated), /^4\.0%\/512K · CHΣ92\.8%/);
+});

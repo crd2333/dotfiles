@@ -50,7 +50,7 @@ async function conversationTitle(id) {
 const rate = (cached, prompt) => prompt > 0 ? `${(100 * cached / prompt).toFixed(1)}%` : '';
 const tokenCount = (value) => Number.isSafeInteger(value) && value >= 0;
 
-function conversationCacheRate(id) {
+function conversationUsage(id) {
   const names = ['transcript.jsonl', 'transcript_full.jsonl'];
   const dirs = new Set();
   if (typeof s.transcript_path === 'string' && isAbsolute(s.transcript_path) && names.includes(basename(s.transcript_path))) {
@@ -69,6 +69,7 @@ function conversationCacheRate(id) {
       }
       let prompt = 0;
       let cached = 0;
+      let awaitingUsage = false;
       // Both transcript variants describe the same requests; only use one.
       for (const line of transcript.trimEnd().split('\n')) {
         let step;
@@ -77,27 +78,32 @@ function conversationCacheRate(id) {
         } catch {
           continue; // The last record may be incomplete while agy writes it.
         }
+        // The checkpoint has no compacted context size, and agy can still report the old percentage.
+        if (step?.type === 'CHECKPOINT' && step.status === 'DONE') awaitingUsage = true;
         if (step?.source !== 'MODEL' || !tokenCount(step.input_tokens) || !tokenCount(step.cache_read_tokens)) continue;
         const write = step.cache_creation_input_tokens ?? 0;
         if (!tokenCount(write)) continue;
-        prompt += step.input_tokens + step.cache_read_tokens + write;
+        const tokens = step.input_tokens + step.cache_read_tokens + write;
+        if (step.status === 'DONE' && tokens > 0) awaitingUsage = false;
+        prompt += tokens;
         cached += step.cache_read_tokens;
       }
-      if (prompt > 0) return rate(cached, prompt);
+      if (prompt > 0 || awaitingUsage) return { lifetime: rate(cached, prompt), awaitingUsage };
     }
   }
-  return '';
+  return { lifetime: '', awaitingUsage: false };
 }
 
-const window = s.context_window;
-const pct = window?.used_percentage;
-const context = window?.context_window_size > 0 && Number.isFinite(pct)
-  ? `${pct.toFixed(1)}%/${new Intl.NumberFormat('en', { notation: 'compact' }).format(window.context_window_size)}`
-  : '';
 const id = clean(s.conversation_id);
+const { lifetime, awaitingUsage } = conversationUsage(id);
+const window = s.context_window;
+const pct = awaitingUsage ? undefined : window?.used_percentage;
+const used = awaitingUsage ? '~' : Number.isFinite(pct) ? `${pct.toFixed(1)}%` : '';
+const context = window?.context_window_size > 0 && used
+  ? `${used}/${new Intl.NumberFormat('en', { notation: 'compact' }).format(window.context_window_size)}`
+  : '';
 const { input_tokens: input, cache_read_input_tokens: cacheRead, cache_creation_input_tokens: cacheWrite = 0 } = window?.current_usage ?? {};
 const latest = [input, cacheRead, cacheWrite].every(tokenCount) ? rate(cacheRead, input + cacheRead + cacheWrite) : '';
-const lifetime = conversationCacheRate(id);
 const cache = [latest, lifetime && `Σ${lifetime}`].filter(Boolean).join('/');
 const totalUsd = s.cost?.total_usd;
 const cost = Number.isFinite(totalUsd) && totalUsd > 0
