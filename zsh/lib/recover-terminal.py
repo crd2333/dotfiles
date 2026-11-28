@@ -2,25 +2,26 @@
 """Find and reattach stranded Pi/agy terminals on Linux."""
 
 import argparse
+import ctypes
+import errno
+import fcntl
+import json
 import os
+import pwd
+import select
+import signal
+import stat
 import sys
+import termios
+import tty
 from dataclasses import dataclass
 from pathlib import Path
-
-if sys.platform == "linux":
-    import ctypes
-    import errno
-    import fcntl
-    import pwd
-    import select
-    import signal
-    import stat
-    import termios
-    import tty
 
 PROC = Path("/proc")
 AGENTS = {"pi", "agy"}
 SHELLS = {"bash", "zsh", "sh", "dash", "fish", "ksh", "tcsh", "csh"}
+MOUSE_ON = b"\x1b[?1006h\x1b[?1002h"  # SGR encoding with wheel and button-motion events.
+MOUSE_OFF = b"\x1b[?1000l\x1b[?1002l\x1b[?1003l\x1b[?1006l"
 
 
 @dataclass(frozen=True)
@@ -29,8 +30,6 @@ class Process:
     name: str
     parent: int
     session: int
-    controlling_tty: int
-    start: int
 
 
 @dataclass(frozen=True)
@@ -58,8 +57,7 @@ def read_process(pid, uid):
     fields = right.split()
     if fields[0] in ("Z", "X"):
         return None
-    return Process(pid, left.split("(", 1)[1], int(fields[1]), int(fields[3]),
-                   int(fields[4]), int(fields[19]))
+    return Process(pid, left.split("(", 1)[1], int(fields[1]), int(fields[3]))
 
 
 def slave_key(pid):
@@ -101,8 +99,6 @@ def manager(holder, pty):
     process = holder.process
     if process.pid == os.getpid():
         return ""  # The FD was inherited by this invocation.
-    if master_key(process.pid, 0) == pty:
-        return process.name  # This master is also the process's standard input.
     if process.name.removeprefix("-") in SHELLS and holder.fd > 2:
         return ""  # A shell can inherit an idle duplicate from VS Code's pty host.
     try:
@@ -189,47 +185,50 @@ def is_peer(master, pid):
         os.close(peer)
 
 
-def acquire(terminal, uid):
+def acquire(terminal):
     if terminal.reason:
         raise RuntimeError(terminal.reason)
+    target_pid = (terminal.wrapper or terminal.agent).pid
     candidates = sorted(terminal.holders, key=lambda h: h.process.pid != os.getpid())
     denied = False
-    unsupported = False
     for holder in candidates:
-        pid = holder.process.pid
         try:
-            if read_process(pid, uid) != holder.process:
-                continue
-            fd = duplicate_fd(pid, holder.fd)
+            fd = duplicate_fd(holder.process.pid, holder.fd)
         except OSError as error:
-            denied |= error.errno in (errno.EPERM, errno.EACCES)
-            unsupported |= error.errno in (errno.ENOSYS, errno.EINVAL)
+            if error.errno == errno.ENOSYS:
+                raise RuntimeError("this kernel does not support pidfd_getfd") from None
+            if error.errno in (errno.EPERM, errno.EACCES):
+                denied = True
             continue
         try:
-            current = terminal.wrapper or terminal.agent
-            if (read_process(pid, uid) == holder.process
-                    and read_process(terminal.agent.pid, uid) == terminal.agent
-                    and read_process(current.pid, uid) == current
-                    and is_peer(fd, current.pid)):
+            if is_peer(fd, target_pid):
                 return fd
         except OSError:
             pass
         os.close(fd)
     if denied:
         raise PermissionError("kernel denied access to the PTY master")
-    if unsupported:
-        raise RuntimeError("this kernel does not support pidfd_getfd")
-    raise RuntimeError("PTY changed or is no longer available; run --list again")
+    raise RuntimeError("PTY changed or is no longer available; run 'recover-terminal list' again")
 
 
-def attach(master, wrapper):
+def pi_fullscreen(terminal, home):
+    if terminal.agent.name != "pi":
+        return False
+    try:
+        data = json.loads((home / ".pi/agent/settings.json").read_text())
+        return data.get("tuiMode", "fullscreen") == "fullscreen"
+    except (OSError, ValueError, AttributeError):
+        return True
+
+
+def attach(master, wrapper, restore_mouse):
     saved = termios.tcgetattr(0)
     pending = b""
     detaching = False
 
     def resize(*_):
         termios.tcsetwinsize(master, termios.tcgetwinsize(0))
-        if wrapper and not wrapper.controlling_tty:
+        if wrapper:
             # An orphaned script(1) relay no longer gets SIGWINCH from the kernel.
             try:
                 os.kill(wrapper.pid, signal.SIGWINCH)
@@ -244,6 +243,10 @@ def attach(master, wrapper):
     signal.signal(signal.SIGWINCH, resize)
     try:
         tty.setraw(0)
+        if restore_mouse:
+            # Restore the *new* emulator's mode without injecting any keystrokes into Pi.
+            sys.stdout.buffer.write(MOUSE_ON)
+            sys.stdout.buffer.flush()
         resize()
         while not detaching or pending:
             readers, writers, _ = select.select(
@@ -275,6 +278,12 @@ def attach(master, wrapper):
             termios.tcsetattr(0, termios.TCSANOW, saved)
         except termios.error:
             pass  # The new terminal may already have hung up.
+        if restore_mouse:
+            try:
+                sys.stdout.buffer.write(MOUSE_OFF)
+                sys.stdout.buffer.flush()
+            except OSError:
+                pass
 
 
 def show(terminals):
@@ -316,15 +325,12 @@ def main():
     terminal = terminals[pid]
     account = pwd.getpwuid(uid)
     try:
-        fd = acquire(terminal, uid)
-    except PermissionError as error:
+        fd = acquire(terminal)
+    except PermissionError:
         if os.geteuid() == 0:
             raise
         # Use an absolute path so sudo does not need to find the helper on PATH.
-        try:
-            os.execlp("sudo", "sudo", "--", str(Path(__file__).resolve()), str(pid))
-        except FileNotFoundError:
-            raise RuntimeError(f"{error}; sudo is not available") from None
+        os.execlp("sudo", "sudo", "--", str(Path(__file__).resolve()), str(pid))
     try:
         if os.geteuid() == 0 and uid != 0:
             os.initgroups(account.pw_name, account.pw_gid)
@@ -332,17 +338,10 @@ def main():
             os.setuid(uid)
         if slave_key(os.getpid()) == terminal.pty:
             raise RuntimeError("open a separate terminal for the recovery")
-        locks = Path(account.pw_dir) / ".cache/vscode-terminal-recovery"
-        locks.mkdir(mode=0o700, parents=True, exist_ok=True)
-        device, index = terminal.pty
-        with (locks / f"{device}-{index}").open("a") as lock:
-            try:
-                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError:
-                raise RuntimeError("this PTY already has an active recovery connection") from None
-            print(f"Attached to {terminal.agent.name} (PID {pid}, pts/{index}). Ctrl-] to detach.", flush=True)
-            attach(fd, terminal.wrapper)
-            print("\nDetached.", flush=True)
+        _, index = terminal.pty
+        print(f"Attached to {terminal.agent.name} (PID {pid}, pts/{index}). Ctrl-] to detach.", flush=True)
+        attach(fd, terminal.wrapper, restore_mouse=pi_fullscreen(terminal, Path(account.pw_dir)))
+        print("\nDetached.", flush=True)
     finally:
         os.close(fd)
 
