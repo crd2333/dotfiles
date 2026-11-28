@@ -3,7 +3,6 @@
 
   "debugLog": false,
   "permissionReviewLog": true,
-  "yoloMode": false,
 
   "forwardingTimeoutMs": 600000,
   "promptTimeoutMs": 60000,
