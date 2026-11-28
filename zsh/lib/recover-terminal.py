@@ -185,9 +185,24 @@ def is_peer(master, pid):
         os.close(peer)
 
 
+def recovery_lock(home, pty):
+    device, index = pty
+    return home / ".cache/recover-terminal" / f"{device}-{index}"
+
+
+def unavailable_reason(terminal, home):
+    if terminal.pty is not None:
+        try:
+            with recovery_lock(home, terminal.pty).open("rb") as lock:
+                fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return "this terminal is already attached via recover-terminal"
+        except FileNotFoundError:
+            pass
+    return terminal.reason
+
+
 def acquire(terminal):
-    if terminal.reason:
-        raise RuntimeError(terminal.reason)
     target_pid = (terminal.wrapper or terminal.agent).pid
     candidates = sorted(terminal.holders, key=lambda h: h.process.pid != os.getpid())
     denied = False
@@ -286,24 +301,26 @@ def attach(master, wrapper, restore_mouse):
                 pass
 
 
-def show(terminals):
-    print(f"{len(terminals)} Pi/agy processes")
-    print(f"{'PID':>8}  {'AGENT':5}  {'PTY':8}  {'SID':>8}  {'STATUS':43}  CWD")
-    for terminal in terminals.values():
+def show(terminals, home):
+    waiting = [t for t in terminals.values() if not unavailable_reason(t, home)]
+    print(f"{len(waiting)} Pi/agy terminals available for recovery")
+    if not waiting:
+        return
+    print(f"{'PID':>8}  {'AGENT':5}  {'PTY':8}  {'SID':>8}  CWD")
+    for terminal in waiting:
         agent = terminal.agent
-        status = terminal.reason or "recovery candidate"
         try:
             cwd = str((PROC / str(agent.pid) / "cwd").readlink())
         except OSError:
             cwd = "?"
-        pty = f"pts/{terminal.pty[1]}" if terminal.pty else "-"
-        print(f"{agent.pid:8}  {agent.name:5}  {pty:8}  {terminal.session:8}  {status:43}  {cwd}")
+        pty = f"pts/{terminal.pty[1]}"
+        print(f"{agent.pid:8}  {agent.name:5}  {pty:8}  {terminal.session:8}  {cwd}")
 
 
 def main():
     parser = argparse.ArgumentParser(prog="recover-terminal", description=__doc__)
     parser.add_argument("target", nargs="?", default="list", metavar="list|PID",
-                        help="list live Pi/agy processes (default) or reattach to PID; Ctrl-] detaches")
+                        help="list terminals awaiting recovery (default) or reattach to PID; Ctrl-] detaches")
     target = parser.parse_args().target
     try:
         pid = None if target == "list" else int(target)
@@ -314,16 +331,19 @@ def main():
     uid = os.getuid()
     if uid == 0:
         uid = int(os.environ.get("SUDO_UID", uid))
+    account = pwd.getpwuid(uid)
+    home = Path(account.pw_dir)
     terminals = discover(uid)
     if pid is None:
-        show(terminals)
+        show(terminals, home)
         return
     if pid not in terminals:
         parser.error("PID is not a live Pi/agy process belonging to your user; run 'recover-terminal list'")
+    terminal = terminals[pid]
+    if reason := unavailable_reason(terminal, home):
+        raise RuntimeError(reason)
     if not (os.isatty(0) and os.isatty(1)):
         parser.error("run the recovery from an interactive terminal")
-    terminal = terminals[pid]
-    account = pwd.getpwuid(uid)
     try:
         fd = acquire(terminal)
     except PermissionError:
@@ -338,10 +358,17 @@ def main():
             os.setuid(uid)
         if slave_key(os.getpid()) == terminal.pty:
             raise RuntimeError("open a separate terminal for the recovery")
-        _, index = terminal.pty
-        print(f"Attached to {terminal.agent.name} (PID {pid}, pts/{index}). Ctrl-] to detach.", flush=True)
-        attach(fd, terminal.wrapper, restore_mouse=pi_fullscreen(terminal, Path(account.pw_dir)))
-        print("\nDetached.", flush=True)
+        path = recovery_lock(home, terminal.pty)
+        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        with path.open("a") as lock:
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise RuntimeError("this terminal is already attached via recover-terminal") from None
+            _, index = terminal.pty
+            print(f"Attached to {terminal.agent.name} (PID {pid}, pts/{index}). Ctrl-] to detach.", flush=True)
+            attach(fd, terminal.wrapper, restore_mouse=pi_fullscreen(terminal, home))
+            print("\nDetached.", flush=True)
     finally:
         os.close(fd)
 
