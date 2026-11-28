@@ -38,6 +38,8 @@ Pi 无头子代理配置 `~/.pi/agent-headless` 由 `sync_pi_headless.mjs` 自�
 
 Most users use **Oh My Zsh with many plugins and themes** as their configurations. Although it looks cool, it is bloated and slow. Although there are optimization methods (such as `zinit` and other lazy-loading plugin managers), it still seems redundant. In fact, using **pure zsh** with a few necessary plugins is enough (however, this manual install method requires manually git cloning the entire repository of those plugins. To keep them updated, I use submodule for management), and custom plugins to achieve some features in oh-my-zsh.
 
+Linux 上用 `recover-terminal list` 列出当前用户的 Pi/agy 进程，用 `recover-terminal <PID>` 接回失联的终端，按 `Ctrl+]` 断开。列表不需要 sudo；接回时只有内核拒绝访问原终端，脚本才会用 sudo 重试。
+
 ### powershell
 暂未探索抛弃 oh-my-posh、纯自定义的设置，除了 conda 初始化有些慢以外还算好用（conda 直接做成用命令延迟、按需加载了，毕竟不怎么在 windows 上跑 Python）。
 

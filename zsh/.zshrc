@@ -428,6 +428,9 @@ codex() {
 pi() { _coding_agent_in_vscode pi "$@"; }
 claude() { _coding_agent_in_vscode claude "$@"; }
 
+# Recover stranded coding-agent terminals on Linux.
+[[ -f "$ZSH/lib/recover-terminal.zsh" ]] && source "$ZSH/lib/recover-terminal.zsh"
+
 # Tokdash
 run_tokdash() {
     system_proxy > /dev/null 2>&1
